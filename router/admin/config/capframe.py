@@ -5,6 +5,7 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 import src.utils as utils
 import auth
 import db.capframe
+import db.capframe_info
 import db.frame
 import db.capture
 from PIL import Image, ImageDraw, ImageFont
@@ -101,7 +102,6 @@ def config_desc():
 
 @bp.route('/create/<int:f_id>', methods=['GET', 'POST'])
 def create_frame_selected(f_id):
-    
     if not f_id:
         flash('Frame ID is required', 'error')
         return redirect(url_for('router.admin.config.capframe.create'))
@@ -127,6 +127,10 @@ def create_frame_selected(f_id):
             selected_captures.append(capture_result)
 
         # * create capframe
+        start_time = time.time()
+        
+        CAPFRAME_ID = utils.gen_hash()
+        
         CANVAS_SIZE = frame_meta['canvas']['size']
         TIME_LOCA = frame_meta['canvas']['time_loca']
         TIME_FONT_SIZE = frame_meta['canvas']['time_font_size']
@@ -136,12 +140,11 @@ def create_frame_selected(f_id):
         capframe = Image.new("RGBA", CANVAS_SIZE, (255, 255, 255, 0))
         capframe_draw = ImageDraw.Draw(capframe)
         
-        start_time = time.time()
-        
         # draw capture
         for index, capture in enumerate(frame_meta['captures']):
-            # print(selected_captures[index])
-            CAPTURE_PATH = os.path.join(db.CAPTURES_PATH, selected_captures[index][3])
+            capture_info = selected_captures[index]
+            
+            CAPTURE_PATH = os.path.join(db.CAPTURES_PATH, capture_info[3])
             capture_img = Image.open(CAPTURE_PATH).convert("RGB")
             img_width, img_height = capture_img.size
             target_width, target_height = capture['size']
@@ -183,8 +186,12 @@ def create_frame_selected(f_id):
         capframe.paste(frame, (0, 0), frame)
 
         # draw qr
-        CAPFRAME_ID = utils.gen_hash()
-        qr_img = Image.open('qr.png')
+        QR_PATH = os.path.join(db.QR_PATH, f'{CAPFRAME_ID}.png')
+        utils.gen_qr(
+            save_path=QR_PATH,
+            url_path=url_for('router.view.view_capframe.send_capframe', cf_id=CAPFRAME_ID)
+        )
+        qr_img = Image.open(QR_PATH)
         qr_img = qr_img.resize(QR_SIZE)
         capframe.paste(qr_img, QR_LOCA)
 
@@ -198,12 +205,13 @@ def create_frame_selected(f_id):
             font=font,
             fill=tuple(TIME_FONT_COLOR),
         )
-
-        end_time = time.time()
-        processing_time = round(float(end_time - start_time), 4)
         
         SAVE_NAME = f"{utils.gen_hash()}.png"
         SAVE_PATH = os.path.join(db.CAPFRAMES_PATH, SAVE_NAME)
+        capframe.save(SAVE_PATH)
+
+        end_time = time.time()
+        processing_time = round(float(end_time - start_time), 4)
         
         db.capframe.capframe_create(
             cf_id=CAPFRAME_ID,
@@ -213,7 +221,14 @@ def create_frame_selected(f_id):
             processing_time=processing_time
         )
         
-        capframe.save(SAVE_PATH)
+        # capframe info insert
+        for index, capture in enumerate(frame_meta['captures']):
+            capture_info = selected_captures[index]
+            db.capframe_info.capframe_info_add(
+                cf_id=CAPFRAME_ID,
+                c_id=capture_info[0],
+                c_no=index
+            )
         
         flash('CapFrame created successfully', 'success')
         return redirect(url_for('router.admin.config.capframe.index'))

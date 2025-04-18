@@ -4,6 +4,7 @@ import json
 import os
 from flask import request
 import hashlib
+import qrcode
 import logging
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -84,6 +85,16 @@ def is_valid_frame_meta(data: dict) -> bool:
             return False
 
     return True
+
+def gen_qr(save_path, url_path: str):
+    qr = qrcode.make(
+        data=f'{get_env("SERVER_DOMAIN")}{url_path}',
+        version=1,
+        box_size=1,
+        border=2,
+        error_correction=qrcode.ERROR_CORRECT_L,
+    )
+    qr.save(save_path, "PNG")
 
 # init
 load_dotenv()

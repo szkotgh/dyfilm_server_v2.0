@@ -12,8 +12,12 @@ cursor = conn.cursor()
 FRAMES_PATH = path.join(DB_HOME, 'frames')
 CAPTURES_PATH = path.join(DB_HOME, 'captures')
 CAPFRAMES_PATH = path.join(DB_HOME, 'capframes')
+QR_PATH = path.join(DB_HOME, 'qr')
 
 # init
+if not os.path.exists(QR_PATH):
+    os.makedirs(QR_PATH)
+
 cursor.execute('PRAGMA foreign_keys = ON;')
 ## DEVICE
 cursor.execute('''
@@ -80,10 +84,10 @@ cursor.execute('''
         c_id TEXT,
         c_no INTEGER NOT NULL,
         
-        FOREIGN KEY (cf_id) REFERENCES capframe (cf_id),
+        FOREIGN KEY (cf_id) REFERENCES capframe (cf_id) ON DELETE CASCADE,
         FOREIGN KEY (c_id) REFERENCES capture (c_id),
         
-        PRIMARY KEY (cf_id, c_id)
+        PRIMARY KEY (cf_id, c_no)
     )
 ''')
 

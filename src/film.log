@@ -12551,3 +12551,304 @@ sqlite3.ProgrammingError: Recursive use of cursors not allowed.
  * Running on http://localhost:17439
 2025-04-18 20:41:19,397 - INFO - [33mPress CTRL+C to quit[0m
 2025-04-18 20:41:19,883 - INFO - 127.0.0.1 - - [18/Apr/2025 20:41:19] "GET / HTTP/1.0" 200 -
+2025-04-18 20:57:07,315 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 20:57:07,315 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 20:57:09,968 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:09] "[32mGET /admin/config/capture/ HTTP/1.0[0m" 302 -
+2025-04-18 20:57:10,092 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:10] "GET /admin/login HTTP/1.0" 200 -
+2025-04-18 20:57:11,130 - INFO - ADMIN LOGIN FROM: 211.37.77.84
+2025-04-18 20:57:11,131 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:11] "[32mPOST /admin/login HTTP/1.0[0m" 302 -
+2025-04-18 20:57:11,250 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:11] "GET /admin/ HTTP/1.0" 200 -
+2025-04-18 20:57:12,215 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:12] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 20:57:12,381 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:12] "[36mGET /view/capframe/66b4a288122d6a3860c3f3e22e116286 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:12,419 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:12] "[36mGET /view/capframe/1fb51dfd05899da0bf95b3b731ad8ca4 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:12,458 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:12] "[36mGET /view/capframe/21ba4625cb28218e3f7eda46eae82801 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:12,460 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:12] "[36mGET /view/capframe/23d7c6c77b55a9fbdd4120bf1a9b8c82 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:21,691 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:21] "GET /admin/config/capframe/create HTTP/1.0" 200 -
+2025-04-18 20:57:21,833 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:21] "[36mGET /view/frame/1 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:21,836 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:21] "[36mGET /view/frame/2 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:21,847 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:21] "[36mGET /view/frame/8 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:21,857 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:21] "[36mGET /view/frame/5 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:24,974 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:24] "GET /admin/config/capframe/create/8 HTTP/1.0" 200 -
+2025-04-18 20:57:25,092 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:25] "[36mGET /view/frame/8 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:27,946 - ERROR - Exception on /admin/config/capframe/create/8 [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/szkot/dyfilm_server_v2.0/router/admin/config/capframe.py", line 190, in create_frame_selected
+    url_path=f"{utils.get_env('SERVER_DOMAIN')}/{url_for('router.view.capframe.send_capframe', cf_id=CAPFRAME_ID)}"
+  File "/usr/local/lib/python3.10/dist-packages/flask/helpers.py", line 220, in url_for
+    return current_app.url_for(
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1084, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1073, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+  File "/usr/local/lib/python3.10/dist-packages/werkzeug/routing/map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'router.view.capframe.send_capframe' with values ['cf_id']. Did you mean 'router.view.view_capframe.send_capframe' instead?
+2025-04-18 20:57:27,951 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:27] "[35m[1mPOST /admin/config/capframe/create/8 HTTP/1.0[0m" 500 -
+2025-04-18 20:57:45,429 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 20:57:45,429 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 20:57:47,299 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:47] "GET /admin/config/capframe/create/8 HTTP/1.0" 200 -
+2025-04-18 20:57:47,455 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:47] "[36mGET /view/frame/8 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:50,931 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:50] "[32mPOST /admin/config/capframe/create/8 HTTP/1.0[0m" 302 -
+2025-04-18 20:57:51,144 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:51] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 20:57:51,320 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:51] "[36mGET /view/capframe/66b4a288122d6a3860c3f3e22e116286 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:51,323 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:51] "[36mGET /view/capframe/1fb51dfd05899da0bf95b3b731ad8ca4 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:51,348 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:51] "GET /view/capframe/d4470945483d7b6db485f6ccd83d5bed HTTP/1.0" 200 -
+2025-04-18 20:57:51,349 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:51] "[36mGET /view/capframe/21ba4625cb28218e3f7eda46eae82801 HTTP/1.0[0m" 304 -
+2025-04-18 20:57:51,392 - INFO - 127.0.0.1 - - [18/Apr/2025 20:57:51] "[36mGET /view/capframe/23d7c6c77b55a9fbdd4120bf1a9b8c82 HTTP/1.0[0m" 304 -
+2025-04-18 20:58:53,010 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 20:58:53,010 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 20:58:56,113 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 20:58:56,298 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "[36mGET /view/capframe/66b4a288122d6a3860c3f3e22e116286 HTTP/1.0[0m" 304 -
+2025-04-18 20:58:56,336 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "[36mGET /view/capframe/1fb51dfd05899da0bf95b3b731ad8ca4 HTTP/1.0[0m" 304 -
+2025-04-18 20:58:56,366 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "[36mGET /view/capframe/23d7c6c77b55a9fbdd4120bf1a9b8c82 HTTP/1.0[0m" 304 -
+2025-04-18 20:58:56,367 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "[36mGET /view/capframe/d4470945483d7b6db485f6ccd83d5bed HTTP/1.0[0m" 304 -
+2025-04-18 20:58:56,370 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "[36mGET /view/capframe/21ba4625cb28218e3f7eda46eae82801 HTTP/1.0[0m" 304 -
+2025-04-18 20:58:56,633 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "GET /admin/config/capframe/create HTTP/1.0" 200 -
+2025-04-18 20:58:56,776 - ERROR - Exception on /view/frame/2 [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/szkot/dyfilm_server_v2.0/router/view/frame.py", line 11, in send_frame
+    f_info = db.frame.frame_get(f_id)
+  File "/home/szkot/dyfilm_server_v2.0/db/frame.py", line 11, in frame_get
+    db.cursor.execute('''
+sqlite3.ProgrammingError: Recursive use of cursors not allowed.
+2025-04-18 20:58:56,780 - ERROR - Exception on /view/frame/5 [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/szkot/dyfilm_server_v2.0/router/view/frame.py", line 11, in send_frame
+    f_info = db.frame.frame_get(f_id)
+  File "/home/szkot/dyfilm_server_v2.0/db/frame.py", line 11, in frame_get
+    db.cursor.execute('''
+sqlite3.ProgrammingError: Recursive use of cursors not allowed.
+2025-04-18 20:58:56,781 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "[33mGET /view/frame/8 HTTP/1.0[0m" 404 -
+2025-04-18 20:58:56,781 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "[33mGET /view/frame/1 HTTP/1.0[0m" 404 -
+2025-04-18 20:58:56,786 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "[35m[1mGET /view/frame/2 HTTP/1.0[0m" 500 -
+2025-04-18 20:58:56,787 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:56] "[35m[1mGET /view/frame/5 HTTP/1.0[0m" 500 -
+2025-04-18 20:58:58,655 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:58] "GET /admin/config/capframe/create/8 HTTP/1.0" 200 -
+2025-04-18 20:58:58,807 - INFO - 127.0.0.1 - - [18/Apr/2025 20:58:58] "GET /view/frame/8 HTTP/1.0" 200 -
+2025-04-18 20:59:01,826 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:01] "[32mPOST /admin/config/capframe/create/8 HTTP/1.0[0m" 302 -
+2025-04-18 20:59:01,947 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:01] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 20:59:02,123 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:02] "[36mGET /view/capframe/66b4a288122d6a3860c3f3e22e116286 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:02,137 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:02] "[36mGET /view/capframe/1fb51dfd05899da0bf95b3b731ad8ca4 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:02,147 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:02] "GET /view/capframe/817b66592d27bdcd098cb358cf4b7ac6 HTTP/1.0" 200 -
+2025-04-18 20:59:02,151 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:02] "[36mGET /view/capframe/21ba4625cb28218e3f7eda46eae82801 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:02,152 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:02] "[36mGET /view/capframe/23d7c6c77b55a9fbdd4120bf1a9b8c82 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:02,197 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:02] "[36mGET /view/capframe/d4470945483d7b6db485f6ccd83d5bed HTTP/1.0[0m" 304 -
+2025-04-18 20:59:10,359 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:10] "GET /view/capframe/817b66592d27bdcd098cb358cf4b7ac6 HTTP/1.0" 200 -
+2025-04-18 20:59:44,822 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 20:59:44,822 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 20:59:46,192 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:46] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 20:59:46,376 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:46] "[36mGET /view/capframe/66b4a288122d6a3860c3f3e22e116286 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:46,415 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:46] "[36mGET /view/capframe/1fb51dfd05899da0bf95b3b731ad8ca4 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:46,436 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:46] "[36mGET /view/capframe/817b66592d27bdcd098cb358cf4b7ac6 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:46,443 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:46] "[36mGET /view/capframe/d4470945483d7b6db485f6ccd83d5bed HTTP/1.0[0m" 304 -
+2025-04-18 20:59:46,444 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:46] "[36mGET /view/capframe/21ba4625cb28218e3f7eda46eae82801 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:47,503 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:47] "[36mGET /view/capframe/23d7c6c77b55a9fbdd4120bf1a9b8c82 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:55,414 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:55] "[32mPOST /admin/config/capframe/remove HTTP/1.0[0m" 302 -
+2025-04-18 20:59:55,528 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:55] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 20:59:55,695 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:55] "[36mGET /view/capframe/21ba4625cb28218e3f7eda46eae82801 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:55,699 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:55] "[36mGET /view/capframe/1fb51dfd05899da0bf95b3b731ad8ca4 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:55,700 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:55] "[36mGET /view/capframe/23d7c6c77b55a9fbdd4120bf1a9b8c82 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:55,727 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:55] "[36mGET /view/capframe/817b66592d27bdcd098cb358cf4b7ac6 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:55,730 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:55] "[36mGET /view/capframe/d4470945483d7b6db485f6ccd83d5bed HTTP/1.0[0m" 304 -
+2025-04-18 20:59:56,799 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:56] "[32mPOST /admin/config/capframe/remove HTTP/1.0[0m" 302 -
+2025-04-18 20:59:56,909 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:56] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 20:59:57,077 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:57] "[36mGET /view/capframe/21ba4625cb28218e3f7eda46eae82801 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:57,080 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:57] "[36mGET /view/capframe/23d7c6c77b55a9fbdd4120bf1a9b8c82 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:57,106 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:57] "[36mGET /view/capframe/817b66592d27bdcd098cb358cf4b7ac6 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:57,107 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:57] "[36mGET /view/capframe/d4470945483d7b6db485f6ccd83d5bed HTTP/1.0[0m" 304 -
+2025-04-18 20:59:58,151 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:58] "[32mPOST /admin/config/capframe/remove HTTP/1.0[0m" 302 -
+2025-04-18 20:59:58,264 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:58] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 20:59:58,432 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:58] "[36mGET /view/capframe/23d7c6c77b55a9fbdd4120bf1a9b8c82 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:58,435 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:58] "[36mGET /view/capframe/d4470945483d7b6db485f6ccd83d5bed HTTP/1.0[0m" 304 -
+2025-04-18 20:59:58,455 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:58] "[36mGET /view/capframe/817b66592d27bdcd098cb358cf4b7ac6 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:59,443 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:59] "[32mPOST /admin/config/capframe/remove HTTP/1.0[0m" 302 -
+2025-04-18 20:59:59,557 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:59] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 20:59:59,714 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:59] "[36mGET /view/capframe/817b66592d27bdcd098cb358cf4b7ac6 HTTP/1.0[0m" 304 -
+2025-04-18 20:59:59,718 - INFO - 127.0.0.1 - - [18/Apr/2025 20:59:59] "[36mGET /view/capframe/d4470945483d7b6db485f6ccd83d5bed HTTP/1.0[0m" 304 -
+2025-04-18 21:00:00,745 - INFO - 127.0.0.1 - - [18/Apr/2025 21:00:00] "[32mPOST /admin/config/capframe/remove HTTP/1.0[0m" 302 -
+2025-04-18 21:00:00,859 - INFO - 127.0.0.1 - - [18/Apr/2025 21:00:00] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 21:00:01,012 - INFO - 127.0.0.1 - - [18/Apr/2025 21:00:01] "[36mGET /view/capframe/817b66592d27bdcd098cb358cf4b7ac6 HTTP/1.0[0m" 304 -
+2025-04-18 21:00:02,156 - INFO - 127.0.0.1 - - [18/Apr/2025 21:00:02] "[32mPOST /admin/config/capframe/remove HTTP/1.0[0m" 302 -
+2025-04-18 21:00:02,269 - INFO - 127.0.0.1 - - [18/Apr/2025 21:00:02] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 21:00:55,858 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 21:00:55,858 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 21:00:59,476 - INFO - 127.0.0.1 - - [18/Apr/2025 21:00:59] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 21:01:01,347 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:01] "GET /admin/ HTTP/1.0" 200 -
+2025-04-18 21:01:03,375 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:03] "GET /admin/config/frame/ HTTP/1.0" 200 -
+2025-04-18 21:01:03,527 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:03] "GET /view/frame/1 HTTP/1.0" 200 -
+2025-04-18 21:01:03,581 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:03] "GET /view/frame/2 HTTP/1.0" 200 -
+2025-04-18 21:01:03,584 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:03] "GET /view/frame/5 HTTP/1.0" 200 -
+2025-04-18 21:01:03,598 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:03] "[36mGET /view/frame/8 HTTP/1.0[0m" 304 -
+2025-04-18 21:01:04,643 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:04] "GET /admin/config/capture/ HTTP/1.0" 200 -
+2025-04-18 21:01:04,812 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:04] "[36mGET /view/capture/c17a8962f667d69f75c93745756ef3e0 HTTP/1.0[0m" 304 -
+2025-04-18 21:01:04,819 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:04] "[36mGET /view/capture/f8ba2534fb59441ebdb79c81dc86ad42 HTTP/1.0[0m" 304 -
+2025-04-18 21:01:04,820 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:04] "GET /view/capture/474a187a3eae561e92f8a90f16336528 HTTP/1.0" 200 -
+2025-04-18 21:01:04,864 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:04] "[36mGET /view/capture/2993cb304d6ad10325e9f2710b54d40e HTTP/1.0[0m" 304 -
+2025-04-18 21:01:04,891 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:04] "[36mGET /view/capture/ab6103f1c9312202e115621c0a049de6 HTTP/1.0[0m" 304 -
+2025-04-18 21:01:04,896 - INFO - 127.0.0.1 - - [18/Apr/2025 21:01:04] "[36mGET /view/capture/a84826b3ca24644f6c710f874cb18464 HTTP/1.0[0m" 304 -
+2025-04-18 21:05:50,741 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 21:05:50,741 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 21:05:57,365 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 21:05:57,365 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 21:09:56,442 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:56] "[32mGET /admin/ HTTP/1.0[0m" 302 -
+2025-04-18 21:09:56,567 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:56] "GET /admin/login HTTP/1.0" 200 -
+2025-04-18 21:09:57,793 - INFO - ADMIN LOGIN FROM: 211.37.77.84
+2025-04-18 21:09:57,794 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:57] "[32mPOST /admin/login HTTP/1.0[0m" 302 -
+2025-04-18 21:09:57,916 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:57] "GET /admin/ HTTP/1.0" 200 -
+2025-04-18 21:09:59,153 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:59] "GET /admin/config/capture/ HTTP/1.0" 200 -
+2025-04-18 21:09:59,330 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:59] "GET /view/capture/c17a8962f667d69f75c93745756ef3e0 HTTP/1.0" 200 -
+2025-04-18 21:09:59,368 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:59] "GET /view/capture/2993cb304d6ad10325e9f2710b54d40e HTTP/1.0" 200 -
+2025-04-18 21:09:59,368 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:59] "GET /view/capture/474a187a3eae561e92f8a90f16336528 HTTP/1.0" 200 -
+2025-04-18 21:09:59,398 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:59] "GET /view/capture/f8ba2534fb59441ebdb79c81dc86ad42 HTTP/1.0" 200 -
+2025-04-18 21:09:59,400 - INFO - 127.0.0.1 - - [18/Apr/2025 21:09:59] "[36mGET /view/capture/ab6103f1c9312202e115621c0a049de6 HTTP/1.0[0m" 304 -
+2025-04-18 21:10:00,414 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:00] "[36mGET /view/capture/a84826b3ca24644f6c710f874cb18464 HTTP/1.0[0m" 304 -
+2025-04-18 21:10:26,888 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 21:10:26,888 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 21:10:31,162 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:31] "GET /admin/ HTTP/1.0" 200 -
+2025-04-18 21:10:32,255 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:32] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 21:10:33,567 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:33] "GET /admin/config/capframe/create HTTP/1.0" 200 -
+2025-04-18 21:10:33,718 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:33] "GET /view/frame/1 HTTP/1.0" 200 -
+2025-04-18 21:10:33,759 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:33] "[36mGET /view/frame/8 HTTP/1.0[0m" 304 -
+2025-04-18 21:10:33,761 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:33] "[36mGET /view/frame/5 HTTP/1.0[0m" 304 -
+2025-04-18 21:10:33,762 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:33] "[36mGET /view/frame/2 HTTP/1.0[0m" 304 -
+2025-04-18 21:10:36,783 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:36] "GET /admin/config/capframe/create/1 HTTP/1.0" 200 -
+2025-04-18 21:10:36,930 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:36] "[36mGET /view/frame/1 HTTP/1.0[0m" 304 -
+2025-04-18 21:10:46,191 - ERROR - Exception on /admin/config/capframe/create/1 [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/szkot/dyfilm_server_v2.0/router/admin/config/capframe.py", line 146, in create_frame_selected
+    db.capframe_info.capframe_info_add(CAPFRAME_ID, capture[0], index)
+KeyError: 0
+2025-04-18 21:10:46,193 - INFO - 127.0.0.1 - - [18/Apr/2025 21:10:46] "[35m[1mPOST /admin/config/capframe/create/1 HTTP/1.0[0m" 500 -
+2025-04-18 21:11:22,615 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 21:11:22,616 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 21:11:23,836 - ERROR - Exception on /admin/config/capframe/create/1 [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/szkot/dyfilm_server_v2.0/router/admin/config/capframe.py", line 147, in create_frame_selected
+    db.capframe_info.capframe_info_add(CAPFRAME_ID, capture[0], index)
+KeyError: 0
+2025-04-18 21:11:23,838 - INFO - 127.0.0.1 - - [18/Apr/2025 21:11:23] "[35m[1mPOST /admin/config/capframe/create/1 HTTP/1.0[0m" 500 -
+2025-04-18 21:12:06,352 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 21:12:06,352 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 21:12:08,103 - ERROR - Exception on /admin/config/capframe/create/1 [POST]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/szkot/dyfilm_server_v2.0/router/admin/config/capframe.py", line 148, in create_frame_selected
+    db.capframe_info.capframe_info_add(CAPFRAME_ID, capture_info[0], index)
+  File "/home/szkot/dyfilm_server_v2.0/db/capframe_info.py", line 20, in capframe_info_add
+    db.cursor.execute('''
+sqlite3.IntegrityError: FOREIGN KEY constraint failed
+2025-04-18 21:12:08,105 - INFO - 127.0.0.1 - - [18/Apr/2025 21:12:08] "[35m[1mPOST /admin/config/capframe/create/1 HTTP/1.0[0m" 500 -
+2025-04-18 21:13:25,557 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-18 21:13:25,558 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-18 21:13:29,841 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:29] "[32mPOST /admin/config/capframe/create/1 HTTP/1.0[0m" 302 -
+2025-04-18 21:13:30,030 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:30] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 21:13:30,183 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:30] "GET /view/capframe/5ecb1df26adbd724e96a6b1a805a839b HTTP/1.0" 200 -
+2025-04-18 21:13:48,877 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:48] "GET /admin/config/capframe/create HTTP/1.0" 200 -
+2025-04-18 21:13:49,041 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:49] "[36mGET /view/frame/1 HTTP/1.0[0m" 304 -
+2025-04-18 21:13:49,085 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:49] "[36mGET /view/frame/5 HTTP/1.0[0m" 304 -
+2025-04-18 21:13:49,088 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:49] "[36mGET /view/frame/8 HTTP/1.0[0m" 304 -
+2025-04-18 21:13:49,091 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:49] "[36mGET /view/frame/2 HTTP/1.0[0m" 304 -
+2025-04-18 21:13:56,098 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:56] "GET /admin/config/capframe/create/1 HTTP/1.0" 200 -
+2025-04-18 21:13:56,259 - INFO - 127.0.0.1 - - [18/Apr/2025 21:13:56] "[36mGET /view/frame/1 HTTP/1.0[0m" 304 -
+2025-04-18 21:14:04,543 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:04] "[32mPOST /admin/config/capframe/create/1 HTTP/1.0[0m" 302 -
+2025-04-18 21:14:04,675 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:04] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 21:14:04,845 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:04] "GET /view/capframe/f1f301dfeeeb315166e797c0c1a30cc1 HTTP/1.0" 200 -
+2025-04-18 21:14:04,846 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:04] "[36mGET /view/capframe/5ecb1df26adbd724e96a6b1a805a839b HTTP/1.0[0m" 304 -
+2025-04-18 21:14:23,470 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:23] "[32mPOST /admin/config/capframe/remove HTTP/1.0[0m" 302 -
+2025-04-18 21:14:23,586 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:23] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 21:14:23,741 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:23] "[36mGET /view/capframe/5ecb1df26adbd724e96a6b1a805a839b HTTP/1.0[0m" 304 -
+2025-04-18 21:14:28,934 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:28] "GET /admin/config/capframe/create HTTP/1.0" 200 -
+2025-04-18 21:14:29,088 - ERROR - Exception on /view/frame/5 [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/szkot/dyfilm_server_v2.0/router/view/frame.py", line 11, in send_frame
+    f_info = db.frame.frame_get(f_id)
+  File "/home/szkot/dyfilm_server_v2.0/db/frame.py", line 11, in frame_get
+    db.cursor.execute('''
+sqlite3.ProgrammingError: Recursive use of cursors not allowed.
+2025-04-18 21:14:29,090 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:29] "[36mGET /view/frame/1 HTTP/1.0[0m" 304 -
+2025-04-18 21:14:29,093 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:29] "[36mGET /view/frame/2 HTTP/1.0[0m" 304 -
+2025-04-18 21:14:29,093 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:29] "[35m[1mGET /view/frame/5 HTTP/1.0[0m" 500 -
+2025-04-18 21:14:29,096 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:29] "[36mGET /view/frame/8 HTTP/1.0[0m" 304 -
+2025-04-18 21:14:36,530 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:36] "GET /admin/config/capframe/create/8 HTTP/1.0" 200 -
+2025-04-18 21:14:36,664 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:36] "[36mGET /view/frame/8 HTTP/1.0[0m" 304 -
+2025-04-18 21:14:40,027 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:40] "[32mPOST /admin/config/capframe/create/8 HTTP/1.0[0m" 302 -
+2025-04-18 21:14:40,150 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:40] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 21:14:40,319 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:40] "GET /view/capframe/fa9beb2301f88329a150ce10f6a6cea8 HTTP/1.0" 200 -
+2025-04-18 21:14:40,328 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:40] "[36mGET /view/capframe/5ecb1df26adbd724e96a6b1a805a839b HTTP/1.0[0m" 304 -
+2025-04-18 21:14:42,948 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:42] "GET /admin/config/capframe/create HTTP/1.0" 200 -
+2025-04-18 21:14:43,090 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:43] "GET /view/frame/5 HTTP/1.0" 200 -
+2025-04-18 21:14:43,102 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:43] "[36mGET /view/frame/2 HTTP/1.0[0m" 304 -
+2025-04-18 21:14:43,107 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:43] "[36mGET /view/frame/8 HTTP/1.0[0m" 304 -
+2025-04-18 21:14:43,109 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:43] "[36mGET /view/frame/1 HTTP/1.0[0m" 304 -
+2025-04-18 21:14:46,678 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:46] "GET /admin/config/capframe/create/2 HTTP/1.0" 200 -
+2025-04-18 21:14:46,833 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:46] "[36mGET /view/frame/2 HTTP/1.0[0m" 304 -
+2025-04-18 21:14:57,950 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:57] "[32mPOST /admin/config/capframe/create/2 HTTP/1.0[0m" 302 -
+2025-04-18 21:14:58,071 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:58] "GET /admin/config/capframe/ HTTP/1.0" 200 -
+2025-04-18 21:14:58,247 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:58] "[36mGET /view/capframe/5ecb1df26adbd724e96a6b1a805a839b HTTP/1.0[0m" 304 -
+2025-04-18 21:14:58,253 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:58] "GET /view/capframe/1851a67130c826aa9a6efdb513df1928 HTTP/1.0" 200 -
+2025-04-18 21:14:58,268 - INFO - 127.0.0.1 - - [18/Apr/2025 21:14:58] "[36mGET /view/capframe/fa9beb2301f88329a150ce10f6a6cea8 HTTP/1.0[0m" 304 -
