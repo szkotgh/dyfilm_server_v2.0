@@ -1,0 +1,12 @@
+[Unit]
+Description=dyfilm_server_v2.0
+Documentation=https://github.com/szkotgh/dyfilm_server_v2.0
+After=network.target
+
+[Service]
+ExecStart=/bin/sudo /bin/bash /your/path/dyfilm_server_v2.0/stater.sh
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
