@@ -6,7 +6,7 @@ nohup.out
 **/DS_Store/
 .vscode/
 
-/src/dyfilm.log
+/src/film.log
 
 /db/meta.db
 /db/captures
