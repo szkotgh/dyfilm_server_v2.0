@@ -1,0 +1,122 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+    <style>
+        .main-content {
+            margin: 1rem 6% 1rem 6%;
+        }
+
+        .table-content {
+            cursor: pointer;
+        }
+    </style>
+{% endblock head %}
+
+{% block body %}
+    <h4><a href="/admin/config/capframe">CapFrame 관리</a> | CapFrame 프레임 선택</h4>
+    <p>캡프레임을 생성하세요.</p>
+    <div class="main-content">
+        <h5 class="text-success">생성 전, 적용할 프레임을 선택하세요.</h5>
+
+        <div class="table-content">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            {% set modal_id = 'f_id' %}
+                            {% set display_text = 'f_id' %}
+                            {% set title = '프레임 아이디' %}
+                            {% set message = '프레임마다 부여되는 고유한 ID입니다. 클릭하면 프레임을 삭제할 수 있습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </th>
+                        <th>
+                            {% set modal_id = 'status' %}
+                            {% set display_text = 'status' %}
+                            {% set title = '프레임 상태' %}
+                            {% set message = '프레임 공개 여부를 설정하는 항목입니다. 활성화하면 사진이 모든 장치와 사용자에게 보여지고, 비활성화하면 관리자만 볼 수 있습니다. 클릭해 토글 설정할 수 있습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </th>
+                        <th>
+                            {% set modal_id = 'file_name' %}
+                            {% set display_text = 'file_name' %}
+                            {% set title = '프레임 사진 이름' %}
+                            {% set message = '서버에 저장되어있는 프레임 사진의 실제 파일 이름입니다. 클릭하면 사진 열람과 사진 변경이 가능합니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </th>
+                        <th>
+                            {% set modal_id = 'desc' %}
+                            {% set display_text = 'desc' %}
+                            {% set title = '프레임 설명' %}
+                            {% set message = '프레임의 비고란입니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% for frame in frames %}
+                        <tr>
+                            <td>
+                                {{ frame.0 }}
+                            </td>
+                            <td>
+                                {{ '활성화' if frame.1 else '비활성화' }}
+                            </td>
+                            <td>
+                                {% set modal_id = 'file_name' ~ frame.0|escape %}
+                                {% set display_text = frame.2|escape %}
+                                {% set title = '캡쳐 이미지' %}
+                                {% set message = '이미지를 확인하세요.' %}
+                                {% set image_url = url_for('router.view.view_frame.send_frame', f_id=frame.0) %}
+                                {% set image_fallback_url = url_for('static', filename='images/fallback_frame_image.png') %}
+                                {% include 'components/modals/view_image_modal.html' %}
+                            </td>
+                            <td>
+                                {{ frame.4 }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+    
+                    {% if frames|length == 0 %}
+                    <tr>
+                        <td colspan="7" style="text-align: center;">
+                            등록된 프레임이 없습니다.
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <button id="submit-button" class="btn btn-primary mt-3">프레임을 선택하세요.</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const rows = document.querySelectorAll('.table-content table tbody tr');
+            const submitButton = document.getElementById('submit-button');
+            let selectedRow = null;
+
+            rows.forEach(row => {
+                row.addEventListener('click', () => {
+                    if (selectedRow)
+                    selectedRow.classList.remove('table-primary');
+                    selectedRow = row;
+
+                    const frameId = selectedRow.querySelector('td:first-child').textContent.trim();
+                    submitButton.textContent = `선택한 프레임(${frameId})으로 만들기`;
+
+                    row.classList.add('table-primary');
+                });
+            });
+            
+            submitButton.addEventListener('click', () => {
+                if (selectedRow) {
+                    const frameId = selectedRow.querySelector('td:first-child').textContent.trim();
+                    const url = `/admin/config/capframe/create/${frameId}`;
+                    window.location.href = url;
+                } else {
+                    alert('행을 선택하세요.');
+                }
+            });
+        });
+    </script>
+{% endblock body %}

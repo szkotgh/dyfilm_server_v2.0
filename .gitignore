@@ -4,6 +4,8 @@
 **/DS_Store/
 .vscode/
 
+/src/dyfilm.log
+
 /db/meta.db
 /db/captures
 /db/capframes

@@ -1,0 +1,169 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+    <style>
+        .table-content {
+            margin: 1rem 6% 1rem 6%;
+            background-color: darkgrey;
+        }
+    </style>
+{% endblock head %}
+
+{% block body %}
+    <h4><a href="/admin">홈</a> | CapFrame 관리</h4>
+    <p>값을 클릭해 수정하세요.</p>
+    <div class="table-content">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        {% set modal_id = 'cf_id' %}
+                        {% set display_text = 'cf_id' %}
+                        {% set title = '캡프레임 아이디' %}
+                        {% set message = '캡프레임마다 부여되는 고유한 ID입니다. 클릭하면 캡프레임을 삭제할 수 있습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'd_id' %}
+                        {% set display_text = 'd_id' %}
+                        {% set title = '장치 아이디' %}
+                        {% set message = '이 캡프레임을 생성한 장치의 아이디입니다. 관리자 페이지에서 수동 추가 시 NULL로 기록됩니다. 이 값은 수정할 수 없습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'f_id' %}
+                        {% set display_text = 'f_id' %}
+                        {% set title = '프레임 아이디' %}
+                        {% set message = '캡프레임이 생성될 때 사용된 프레임의 아이디입니다. 이 값은 수정할 수 없습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'status' %}
+                        {% set display_text = 'status' %}
+                        {% set title = '캡프레임 상태' %}
+                        {% set message = '캡프레임 공개 여부를 설정하는 항목입니다. 활성화하면 사진이 모든 장치와 사용자에게 보여지고, 비활성화하면 관리자만 볼 수 있습니다. 클릭해 토글 설정할 수 있습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'file_name' %}
+                        {% set display_text = 'file_name' %}
+                        {% set title = '캡프레임 이미지' %}
+                        {% set message = '서버에 저장되어있는 캡프레임 이미지의 실제 파일 이름입니다. 클릭하면 사진 열람과 사진 변경이 가능합니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'desc' %}
+                        {% set display_text = 'desc' %}
+                        {% set title = '캡프레임 설명' %}
+                        {% set message = '캡프레임의 비고란입니다. 클릭해 기록·수정할 수 있습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'create' %}
+                        {% set display_text = 'create' %}
+                        {% set title = '캡프레임 생성 날짜' %}
+                        {% set message = '캡프레임 항목이 생성된 날짜입니다. 이 값은 수정할 수 없습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'processing_time' %}
+                        {% set display_text = 'processing_time' %}
+                        {% set title = '캡프레임 처리 시간' %}
+                        {% set message = '캡프레임 이미지가 생성되는데 걸린 시간입니다. 이 값은 수정할 수 없습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for capframe in capframes %}
+                    <tr>
+                        <td>
+                            {% set modal_id = 'cf_id' ~ capframe.0|escape %}
+                            {% set display_text = capframe.0|escape %}
+                            {% set title = '캡프레임 삭제' %}
+                            {% set message = '캡프레임' ~ capframe.0|escape ~ '을 삭제하시겠습니까? 되돌릴 수 없습니다.' %}
+                            {% set action = url_for('router.admin.config.capframe.remove') %}
+                            {% set hidden_name = 'cf_id' %}
+                            {% set hidden_value = capframe.0|escape %}
+                            {% include 'components/modals/dialog_yesnoparam_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'd_id' ~ capframe.0 %}
+                            {% set display_text = capframe.1 %}
+                            {% set title = '장치 아이디' %}
+                            {% set message = '이 값은 수정할 수 없습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'f_id' ~ capframe.0 %}
+                            {% set display_text = capframe.2 %}
+                            {% set title = '프레임 아이디' %}
+                            {% set message = '이 값은 수정할 수 없습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'status' ~ capframe.0|escape %}
+                            {% set display_text = '활성화' if capframe.3 else '비활성화' %}
+                            {% set title = '캡프레임 상태 변경' %}
+                            {% set message = '캡프레임' ~ capframe.0|escape ~ '의 상태를 변경하시겠습니까?' %}
+                            {% set action = url_for('router.admin.config.capframe.config_status') %}
+                            {% set hidden_name = 'cf_id' %}
+                            {% set hidden_value = capframe.0|escape %}
+                            {% include 'components/modals/dialog_yesnoparam_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'file_name' ~ capframe.0|escape %}
+                            {% set display_text = capframe.4|escape %}
+                            {% set title = '캡프레임 이미지' %}
+                            {% set message = '이 이미지는 변경할 수 없습니다.' %}
+                            {% set image_url = url_for('router.view.view_capframe.send_capframe', cf_id=capframe.0) %}
+                            {% set image_fallback_url = url_for('static', filename='images/fallback_frame_image.png') %}
+                            {% include 'components/modals/view_image_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'desc' ~ capframe.0|escape %}
+                            {% set display_text = capframe.5|escape %}
+                            {% set title = '캡프레임 설명 수정' %}
+                            {% set label = '캡프레임' ~ capframe.0|escape ~ '의 설명을 수정하시겠습니까?' %}
+                            {% set action = url_for('router.admin.config.capframe.config_desc') %}
+                            {% set hidden_name = 'cf_id' %}
+                            {% set hidden_value = capframe.0|escape %}
+                            {% set input_id = 'desc' ~ capframe.0|escape %}
+                            {% set input_name = 'config_desc' %}
+                            {% set input_value = capframe.5|escape %}
+                            {% include 'components/modals/config_text_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'create' ~ capframe.0 %}
+                            {% set display_text = capframe.6 %}
+                            {% set title = '캡프레임 생성 날짜' %}
+                            {% set message = '이 값은 수정할 수 없습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'processing-time' ~ capframe.0 %}
+                            {% set display_text = capframe.7 ~ '초' %}
+                            {% set title = '캡프레임 처리 시간' %}
+                            {% set message = '이 값은 수정할 수 없습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                {% if capframes|length == 0 %}
+                <tr>
+                    <td colspan="8" style="text-align: center;">
+                        등록된 CapFrame가 없습니다.
+                    </td>
+                </tr>
+                {% endif %}
+
+                <tr>
+                    <td colspan="8" style="text-align: center;">
+                        <a href="/admin/config/capframe/create">CapFrame 수동 추가</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock body %}

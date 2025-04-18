@@ -1,0 +1,147 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+    <style>
+        .table-content {
+            margin: 1rem 6% 1rem 6%;
+            background-color: darkgrey;
+        }
+    </style>
+{% endblock head %}
+
+{% block body %}
+    <h4><a href="/admin">홈</a> | Device 관리</h4>
+    <p>값을 클릭해 수정하세요.</p>
+    <div class="table-content">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        {% set modal_id = 'd_id' %}
+                        {% set display_text = 'd_id' %}
+                        {% set title = '장치 아이디' %}
+                        {% set message = '장치마다 부여되는 고유한 ID입니다. 클릭하면 장치를 삭제할 수 있습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'status' %}
+                        {% set display_text = 'status' %}
+                        {% set title = '장치 상태' %}
+                        {% set message = '장치 사용 여부를 설정하는 항목입니다. 활성화 하면 장치의 모든 요청이 수락되고, 비활성화 하면 장치의 모든 요청이 거부됩니다. 클릭해 토글 설정할 수 있습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'desc' %}
+                        {% set display_text = 'desc' %}
+                        {% set title = '장치 설명' %}
+                        {% set message = '장치의 비고란입니다. 클릭해 기록·수정할 수 있습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'auth_token' %}
+                        {% set display_text = 'auth_token' %}
+                        {% set title = '장치 토큰' %}
+                        {% set message = '장치가 인증할 때 사용되는 토큰입니다. 갱신하면 현재 사용 중인 장치가 사용이 불가해질 수 있습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'create' %}
+                        {% set display_text = 'create' %}
+                        {% set title = '장치 생성 날짜' %}
+                        {% set message = '장치 항목을 생성한 날짜입니다. 이 값은 변경할 수 없습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                    <th>
+                        {% set modal_id = 'last_use' %}
+                        {% set display_text = 'last_use' %}
+                        {% set title = '장치 마지막 사용 날짜' %}
+                        {% set message = '장치가 마지막으로 작업한 시각입니다. 이 값은 변경할 수 없습니다.' %}
+                        {% include 'components/modals/view_message_modal.html' %}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for device in devices %}
+                    <tr>
+                        <td>
+                            {% set modal_id = 'd_id' ~ device.0|escape %}
+                            {% set display_text = device.0|escape %}
+                            {% set title = '장치 삭제' %}
+                            {% set message = '장치' ~ device.0|escape ~ '을 삭제하시겠습니까? 되돌릴 수 없습니다.' %}
+                            {% set action = url_for('router.admin.config.device.remove') %}
+                            {% set hidden_name = 'd_id' %}
+                            {% set hidden_value = device.0|escape %}
+                            {% include 'components/modals/dialog_yesnoparam_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'status' ~ device.0|escape %}
+                            {% set display_text = '활성화' if device.1 else '비활성화' %}
+                            {% set title = '장치 상태 변경' %}
+                            {% set message = '장치' ~ device.0|escape ~ '의 상태를 변경하시겠습니까?' %}
+                            {% set action = url_for('router.admin.config.device.config_status') %}
+                            {% set hidden_name = 'd_id' %}
+                            {% set hidden_value = device.0|escape %}
+                            {% include 'components/modals/dialog_yesnoparam_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'desc' ~ device.0|escape %}
+                            {% set display_text = device.2|escape %}
+                            {% set title = '장치 설명 수정' %}
+                            {% set label = '장치' ~ device.0|escape ~ '의 설명을 수정하시겠습니까?' %}
+                            {% set action = url_for('router.admin.config.device.config_desc') %}
+                            {% set hidden_name = 'd_id' %}
+                            {% set hidden_value = device.0|escape %}
+                            {% set input_id = 'desc' ~ device.0|escape %}
+                            {% set input_name = 'config_desc' %}
+                            {% set input_value = device.2|escape %}
+                            {% include 'components/modals/config_text_modal.html' %}
+                        </td>
+                        <td style="display: flex; justify-content: space-between; align-items: center;">
+                            {% set modal_id = 'refreshtoken' ~ device.0|escape %}
+                            {% set display_text = device.3|escape %}
+                            {% set title = '장치 토큰 갱신' %}
+                            {% set message = '장치' ~ device.0|escape ~ '의 인증 토큰을 갱신하시겠습니까? 기존 토큰은 만료됩니다.' %}
+                            {% set action = url_for('router.admin.config.device.refresh_token') %}
+                            {% set hidden_name = 'd_id' %}
+                            {% set hidden_value = device.0|escape %}
+                            {% include 'components/modals/dialog_yesnoparam_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'create' ~ device.0|escape %}
+                            {% set display_text = device.4|escape %}
+                            {% set title = '장치 생성 날짜' %}
+                            {% set message = '이 값은 수정할 수 없습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </td>
+                        <td>
+                            {% set modal_id = 'last_use' ~ device.0|escape %}
+                            {% set display_text = device.5|escape %}
+                            {% set title = '장치 마지막 사용 날짜' %}
+                            {% set message = '이 값은 수정할 수 없습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                {% if devices|length == 0 %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">
+                        등록된 장치가 없습니다.
+                    </td>
+                </tr>
+                {% endif %}
+
+                <tr>
+                    <td colspan="6" style="text-align: center;">
+                        {% set modal_id = 'createDevice' %}
+                        {% set display_text = '장치 추가' %}
+                        {% set title = '장치 추가' %}
+                        {% set action = url_for('router.admin.config.device.create') %}
+                        {% set message = '새로운 장치를 생성하시겠습니까?' %}
+                        {% include 'components/modals/dialog_yesno_modal.html' %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock body %}

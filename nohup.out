@@ -1,7 +1,68 @@
  * Serving Flask app 'app'
  * Debug mode: off
-WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+2025-04-15 09:51:12,857 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://localhost:17439
-Press CTRL+C to quit
-127.0.0.1 - - [11/Apr/2025 14:12:16] "GET / HTTP/1.0" 200 -
-127.0.0.1 - - [11/Apr/2025 14:12:17] "GET /favicon.ico HTTP/1.0" 304 -
+2025-04-15 09:51:12,857 - INFO - [33mPress CTRL+C to quit[0m
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-04-15 09:56:31,026 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-15 09:56:31,026 - INFO - [33mPress CTRL+C to quit[0m
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-04-15 09:59:52,908 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-15 09:59:52,908 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-15 09:59:57,467 - ERROR - Exception on /admin/config/frame/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 878, in full_dispatch_request
+    rv = self.preprocess_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1253, in preprocess_request
+    rv = self.ensure_sync(before_func)()
+  File "/home/szkot/dyfilm_server_v2.0/auth/__init__.py", line 12, in decorated_function
+    admin_last_active_datetime = utils.convert_string_to_datetime(session['ADMIN_LAST_ACTIVE_TIME'])
+  File "/usr/local/lib/python3.10/dist-packages/flask/sessions.py", line 84, in __getitem__
+    return super().__getitem__(key)
+KeyError: 'ADMIN_LAST_ACTIVE_TIME'
+2025-04-15 09:59:57,469 - INFO - 127.0.0.1 - - [15/Apr/2025 09:59:57] "[35m[1mGET /admin/config/frame/ HTTP/1.0[0m" 500 -
+2025-04-15 09:59:57,694 - INFO - 127.0.0.1 - - [15/Apr/2025 09:59:57] "[36mGET /favicon.ico HTTP/1.0[0m" 304 -
+2025-04-15 09:59:58,476 - ERROR - Exception on /admin/config/frame/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 878, in full_dispatch_request
+    rv = self.preprocess_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1253, in preprocess_request
+    rv = self.ensure_sync(before_func)()
+  File "/home/szkot/dyfilm_server_v2.0/auth/__init__.py", line 12, in decorated_function
+    admin_last_active_datetime = utils.convert_string_to_datetime(session['ADMIN_LAST_ACTIVE_TIME'])
+  File "/usr/local/lib/python3.10/dist-packages/flask/sessions.py", line 84, in __getitem__
+    return super().__getitem__(key)
+KeyError: 'ADMIN_LAST_ACTIVE_TIME'
+2025-04-15 09:59:58,477 - INFO - 127.0.0.1 - - [15/Apr/2025 09:59:58] "[35m[1mGET /admin/config/frame/ HTTP/1.0[0m" 500 -
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-04-16 12:49:44,038 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:17439
+2025-04-16 12:49:44,038 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-16 13:42:10,700 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:10] "[32mGET /admin/ HTTP/1.0[0m" 302 -
+2025-04-16 13:42:10,928 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:10] "GET /admin/login HTTP/1.0" 200 -
+2025-04-16 13:42:12,178 - INFO - ADMIN LOGIN FROM: 211.37.77.84
+2025-04-16 13:42:12,179 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:12] "[32mPOST /admin/login HTTP/1.0[0m" 302 -
+2025-04-16 13:42:12,337 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:12] "GET /admin/ HTTP/1.0" 200 -
+2025-04-16 13:42:13,377 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:13] "GET /admin/config/frame/ HTTP/1.0" 200 -
+2025-04-16 13:42:13,547 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:13] "GET /view/frame/1 HTTP/1.0" 200 -
+2025-04-16 13:42:13,637 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:13] "[36mGET /view/frame/5 HTTP/1.0[0m" 304 -
+2025-04-16 13:42:13,639 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:13] "GET /view/frame/2 HTTP/1.0" 200 -
+2025-04-16 13:42:13,641 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:13] "[36mGET /view/frame/6 HTTP/1.0[0m" 304 -
+2025-04-16 13:42:23,879 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:23] "GET /admin/ HTTP/1.0" 200 -
+2025-04-16 13:42:24,870 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:24] "GET /admin/config/capture/ HTTP/1.0" 200 -
+2025-04-16 13:42:26,341 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:26] "GET /admin/config/capture/create HTTP/1.0" 200 -
+2025-04-16 13:42:40,068 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:40] "[32mPOST /admin/config/capture/create HTTP/1.0[0m" 302 -
+2025-04-16 13:42:40,222 - INFO - 127.0.0.1 - - [16/Apr/2025 13:42:40] "GET /admin/config/capture/create HTTP/1.0" 200 -

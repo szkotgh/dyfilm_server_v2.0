@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+
+{% block body %}
+<div class="list-group">
+    <a class="list-group-item list-group-item-action active" aria-current="true">관리 메뉴</a>
+    <a href="/admin/config/device" class="list-group-item list-group-item-action">Device 관리</a>
+    <a href="/admin/config/frame" class="list-group-item list-group-item-action">Frame 관리</a>
+    <a href="/admin/config/capture" class="list-group-item list-group-item-action">Capture 관리</a>
+    <a href="/admin/config/capframe" class="list-group-item list-group-item-action">CapFrame 관리</a>
+</div>
+<hr>
+<a href="/">메인으로</a> | <a href="/admin/logout">로그아웃</a>
+{% endblock body %}

@@ -1,0 +1,105 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+    <style>
+        .main-content {
+            margin: 1rem 6% 1rem 6%;
+        }
+    </style>
+{% endblock head %}
+
+{% block body %}
+    <h4><a href="/admin/config/capframe/create">CapFrame 프레임 선택</a> | CapFrame 생성</h4>
+    <p>캡프레임을 생성하세요.</p>
+    <div class="main-content">
+        <h5 class="text-success">선택한 프레임입니다</h5>
+        <div class="table-content">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            {% set modal_id = 'f_id' %}
+                            {% set display_text = 'f_id' %}
+                            {% set title = '프레임 아이디' %}
+                            {% set message = '프레임마다 부여되는 고유한 ID입니다. 클릭하면 프레임을 삭제할 수 있습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </th>
+                        <th>
+                            {% set modal_id = 'status' %}
+                            {% set display_text = 'status' %}
+                            {% set title = '프레임 상태' %}
+                            {% set message = '프레임 공개 여부를 설정하는 항목입니다. 활성화하면 사진이 모든 장치와 사용자에게 보여지고, 비활성화하면 관리자만 볼 수 있습니다. 클릭해 토글 설정할 수 있습니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </th>
+                        <th>
+                            {% set modal_id = 'file_name' %}
+                            {% set display_text = 'file_name' %}
+                            {% set title = '프레임 사진 이름' %}
+                            {% set message = '서버에 저장되어있는 프레임 사진의 실제 파일 이름입니다. 클릭하면 사진 열람과 사진 변경이 가능합니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </th>
+                        <th>
+                            {% set modal_id = 'desc' %}
+                            {% set display_text = 'desc' %}
+                            {% set title = '프레임 설명' %}
+                            {% set message = '프레임의 비고란입니다.' %}
+                            {% include 'components/modals/view_message_modal.html' %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    <tr>
+                        <td>
+                            {{ frame.0 }}
+                        </td>
+                        <td>
+                            {{ '활성화' if frame.1 else '비활성화' }}
+                        </td>
+                        <td>
+                            {% set modal_id = 'file_name' ~ frame.0|escape %}
+                            {% set display_text = frame.2|escape %}
+                            {% set title = '캡쳐 이미지' %}
+                            {% set message = '이미지를 확인하세요.' %}
+                            {% set image_url = url_for('router.view.view_frame.send_frame', f_id=frame.0) %}
+                            {% set image_fallback_url = url_for('static', filename='images/fallback_frame_image.png') %}
+                            {% include 'components/modals/view_image_modal.html' %}
+                        </td>
+                        <td>
+                            {{ frame.4 }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr>
+
+        <h5 class="text-success">프레임에 넣을 캡쳐를 선택하세요.</h5>
+        <div class="capture-select-content d-flex">
+            <div class="form-section w-50 pe-3">
+            <form method="post">
+                {% for i in range(capture_len) %}
+                <div class="capture-list">
+                    <label for="c_id-{{ i }}" class="form-label">{{ i + 1 }}번 캡쳐</label>
+                    <select id="c_id-{{ i }}" name="c_id-{{ i }}" class="form-select" aria-label="Default select example">
+                    {% for capture in captures %}
+                        <option value="{{ capture.0 }}">{{ capture.0 }}</option>
+                    {% endfor %}
+                    </select>
+                    
+                    {% if i != capture_len-1 %}<hr>{% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary mt-3">생성하기</button>
+            </form>
+            </div>
+            <div class="text-section w-50 ps-3">
+                <h5 class="text-secondary">캡쳐 선택</h5><br>
+                <p>박스를 클릭해 원하는 캡쳐의 ID를 선택하세요. 각 항목은 프레임에 추가될 캡쳐를 나타냅니다.</p>
+                <p>모든 항목을 선택한 후, "생성하기" 버튼을 눌러 CapFrame을 생성하세요.</p>
+                <p>캡쳐 아이디 및 이미지는 <a href="{{ url_for('router.admin.config.capture.index') }}" target="_blank">여기</a>에서 확인하세요.</p>
+            </div>
+        </div>
+
+    </div>
+{% endblock body %}
+

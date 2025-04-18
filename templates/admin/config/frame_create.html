@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+    <style>
+        .main-content {
+            margin: 1rem 6% 1rem 6%;
+        }
+    </style>
+{% endblock head %}
+
+{% block body %}
+    <h4><a href="/admin/config/frame">Frame 관리</a> | Frame 추가</h4>
+    <p>프레임을 생성하세요.</p>
+    <div class="main-content">
+        <h5 class="text-danger">제출 형식 문서를 읽고 작성하세요.</h5>
+        <form method="post" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
+            <div class="mb-3">
+                <label for="frame_file" class="form-label">이미지 <span class="text-danger">*</span></label>
+                <small class="form-text text-muted">PNG 파일만 가능</small>
+                <input type="file" id="frame_file" name="frame_file" class="form-control" accept=".png" required>
+            </div>
+            <div class="mb-3">
+                <label for="meta" class="form-label">META <span class="text-danger">*</span></label>
+                <small class="form-text text-muted">JSON 형식</small>
+                <textarea id="meta" name="meta" rows="10" class="form-control" style="font-family: monospace; white-space: pre;" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="desc" class="form-label">설명 <span class="text-danger">*</span></label>
+                <small class="form-text text-muted">이미지 하단 타이틀 텍스트</small>
+                <input type="text" id="desc" name="desc" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">제출</button>
+            <a href="{{ url_for('router.admin.config.frame.index') }}" class="btn btn-secondary">취소</a>
+        </form>
+    </div>
+{% endblock body %}

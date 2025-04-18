@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+    <style>
+        .main-content {
+            margin: 1rem 6% 1rem 6%;
+        }
+    </style>
+{% endblock head %}
+
+{% block body %}
+    <h4><a href="/admin/config/capture">Capture 관리</a> | Capture 추가</h4>
+    <p>캡쳐를 생성하세요.</p>
+    <div class="main-content">
+        <h5 class="text-danger"></h5>
+        <form method="post" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
+            <div class="mb-3">
+                <label for="image_file" class="form-label">이미지 <span class="text-danger">*</span></label>
+                <small class="form-text text-muted">PNG 파일만 가능</small>
+                <input type="file" id="image_file" name="image_file" class="form-control" accept=".png, .jpg, .jpeg" required>
+            </div>
+            <div class="mb-3">
+                <label for="desc" class="form-label">설명 <span class="text-danger">*</span></label>
+                <small class="form-text text-muted">비고</small>
+                <input type="text" id="desc" name="desc" class="form-control" value="관리자 임의 추가" required>
+            </div>
+            <button type="submit" class="btn btn-primary">제출</button>
+            <a href="{{ url_for('router.admin.config.capture.index') }}" class="btn btn-secondary">취소</a>
+        </form>
+    </div>
+{% endblock body %}
+

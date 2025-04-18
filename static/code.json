@@ -1,0 +1,54 @@
+{
+    "success": {
+        "code": 200,
+        "message": "Request completed successfully."
+    },
+    "authorized_success": {
+        "code": 202,
+        "message": "Authorization was successful."
+    },
+    "missing_parameter": {
+        "code": 400,
+        "message": "A required parameter is missing."
+    },
+    "unauthorized": {
+        "code": 401,
+        "message": "Authentication required."
+    },
+    "authorize_failed": {
+        "code": 403,
+        "message": "Authorization failed."
+    },
+    "private_post": {
+        "code": 403,
+        "message": "The post is private and cannot be accessed."
+    },
+    "not_found": {
+        "code": 404,
+        "message": "The requested URL was not found on the server."
+    },
+    "file_not_found": {
+        "code": 404,
+        "message": "The requested file was not found on the server."
+    },
+    "method_not_allowed": {
+        "code": 405,
+        "message": "The request method is not allowed."
+    },
+    "csrf_invalid": {
+        "code": 419,
+        "message": "Invalid CSRF token."
+    },
+    "invalid_parameter": {
+        "code": 422,
+        "message": "Invalid parameter."
+    },
+    "device_disabled": {
+        "code": 423,
+        "message": "The device is disabled and cannot be used."
+    },
+    "unknown_error": {
+        "code": 500,
+        "message": "An unknown error has occurred on the server."
+    }
+}

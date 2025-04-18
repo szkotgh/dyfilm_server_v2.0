@@ -9,7 +9,7 @@
         padding: 0;
         box-sizing: border-box;
     }
-    
+
     body {
         background-color: #000;
         color: #fff;
@@ -17,107 +17,133 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 2rem;
+        padding: 1rem;
         overflow-x: hidden;
     }
-    
+
     .content-wrapper {
         display: flex;
+        flex-direction: column;
         width: 100%;
         max-width: 1200px;
         margin: 0 auto;
-        gap: 4rem;
+        gap: 2rem;
         align-items: center;
     }
-    
+
     .text-content {
-        flex: 1;
-        text-align: left;
-        padding-left: 2rem;
+        width: 100%;
+        padding: 0 1rem;
+        text-align: center;
     }
-    
+
     .image-content {
-        flex: 1;
+        width: 100%;
+        max-width: 600px;
         transition: transform 0.3s ease;
-        transform: scale(1);
         display: flex;
         justify-content: center;
+        margin-top: 1rem;
     }
+
     .image-content:hover {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
-    
+
     h1 {
-        font-size: 4rem;
-        margin-bottom: 1.5rem;
-        position: relative;
-        text-align: left;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
     }
-    
+
     p.subtitle {
-        font-size: 1.2rem;
+        font-size: 1rem;
         opacity: 0.8;
-        margin-bottom: 2rem;
-        text-align: left;
+        margin-bottom: 1.5rem;
     }
-    
+
     .qr-instruction {
-        font-size: 1.8rem;
-        margin-top: 2rem;
-        position: relative;
-        padding: 1rem 0;
-        text-align: left;
+        font-size: 1.2rem;
+        margin-top: 1.5rem;
+        padding: 0.8rem 0;
     }
-    
+
     .photo-placeholder {
-        width: 60%;
-        aspect-ratio: 9/16;
+        width: 100%;
+        max-width: 600px;
+        aspect-ratio: 100/148;
         background-color: rgba(255,255,255,0.1);
         border: 2px solid rgba(255,255,255,0.2);
         display: flex;
         align-items: center;
         justify-content: center;
         color: rgba(255,255,255,0.5);
-        font-size: 1.2rem;
+        font-size: 1rem;
         transition: all 0.3s ease;
     }
-    
+
+    .main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
     .image-content:hover .photo-placeholder {
         border-color: rgba(255,255,255,0.5);
         background-color: rgba(255,255,255,0.2);
-        transform: scale(1.02);
+        transform: scale(1.05);
     }
-    
-    @media (max-width: 768px) {
+
+    @media (min-width: 768px) {
         .content-wrapper {
-            flex-direction: column;
-            gap: 3rem;
-            padding: 1rem;
+            flex-direction: row;
+            gap: 4rem;
         }
 
         .text-content {
-            padding-left: 0;
-            margin-bottom: 2rem;
-            text-align: center;
+            flex: 1;
+            padding-left: 2rem;
+            text-align: left;
         }
-        
+
         .image-content {
-            margin-left: 0;
+            flex: 1;
+            max-width: none;
         }
-        
+
         h1 {
-            font-size: 2.5rem;
-            text-align: center;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
         }
-        
+
         p.subtitle {
-            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
         }
-        
+
         .qr-instruction {
-            font-size: 1.0rem;
-            text-align: center;
+            font-size: 1.5rem;
+            margin-top: 2rem;
         }
+
+        .photo-placeholder {
+            width: 60%;
+            font-size: 1.2rem;
+        }
+    }
+
+    @keyframes rainbow {
+        0% { color: violet; }
+        16.6% { color: red; }
+        33.3% { color: orange; }
+        50% { color: yellow; }
+        66.6% { color: green; }
+        83.3% { color: blue; }
+        100% { color: indigo; }
+    }
+
+    .rainbow-effect {
+        animation: rainbow 2s infinite linear;
     }
 </style>
 {% endblock head %}
@@ -125,20 +151,80 @@
 {% block body %}
 <div class="content-wrapper">
     <div class="text-content">
-        <h1 class="animate__animated animate__fadeInUp">덕 영 필 름 .</h1>
+        <h1 class="animate__animated animate__fadeInUp">덕 영 필 름 <span id="flippppppp" style="cursor: pointer;">.</span></h1>
         <p class="subtitle animate__animated animate__fadeIn animate__delay-1s">학교 안에서 만드는 추억 한 페이지</p>
         <hr>
-        <p class="qr-instruction animate__animated animate__pulse animate__infinite" style="font-size: 1.5rem;">종이 속 QR을 찍어 핸드폰으로 확인해보세요!</p>
+        <p class="qr-instruction animate__animated animate__pulse animate__infinite">종이 속 QR을 찍어 핸드폰으로 확인해보세요!</p>
     </div>
-    
+
     <div class="image-content animate__animated animate__fadeInRight animate__duration-3s">
         <div class="photo-placeholder">
-            image-content
+            <img src="{{url_for('static', filename='images/main_image.png')}}" alt="Main Image" class="main-image">
         </div>
     </div>
 </div>
 
 <script>
+    let clickCount = 0;
+    let canClick = false;
+
+    setTimeout(() => {
+        canClick = true;
+    }, 2000);
+
+    const flipElement = document.getElementById('flippppppp');
+    flipElement.addEventListener('click', () => {
+        if (canClick == false) return;
+
+        canClick = false;
+        clickCount++;
+
+        console.log('click: ' + clickCount);
+
+        if (clickCount === 1) {
+            flipElement.innerText = '..';
+            setTimeout(() => {
+                canClick = true;
+            }, 1000);
+            return;
+        }    
+        else if (clickCount === 2) {
+            flipElement.innerText = '...';
+            setTimeout(() => {
+                canClick = true;
+            }, 1000);
+            return;
+        }
+        else if (clickCount === 3)
+            flipElement.innerText = '...A';
+        else if (clickCount === 4)
+            flipElement.innerText = '...AD';
+        else if (clickCount === 5)
+            flipElement.innerText = '...ADM';
+        else if (clickCount === 6)
+            flipElement.innerText = '...ADMI';
+        else if (clickCount === 7) {
+            flipElement.classList.add('rainbow-effect');
+            flipElement.innerText = '...ADMIN';
+        }
+        else if (clickCount === 8) {
+            location.href = '/admin/login';
+            return;
+        }
+        else {
+            flipElement.innerText = '.';
+            flipElement.classList.remove('rainbow-effect');
+            clickCount = 0;
+        }
+
+        const body = document.body;
+        body.classList.add('animate__animated', 'animate__flip');
+        body.addEventListener('animationend', () => {
+            canClick = true;
+            body.classList.remove('animate__animated', 'animate__flip');
+        }, { once: true });
+    });
+
     setInterval(() => {
         const element = document.querySelector('.qr-instruction');
         element.classList.remove('animate__pulse');

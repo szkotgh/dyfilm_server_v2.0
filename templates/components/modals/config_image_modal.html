@@ -1,0 +1,35 @@
+<!-- templates/components/image_config_modal.html -->
+<span style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#{{ modal_id }}">
+    {{ display_text }}
+</span>
+
+<!-- Modal -->
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-labelledby="{{ modal_id }}Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{ modal_id }}Label">{{ title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <!-- Display the image -->
+                <img src="{{ image_url }}" alt="{{ title }}" class="img-fluid mb-3" 
+                     onerror="this.onerror=null;this.src='{{ fallback_image_url }}';">
+
+                <!-- File upload form -->
+                <hr>
+                <form method="post" action="{{ form_action }}" enctype="multipart/form-data">
+                    <input type="hidden" name="{{ hidden_name }}" value="{{ hidden_value }}">
+                    <div class="mb-3 text-start">
+                        <label for="fileInput{{ modal_id }}" class="form-label">이미지 선택 <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="fileInput{{ modal_id }}" name="config_image" accept=".png" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">이미지 변경</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
