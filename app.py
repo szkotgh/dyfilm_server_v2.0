@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file, redirect
+from flask import Flask, render_template, send_file, request
 import src.utils as utils
 import db
 import router
@@ -13,6 +13,7 @@ app.register_blueprint(router.bp)
 
 @app.route('/', strict_slashes=False)
 def index():
+    print(request.user_agent)
     return render_template('index.html')
 
 @app.route('/robots.txt')

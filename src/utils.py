@@ -2,10 +2,11 @@ from dotenv import load_dotenv
 import datetime
 import json
 import os
-from flask import request
+from flask import request, session
 import hashlib
 import qrcode
 import logging
+from user_agents import parse
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -49,6 +50,12 @@ def get_extension(filename: str) -> str:
     if '.' in filename:
         return filename.rsplit('.', 1)[-1].lower()
     return False
+
+def is_mobile_user():
+    user_agent_str = str(request.user_agent)
+    user_agent = parse(user_agent_str)
+
+    return user_agent.is_mobile or user_agent.is_tablet
 
 def is_valid_frame_meta(data: dict) -> bool:
     if "canvas" not in data or "captures" not in data:
