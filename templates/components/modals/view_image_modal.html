@@ -11,15 +11,26 @@
                 <h5 class="modal-title" id="{{ modal_id }}Label">{{ title }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body text-center">
-                <img src="{{ image_url }}" alt="Image" onerror="this.src='{{ image_fallback_url }}';" class="img-fluid">
+                <img id="modalImage{{ modal_id }}" src="" alt="Image" class="img-fluid"
+                     onerror="this.onerror=null;this.src='{{ image_fallback_url }}';">
             </div>
+
             <div class="modal-body">
                 <p>{{ message }}</p>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById("{{ modal_id }}").addEventListener('show.bs.modal', function () {
+        const img = document.getElementById("modalImage{{ modal_id }}");
+        img.src = "{{ image_url }}";
+    });
+</script>

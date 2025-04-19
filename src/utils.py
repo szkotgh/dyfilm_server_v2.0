@@ -29,10 +29,10 @@ def get_ip():
     user_ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
     return f'{user_ip}'
 
-def gen_hash(key: str = None):
+def gen_hash(key: str = None, len=16):
     if key is None:
-        return str(os.urandom(16).hex())
-    return str(hashlib.md5(key.encode()).hexdigest())
+        return os.urandom(16).hex()[:len]
+    return hashlib.md5(key.encode()).hexdigest()[:len]
 
 def get_now_datetime():
     return datetime.datetime.now()
@@ -94,14 +94,19 @@ def is_valid_frame_meta(data: dict) -> bool:
     return True
 
 def gen_qr(save_path, url_path: str):
-    qr = qrcode.make(
-        data=f'{get_env("SERVER_DOMAIN")}{url_path}',
+    data = f'{get_env("SERVER_DOMAIN")}{url_path}'
+    
+    qr = qrcode.QRCode(
         version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
         box_size=1,
-        border=2,
-        error_correction=qrcode.ERROR_CORRECT_L,
+        border=1
     )
-    qr.save(save_path, "PNG")
+    qr.add_data(data)
+    qr.make(fit=True)
+    
+    qr_img = qr.make_image(fill_color="black", back_color="white")
+    qr_img.save(save_path)
 
 # init
 load_dotenv()

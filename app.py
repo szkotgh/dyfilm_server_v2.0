@@ -13,7 +13,6 @@ app.register_blueprint(router.bp)
 
 @app.route('/', strict_slashes=False)
 def index():
-    print(request.user_agent)
     return render_template('index.html')
 
 @app.route('/robots.txt')

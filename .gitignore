@@ -8,7 +8,7 @@ nohup.out
 
 /src/film.log
 
-/db/meta.db
+/db/main.db
 /db/captures
 /db/capframes
 /db/frames

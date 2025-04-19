@@ -82,7 +82,7 @@
                     <label for="c_id-{{ i }}" class="form-label">{{ i + 1 }}번 캡쳐</label>
                     <select id="c_id-{{ i }}" name="c_id-{{ i }}" class="form-select" aria-label="Default select example">
                     {% for capture in captures %}
-                        <option value="{{ capture.0 }}">{{ capture.0 }}</option>
+                        <option value="{{ capture.0 }}">{{ capture.0 }}({{ capture.4 }})</option>
                     {% endfor %}
                     </select>
                     

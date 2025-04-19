@@ -5,7 +5,7 @@ import os.path as path
 import src.utils as utils
 
 DB_HOME = './db'
-DB_FILE = path.join(DB_HOME, 'meta.db')
+DB_FILE = path.join(DB_HOME, 'main.db')
 conn = sqlite3.connect(DB_FILE, check_same_thread=False)
 cursor = conn.cursor()
 

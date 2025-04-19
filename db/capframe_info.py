@@ -5,6 +5,7 @@ from datetime import datetime
 def capframe_info_get_list():
     db.cursor.execute("SELECT * FROM capframe_info")
     rows = db.cursor.fetchall()
+    rows.reverse()
     return rows
 
 def capframe_info_get(cf_id: str):

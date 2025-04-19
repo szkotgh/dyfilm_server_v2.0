@@ -5,6 +5,7 @@ from datetime import datetime
 def capture_get_list():
     db.cursor.execute("SELECT * FROM capture")
     rows = db.cursor.fetchall()
+    rows.reverse()
     return rows
 
 def capture_get(c_id: str):
