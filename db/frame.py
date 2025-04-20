@@ -5,7 +5,6 @@ from datetime import datetime
 def frame_get_list():
     db.cursor.execute("SELECT * FROM frame")
     rows = db.cursor.fetchall()
-    rows.reverse()
     return rows
 
 def frame_get(f_id: int):
