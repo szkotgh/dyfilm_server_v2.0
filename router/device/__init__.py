@@ -1,13 +1,12 @@
 from flask import Blueprint, g, request
 import src.utils as utils
 import auth
-import db.device
+from . import frame
 
 bp = Blueprint('device', __name__, url_prefix='/device')
+bp.register_blueprint(frame.bp)
 
 @bp.route('/verify_token', methods=['GET'])
 @auth.device_auth
 def verify_token():
-    result = utils.get_code('authorized_success')
-    result[0]['info'] = g.device_info
-    return result
+    return utils.get_code('authorized_success', g.device_info)

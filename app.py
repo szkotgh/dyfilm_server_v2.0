@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = utils.get_env('CSRF_SECRET_KEY')
 
 app.register_blueprint(router.bp)
 
-@app.route('/', strict_slashes=False)
+@app.route('/')
 def index():
     return render_template('index.html')
 

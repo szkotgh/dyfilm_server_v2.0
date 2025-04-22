@@ -69,6 +69,6 @@ def device_auth_with_status(f):
         db.device.device_update_last_use_time(db_result[0])
         
         # temp save device info data
-        g.device_info = db_result
+        # g.device_info = (db_result)
         return f(*args, **kwargs)
     return decorated_function
