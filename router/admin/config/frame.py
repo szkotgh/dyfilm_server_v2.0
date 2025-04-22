@@ -133,7 +133,9 @@ def config_meta():
         if utils.is_valid_frame_meta(check_meta) == False:
             flash('Invalid meta format', 'error')
             return redirect(url_for('router.admin.config.frame.index'))
-        input_meta = json.dumps(check_meta, indent=0)
+        input_meta = json.dumps(check_meta, separators=(',', ':'))
+        input_meta = input_meta.replace('\\n', '').replace('\\t', '').replace('\\r', '')
+
     except:
         flash('Invalid meta json format', 'error')
         return redirect(url_for('router.admin.config.frame.index'))
