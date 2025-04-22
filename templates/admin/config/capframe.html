@@ -117,7 +117,7 @@
                             {% set title = '캡프레임 이미지' %}
                             {% set message = '이 이미지는 변경할 수 없습니다.' %}
                             {% set image_url = url_for('router.view.view_capframe.send_capframe', cf_id=capframe.0) %}
-                            {% set image_fallback_url = url_for('static', filename='images/fallback_frame_image.png') %}
+                            {% set image_fallback_url = url_for('static', filename='images/loading.gif') %}
                             {% include 'components/modals/view_image_modal.html' %}
                         </td>
                         <td>

@@ -67,7 +67,7 @@
                                 {% set title = '캡쳐 이미지' %}
                                 {% set message = '이미지를 확인하세요.' %}
                                 {% set image_url = url_for('router.view.view_frame.send_frame', f_id=frame.0) %}
-                                {% set image_fallback_url = url_for('static', filename='images/fallback_frame_image.png') %}
+                                {% set image_fallback_url = url_for('static', filename='images/loading.gif') %}
                                 {% include 'components/modals/view_image_modal.html' %}
                             </td>
                             <td>

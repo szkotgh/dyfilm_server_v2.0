@@ -97,7 +97,7 @@
                             {% set hidden_name = 'f_id' %}
                             {% set hidden_value = frame.0 %}
                             {% set image_url = url_for('router.view.view_frame.send_frame', f_id=frame.0) %}
-                            {% set fallback_image_url = url_for('static', filename='images/fallback_frame_image.png') %}
+                            {% set fallback_image_url = url_for('static', filename='images/loading.gif') %}
                             {% set form_action = url_for('router.admin.config.frame.config_image') %}
                             {% include 'components/modals/config_image_modal.html' %}
                         </td>
