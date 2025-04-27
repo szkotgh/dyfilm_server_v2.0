@@ -4,7 +4,7 @@ import auth
 import db
 import src.utils as utils
 
-bp = Blueprint('capframe', __name__, url_prefix='/main_image')
+bp = Blueprint('main_image', __name__, url_prefix='/main_image')
 
 @bp.route('/get_image', methods=['GET'])
 @auth.device_auth_with_status

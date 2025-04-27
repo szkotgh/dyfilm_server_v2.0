@@ -124,7 +124,7 @@ def config_main_image():
         flash('Missing parameter', 'error')
         return redirect(url_for('router.admin.config.device.index'))
     if utils.get_extension(main_image.filename) in ['.jpg', '.jpeg', '.png', '.gif']:
-        flash('Invalid image format', 'error')
+        flash('Invalid image format. Supported only .jpg, .jpeg, .png, .gif file', 'error')
         return redirect(url_for('router.admin.config.device.index'))
     
     try:
@@ -134,7 +134,7 @@ def config_main_image():
             if os.path.isfile(file_path):
                 os.remove(file_path)
         # save
-        main_image.save(os.path.join(db.MAIN_IMAGE_DIR_PATH, 'main_image' + utils.get_extension(main_image.filename)))
+        main_image.save(os.path.join(db.MAIN_IMAGE_DIR_PATH, 'main_image.' + utils.get_extension(main_image.filename)))
         
         flash('Image updated successfully', 'success')
         return redirect(url_for('router.admin.config.device.index'))
