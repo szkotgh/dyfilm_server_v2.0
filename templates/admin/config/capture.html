@@ -4,7 +4,6 @@
     <style>
         .table-content {
             margin: 1rem 6% 1rem 6%;
-            background-color: darkgrey;
         }
     </style>
 {% endblock head %}
@@ -102,8 +101,8 @@
                         <td>
                             {% set modal_id = 'desc' ~ capture.0|escape %}
                             {% set display_text = capture.4|escape %}
-                            {% set title = '프레임 설명 수정' %}
-                            {% set label = '장치' ~ capture.0|escape ~ '의 설명을 수정하시겠습니까?' %}
+                            {% set title = '캡쳐 설명 수정' %}
+                            {% set label = '캡쳐' ~ capture.0|escape ~ '의 설명을 수정하시겠습니까?' %}
                             {% set action = url_for('router.admin.config.capture.config_desc') %}
                             {% set hidden_name = 'c_id' %}
                             {% set hidden_value = capture.0|escape %}

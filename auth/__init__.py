@@ -36,7 +36,7 @@ def device_auth(f):
     def decorated_function(*args, **kwargs):
         auth_token = request.headers.get('Authorization')
         if not auth_token or not auth_token.strip():
-            return utils.get_code('missing_parameter')
+            return utils.get_code('authorize_failed')
         
         db_result = db.device.device_get_by_token(auth_token)
         if not db_result:
@@ -55,7 +55,7 @@ def device_auth_with_status(f):
     def decorated_function(*args, **kwargs):
         auth_token = request.headers.get('Authorization')
         if not auth_token or not auth_token.strip():
-            return utils.get_code('missing_parameter')
+            return utils.get_code('authorize_failed')
         
         db_result = db.device.device_get_by_token(auth_token)
         if not db_result:
@@ -69,6 +69,6 @@ def device_auth_with_status(f):
         db.device.device_update_last_use_time(db_result[0])
         
         # temp save device info data
-        # g.device_info = (db_result)
+        g.device_info = (db_result)
         return f(*args, **kwargs)
     return decorated_function

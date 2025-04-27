@@ -9,12 +9,15 @@ DB_FILE = path.join(DB_HOME, 'main.db')
 conn = sqlite3.connect(DB_FILE, check_same_thread=False)
 cursor = conn.cursor()
 
+MAIN_IMAGE_DIR_PATH = path.join(DB_HOME, 'main_image')
 FRAMES_PATH = path.join(DB_HOME, 'frames')
 CAPTURES_PATH = path.join(DB_HOME, 'captures')
 CAPFRAMES_PATH = path.join(DB_HOME, 'capframes')
 QR_PATH = path.join(DB_HOME, 'qr')
 
 # init
+if not os.path.exists(MAIN_IMAGE_DIR_PATH):
+    os.makedirs(MAIN_IMAGE_DIR_PATH)
 if not os.path.exists(QR_PATH):
     os.makedirs(QR_PATH)
 

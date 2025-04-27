@@ -35,6 +35,10 @@
         "code": 405,
         "message": "The request method is not allowed."
     },
+    "invalid_file_type": {
+        "code": 415,
+        "message": "The uploaded file type is not supported."
+    },
     "csrf_invalid": {
         "code": 419,
         "message": "Invalid CSRF token."

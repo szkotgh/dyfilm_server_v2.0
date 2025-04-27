@@ -1,12 +1,29 @@
-from flask import Blueprint
+import os
+from flask import Blueprint, request, send_file
 import src.utils as utils
 import auth
 import db.frame
 
 bp = Blueprint('frame', __name__, url_prefix='/frame')
 
-
 @bp.route('/frame_list', methods=['GET'])
-@auth.device_auth
+@auth.device_auth_with_status
 def frame_list():
     return utils.get_code('success', db.frame.frame_get_list())
+
+@bp.route('/frame_get', methods=['GET'])
+@auth.device_auth_with_status
+def get_frame():
+    f_id = request.args.get('f_id')
+    if not f_id:
+        return utils.get_code('missing_parameter')
+    
+    f_info = db.frame.frame_get(f_id)
+    
+    if not f_info:
+        return utils.get_code('not_found')
+    
+    try:
+        return send_file(os.path.join(db.FRAMES_PATH, f_info[2]))
+    except:
+        return utils.get_code('unknown_error', info='Failed to send frame image')
