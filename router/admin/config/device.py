@@ -114,16 +114,16 @@ def get_main_image():
         flash('Image not found', 'error')
         return redirect(url_for('router.admin.config.device.index'))
     
-    return send_file(main_image_path, mimetype='image/jpeg')
+    return send_file(main_image_path, mimetype='image/jpeg', max_age=0)
 
 @bp.route('/main_image', methods=['POST'])
 def config_main_image():
-    main_image = request.form.get('config_image')
+    main_image = request.files.get('config_image')
     
     if not main_image:
         flash('Missing parameter', 'error')
         return redirect(url_for('router.admin.config.device.index'))
-    if utils.get_extension(main_image) in ['.jpg', '.jpeg', '.png', '.gif']:
+    if utils.get_extension(main_image.filename) in ['.jpg', '.jpeg', '.png', '.gif']:
         flash('Invalid image format', 'error')
         return redirect(url_for('router.admin.config.device.index'))
     
@@ -134,10 +134,11 @@ def config_main_image():
             if os.path.isfile(file_path):
                 os.remove(file_path)
         # save
-        main_image.save(os.path.join(db.MAIN_IMAGE_DIR_PATH, 'main_image' + utils.get_extension(main_image)))
+        main_image.save(os.path.join(db.MAIN_IMAGE_DIR_PATH, 'main_image' + utils.get_extension(main_image.filename)))
+        
+        flash('Image updated successfully', 'success')
+        return redirect(url_for('router.admin.config.device.index'))
     except Exception as e:
         flash('Failed to save image: ' + str(e), 'error')
         return redirect(url_for('router.admin.config.device.index'))
     
-    flash('Image updated successfully', 'success')
-    return redirect(url_for('router.admin.config.device.index'))
