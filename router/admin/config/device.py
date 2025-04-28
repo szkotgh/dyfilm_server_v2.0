@@ -123,7 +123,7 @@ def config_main_image():
     if not main_image:
         flash('Missing parameter', 'error')
         return redirect(url_for('router.admin.config.device.index'))
-    if utils.get_extension(main_image.filename) in ['.jpg', '.jpeg', '.png', '.gif']:
+    if not utils.get_extension(main_image.filename) in ['jpg', 'jpeg', 'png', 'gif']:
         flash('Invalid image format. Supported only .jpg, .jpeg, .png, .gif file', 'error')
         return redirect(url_for('router.admin.config.device.index'))
     
