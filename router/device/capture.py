@@ -6,6 +6,28 @@ import db.capture
 
 bp = Blueprint('capture', __name__, url_prefix='/capture')
 
+@bp.route('/capture_get', methods=['GET'])
+@auth.device_auth_with_status
+def capture_get():
+    c_id = request.args.get('c_id')
+    
+    if not c_id:
+        return utils.get_code('missing_parameter')
+    
+    # get capture
+    db_result = db.capture.capture_get(c_id)
+    
+    if not db_result:
+        return utils.get_code('invalid_parameter')
+    
+    file_name = db_result[3]
+    file_path = os.path.join(db.CAPTURES_PATH, file_name)
+    
+    if not os.path.exists(file_path):
+        return utils.get_code('file_not_found')
+    
+    return send_file(file_path, mimetype='image/jpeg')
+
 @bp.route('/regi_capture', methods=['POST'])
 @auth.device_auth_with_status
 def regi_capture():

@@ -172,13 +172,29 @@ def capframe_create(d_id:int, f_id:int, c_id: list):
             g.capframe_fall_info = "failed to save capframe_info db"
             capframe_remove(cf_id)
             return False
-        
+    
+    db.cursor.execute("UPDATE frame SET use_count = use_count + 1 WHERE f_id = ?", (f_id,))
+    db.conn.commit()
+    
     return cf_id
 
-def capframe_remove(cf_id:str):
+def capframe_remove(cf_id: str):
     try:
+        db.cursor.execute("SELECT f_id FROM capframe WHERE cf_id = ?", (cf_id,))
+        row = db.cursor.fetchone()
+        if row:
+            f_id = row[0]
+        else:
+            return False
+
+        # 삭제
         db.cursor.execute("DELETE FROM capframe WHERE cf_id = ?", (cf_id,))
         db.conn.commit()
+
+        # ✅ use_count 감소
+        db.cursor.execute("UPDATE frame SET use_count = use_count - 1 WHERE f_id = ?", (f_id,))
+        db.conn.commit()
+
         return True
     except:
         return False

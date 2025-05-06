@@ -8,6 +8,7 @@ import db.capture
 import db.frame
 
 bp = Blueprint('capframe', __name__, url_prefix='/capframe')
+
 @bp.route('/capframe_get', methods=['GET'])
 @auth.device_auth_with_status
 def capframe_get():
@@ -68,7 +69,4 @@ def capframe_create():
         return utils.get_code('unknown_error', info=g.capframe_fall_info)
     else:
         return utils.get_code('success', result)
-    
-    
-    
     
