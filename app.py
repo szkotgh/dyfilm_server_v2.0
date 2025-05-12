@@ -13,7 +13,7 @@ app.register_blueprint(router.bp)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', admin_info=utils.get_env('ADMIN_INFO'))
 
 @app.route('/robots.txt')
 def robots():
@@ -39,9 +39,10 @@ def handle_exception_405(e):
 def handle_exception_csrf(e):
     return utils.get_code('csrf_invalid')
 
-# @app.errorhandler(Exception)
-# def handle_exception(e):
-#     return utils.get_code('unknown_error')
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return utils.get_code('unknown_error')
 
 if __name__ == '__main__':
     app.run(host=utils.get_env("HOST_IP"), port=utils.get_env("HOST_PORT"))
+
