@@ -13,7 +13,7 @@ app.register_blueprint(router.bp)
 
 @app.route('/')
 def index():
-    return render_template('index.html', admin_info=utils.get_env('ADMIN_EMAIL'))
+    return render_template('index.html', admin_email=utils.get_env('ADMIN_EMAIL'))
 
 @app.route('/robots.txt')
 def robots():
