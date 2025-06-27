@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import os.path as path
 import src.utils as utils
 
@@ -93,4 +93,67 @@ cursor.execute('''
         PRIMARY KEY (cf_id, c_no)
     )
 ''')
+
+def get_statistics():
+    """통계 데이터를 가져오는 함수"""
+    stats = {}
+    
+    # 전체 capframe 개수 (완성된 사진)
+    cursor.execute("SELECT COUNT(*) FROM capframe WHERE status = 1")
+    stats['total_capframes'] = cursor.fetchone()[0]
+    
+    # 일주일간 capframe 개수
+    week_ago = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')
+    cursor.execute("SELECT COUNT(*) FROM capframe WHERE status = 1 AND 'create' >= ?", (week_ago,))
+    stats['weekly_capframes'] = cursor.fetchone()[0]
+    
+    # 전체 capture 개수 (개별 사진)
+    cursor.execute("SELECT COUNT(*) FROM capture WHERE status = 1")
+    stats['total_captures'] = cursor.fetchone()[0]
+    
+    # 오늘 capframe 개수
+    today = datetime.now().strftime('%Y-%m-%d 00:00:00')
+    cursor.execute("SELECT COUNT(*) FROM capframe WHERE status = 1 AND date('create') >= ?", (today,))
+    stats['today_capframes'] = cursor.fetchone()[0]
+    
+    # 일주일간 capture 개수
+    cursor.execute("SELECT COUNT(*) FROM capture WHERE status = 1 AND 'create' >= ?", (week_ago,))
+    stats['weekly_captures'] = cursor.fetchone()[0]
+    
+    # 활성 디바이스 개수
+    cursor.execute("SELECT COUNT(*) FROM device WHERE status = 1")
+    stats['active_devices'] = cursor.fetchone()[0]
+    
+    # 전체 디바이스 개수
+    cursor.execute("SELECT COUNT(*) FROM device")
+    stats['total_devices'] = cursor.fetchone()[0]
+    
+    # 활성 프레임 개수
+    cursor.execute("SELECT COUNT(*) FROM frame WHERE status = 1")
+    stats['active_frames'] = cursor.fetchone()[0]
+    
+    # 전체 프레임 개수
+    cursor.execute("SELECT COUNT(*) FROM frame")
+    stats['total_frames'] = cursor.fetchone()[0]
+    
+    # 가장 많이 사용된 프레임 (상위 3개)
+    cursor.execute("""
+        SELECT f.f_id, f."desc", f.use_count 
+        FROM frame f 
+        WHERE f.status = 1 
+        ORDER BY f.use_count DESC 
+        LIMIT 3
+    """)
+    stats['top_frames'] = cursor.fetchall()
+    
+    # 최근 7일간 일별 capframe 생성 통계
+    daily_stats = []
+    for i in range(7):
+        date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+        cursor.execute("SELECT COUNT(*) FROM capframe WHERE status = 1 AND date('create') = ?", (date,))
+        count = cursor.fetchone()[0]
+        daily_stats.append({'date': date, 'count': count})
+    stats['daily_stats'] = list(reversed(daily_stats))
+    
+    return stats
 
