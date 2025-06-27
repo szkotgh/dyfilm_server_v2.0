@@ -4,6 +4,14 @@ This is the 2025 Deokyoung Film server code. Compatible with [dyfilm client](htt
 ## How to use
 The Python version is mostly irrelevant, but `Python 3.10.12` is more stable.<br>
 
+```sh
+sudo apt-get install libmagic1
+sudo useradd -r -s /bin/false dyfilm
+sudo chown -R dyfilm:dyfilm /path/to/dyfilm_server_v2.0
+sudo chmod o+x /home/user
+sudo chmod o+x /home/user/dyfilm_server_v2.0
+```
+
 1. git clone
 ```sh
 git clone https://github.com/szkotgh/dyfilm_server_v2.0.git

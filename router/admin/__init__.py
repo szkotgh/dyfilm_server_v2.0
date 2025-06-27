@@ -24,8 +24,8 @@ def login():
         if not input_pw or not input_pw.strip():
             return render_template('admin/login.html', user_ip=utils.get_ip(), getout=True)
         
-        session.clear()
         if hmac.compare_digest(input_pw, utils.get_env('ADMIN_PASSWORD')):
+            session.clear()
             session['ADMIN'] = True
             session['ADMIN_LAST_ACTIVE_TIME'] = utils.get_now_datetime_str()
             utils.logger.info(f'ADMIN LOGIN FROM: {utils.get_ip()}')
