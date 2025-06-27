@@ -8,6 +8,17 @@ app = Flask(__name__)
 
 app.secret_key = utils.get_env('SESSION_SECRET_KEY')
 app.config['SECRET_KEY'] = utils.get_env('CSRF_SECRET_KEY')
+app.config['DEBUG'] = True
+
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net;"
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    return response
 
 app.register_blueprint(router.bp)
 
@@ -41,6 +52,7 @@ def handle_exception_csrf(e):
 
 @app.errorhandler(Exception)
 def handle_exception(e):
+    app.logger.error(f"Unhandled exception: {e}", exc_info=True)
     return utils.get_code('unknown_error')
 
 if __name__ == '__main__':

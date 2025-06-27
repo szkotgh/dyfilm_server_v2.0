@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import datetime
 import json
 import os
+import re
 from flask import request, session
 import hashlib
 import qrcode
@@ -50,6 +51,31 @@ def get_extension(filename: str) -> str:
     if '.' in filename:
         return filename.rsplit('.', 1)[-1].lower()
     return False
+
+def is_safe_path(base_path: str, file_path: str) -> bool:
+    try:
+        base_path = os.path.abspath(base_path)
+        full_path = os.path.abspath(os.path.join(base_path, file_path))
+        return full_path.startswith(base_path)
+    except:
+        return False
+
+def sanitize_input(input_str: str, max_length: int = 1000) -> str:
+    if not input_str:
+        return ""
+    
+    input_str = str(input_str).strip()
+    if len(input_str) > max_length:
+        input_str = input_str[:max_length]
+    
+    return input_str
+
+def validate_id_format(id_str: str) -> bool:
+    if not id_str:
+        return False
+    
+    id_pattern = re.compile(r'^[a-f0-9]{16,32}$')
+    return bool(id_pattern.match(str(id_str)))
 
 def is_mobile_user():
     user_agent_str = str(request.user_agent)

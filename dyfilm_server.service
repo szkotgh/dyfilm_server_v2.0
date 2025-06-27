@@ -4,9 +4,13 @@ Documentation=https://github.com/szkotgh/dyfilm_server_v2.0
 After=network.target
 
 [Service]
-ExecStart=/bin/sudo /bin/bash /your/path/dyfilm_server_v2.0/stater.sh
+Type=simple
+User=user
+Group=user
+WorkingDirectory=/home/user/dyfilm_server_v2.0
+ExecStart=/bin/bash /home/user/dyfilm_server_v2.0/stater.sh
 Restart=always
-User=root
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
