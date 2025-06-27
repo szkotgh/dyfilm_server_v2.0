@@ -3,6 +3,7 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 import src.utils as utils
 import auth
 import router.admin.config as config
+import db
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 bp.register_blueprint(config.bp)
@@ -10,7 +11,8 @@ bp.register_blueprint(config.bp)
 @bp.route('/', methods=['GET', 'POST'])
 @auth.admin_required
 def index():
-    return render_template('admin/index.html', user_ip=utils.get_ip())
+    stats = db.get_statistics()
+    return render_template('admin/index.html', user_ip=utils.get_ip(), stats=stats)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():

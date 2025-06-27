@@ -1,13 +1,218 @@
 {% extends "admin/base.html" %}
 
+{% block head %}
+<style>
+    .admin-main-split {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        min-height: 70vh;
+    }
+    .admin-main-left, .admin-main-right {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+    .admin-main-left {
+        padding-right: 1rem;
+        border-right: 1.5px solid #eee;
+    }
+    .admin-main-right {
+        padding-left: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .stats-container {
+        margin-bottom: 2rem;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        background: #316cf4;
+        color: white;
+        padding: 1rem 0.8rem;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+    }
+    .stat-number {
+        font-size: 1.7rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    .chart-container {
+        background: white;
+        padding: 1.2rem 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+    .chart-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+    .daily-chart {
+        display: flex;
+        align-items: end;
+        height: 120px;
+        gap: 8px;
+        padding: 1rem 0;
+    }
+    .chart-bar {
+        flex: 1;
+        background: #316cf4;
+        border-radius: 4px 4px 0 0;
+        min-height: 20px;
+        position: relative;
+        transition: opacity 0.2s;
+    }
+    .chart-bar:hover {
+        opacity: 0.8;
+    }
+    .chart-label {
+        position: absolute;
+        bottom: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.8rem;
+        color: #666;
+    }
+    .chart-value {
+        position: absolute;
+        top: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #333;
+    }
+    .top-frames {
+        background: white;
+        padding: 1.2rem 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+    .frame-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    .frame-item:last-child {
+        border-bottom: none;
+    }
+    .frame-name {
+        font-weight: 500;
+    }
+    .frame-count {
+        background: #316cf4;
+        color: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+    }
+    .admin-menu-list {
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+    .admin-menu-list .list-group-item {
+        font-size: 1.05rem;
+    }
+    .admin-menu-footer {
+        margin-top: auto;
+        font-size: 0.95rem;
+        color: #666;
+    }
+    @media (max-width: 900px) {
+        .admin-main-split {
+            flex-direction: column;
+        }
+        .admin-main-left, .admin-main-right {
+            padding: 0;
+            border: none;
+        }
+        .admin-main-left {
+            margin-bottom: 2rem;
+        }
+    }
+</style>
+{% endblock head %}
+
 {% block body %}
-<div class="list-group">
-    <a class="list-group-item list-group-item-action active" aria-current="true">관리 메뉴</a>
-    <a href="/admin/config/device" class="list-group-item list-group-item-action">Device 관리</a>
-    <a href="/admin/config/frame" class="list-group-item list-group-item-action">Frame 관리</a>
-    <a href="/admin/config/capture" class="list-group-item list-group-item-action">Capture 관리</a>
-    <a href="/admin/config/capframe" class="list-group-item list-group-item-action">CapFrame 관리</a>
+<div class="admin-main-split">
+    <div class="admin-main-left">
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.total_capframes }}</div>
+                    <div class="stat-label">전체 캡프레임 수</div>
+                </div>
+                <!--
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.weekly_capframes }}</div>
+                    <div class="stat-label">이번 주 생성된 캡프레임 수</div>
+                </div> 
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.today_capframes }}</div>
+                    <div class="stat-label">오늘 생성된 캡프레임 수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.total_captures }}</div>
+                    <div class="stat-label">전체 캡쳐 수</div>
+                </div>
+                -->
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.active_devices }}/{{ stats.total_devices }}</div>
+                    <div class="stat-label">활성 장치</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.active_frames }}/{{ stats.total_frames }}</div>
+                    <div class="stat-label">활성 프레임</div>
+                </div>
+            </div>
+            <div class="top-frames">
+                <div class="chart-title">가장 많이 사용된 프레임</div>
+                {% for frame in stats.top_frames %}
+                <div class="frame-item">
+                    <div class="frame-name">{{ frame[1] if frame[1] else 'Frame #' ~ frame[0] }}</div>
+                    <div class="frame-count">{{ frame[2] }}회</div>
+                </div>
+                {% endfor %}
+                {% if not stats.top_frames %}
+                <div class="text-muted">아직 사용된 프레임이 없습니다.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="admin-main-right">
+        <div class="admin-menu-list">
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action active" aria-current="true">관리 메뉴</a>
+                <a href="/admin/config/device" class="list-group-item list-group-item-action">Device 관리</a>
+                <a href="/admin/config/frame" class="list-group-item list-group-item-action">Frame 관리</a>
+                <a href="/admin/config/capture" class="list-group-item list-group-item-action">Capture 관리</a>
+                <a href="/admin/config/capframe" class="list-group-item list-group-item-action">CapFrame 관리</a>
+            </div><br>
+            <a href="/">메인으로</a> | <a href="/admin/logout">로그아웃</a>
+        </div>
+        <div class="admin-menu-footer">
+        </div>
+    </div>
 </div>
-<hr>
-<a href="/">메인으로</a> | <a href="/admin/logout">로그아웃</a>
 {% endblock body %}

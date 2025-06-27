@@ -56,5 +56,5 @@ def handle_exception(e):
     return utils.get_code('unknown_error')
 
 if __name__ == '__main__':
-    app.run(host=utils.get_env("HOST_IP"), port=utils.get_env("HOST_PORT"))
+    app.run(host=utils.get_env("HOST_IP"), port=int(utils.get_env("HOST_PORT")))
 
