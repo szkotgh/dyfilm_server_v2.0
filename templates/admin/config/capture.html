@@ -10,7 +10,7 @@
 
 {% block body %}
     <h4><a href="/admin">홈</a> | Capture 관리</h4>
-    <p>값을 클릭해 수정하세요.</p>
+    <p>값을 클릭해 수정하세요.<br><a href="/admin/config/capture/create">Capture 수동 추가</a></p>
     <div class="table-content">
         <table class="table table-hover">
             <thead>
@@ -128,12 +128,6 @@
                     </td>
                 </tr>
                 {% endif %}
-
-                <tr>
-                    <td colspan="6" style="text-align: center;">
-                        <a href="/admin/config/capture/create">Capture 수동 추가</a>
-                    </td>
-                </tr>
             </tbody>
         </table>
     </div>

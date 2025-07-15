@@ -10,7 +10,12 @@
 
 {% block body %}
     <h4><a href="/admin">홈</a> | Device 관리</h4>
-    <p>값을 클릭해 수정하세요.</p>
+    <p>값을 클릭해 수정하세요.<br>{% set modal_id = 'createDevice' %}
+                                  {% set display_text = '장치 추가' %}
+                                  {% set title = '장치 추가' %}
+                                  {% set action = url_for('router.admin.config.device.create') %}
+                                  {% set message = '새로운 장치를 생성하시겠습니까?' %}
+                                  {% include 'components/modals/dialog_yesno_modal.html' %}</p>
 
     <div class="table-content">
         <table class="table table-hover">
@@ -160,17 +165,6 @@
                     </td>
                 </tr>
                 {% endif %}
-
-                <tr>
-                    <td colspan="6" style="text-align: center;">
-                        {% set modal_id = 'createDevice' %}
-                        {% set display_text = '장치 추가' %}
-                        {% set title = '장치 추가' %}
-                        {% set action = url_for('router.admin.config.device.create') %}
-                        {% set message = '새로운 장치를 생성하시겠습니까?' %}
-                        {% include 'components/modals/dialog_yesno_modal.html' %}
-                    </td>
-                </tr>
             </tbody>
         </table>
     </div>
