@@ -32,9 +32,9 @@
         {% endblock %}
     </head>
     <body>
+        {% include "components/loader.html" %}
         {% block body %}
         {% endblock %}
-
         {% include "components/flash.html" %}
     </body>
 </html>
