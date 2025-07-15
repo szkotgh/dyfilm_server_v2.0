@@ -7,8 +7,6 @@ from flask_wtf.csrf import CSRFError
 app = Flask(__name__)
 
 app.secret_key = utils.get_env('SESSION_SECRET_KEY')
-app.config['SECRET_KEY'] = utils.get_env('CSRF_SECRET_KEY')
-app.config['DEBUG'] = True
 
 @app.after_request
 def add_security_headers(response):
