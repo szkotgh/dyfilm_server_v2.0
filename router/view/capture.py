@@ -10,12 +10,11 @@ bp = Blueprint('view_capture', __name__, url_prefix='/capture')
 def send_capture(c_id):
     c_result = db.capture.capture_get(c_id)
     if not c_result:
-        return utils.get_code('not_found')
+        return utils.get_code('file_not_found')
     
     is_admin = session.get('ADMIN', False)
     if not c_result[2] and not is_admin:
-        flash("비공개처리된 사진입니다. 관리자에게 문의하세요.", 'error')
-        return redirect('/')
+        return utils.get_code('private_post')
     
     file_path = os.path.join(db.CAPTURES_PATH, c_result[3])
     

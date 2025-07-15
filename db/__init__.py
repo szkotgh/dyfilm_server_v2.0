@@ -95,7 +95,6 @@ cursor.execute('''
 ''')
 
 def get_statistics():
-    """통계 데이터를 가져오는 함수"""
     stats = {}
     
     # 전체 capframe 개수 (완성된 사진)
@@ -137,10 +136,16 @@ def get_statistics():
     stats['total_frames'] = cursor.fetchone()[0]
     
     # 가장 많이 사용된 프레임 (상위 3개)
+    # cursor.execute("""
+    #     SELECT f.f_id, f."desc", f.use_count 
+    #     FROM frame f 
+    #     WHERE f.status = 1 
+    #     ORDER BY f.use_count DESC 
+    #     LIMIT 3
+    # """)
     cursor.execute("""
         SELECT f.f_id, f."desc", f.use_count 
         FROM frame f 
-        WHERE f.status = 1 
         ORDER BY f.use_count DESC 
         LIMIT 3
     """)
