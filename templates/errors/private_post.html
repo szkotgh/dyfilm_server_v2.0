@@ -1,13 +1,63 @@
 {% extends "base.html" %}
 
+{% block head %}
+<style>
+    body {
+        background-color: #000;
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 1rem;
+    }
+
+    .error-container {
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        padding: 3rem 2rem;
+        max-width: 500px;
+        width: 100%;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .error-container:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-5px);
+    }
+
+    .error-title {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+    }
+
+    @media (max-width: 576px) {
+        .error-container {
+            padding: 2rem 1.5rem;
+        }
+        
+        .error-title {
+            font-size: 1.5rem;
+        }
+        
+        .error-message {
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<div class="d-flex align-items-center justify-content-center min-vh-100 bg-dark text-white">
-    <div class="card shadow-lg bg-secondary bg-opacity-75 border-0" style="max-width: 500px;">
-        <div class="card-body text-center p-5">
-            <h1 class="card-title mb-4">비공개 사진입니다</h1>
-            <p class="card-text">접근권한이 없습니다. 관리자에게 문의하세요.</p>
-            <a href="/" class="btn btn-secondary mt-3 text-black">홈으로</a>
-        </div>
-    </div>
+<div class="error-container animate__animated animate__fadeIn">
+    <h1 class="error-title">비공개 사진입니다</h1><br>
+    <p class="error-message">
+        접근권한이 없습니다.<br>
+        관리자에게 문의하십시오.
+    </p>
 </div>
 {% endblock body %}
