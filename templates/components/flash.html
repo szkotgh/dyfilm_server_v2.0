@@ -27,13 +27,15 @@
             {% endfor %}
         </div>
         <script>
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    alert.classList.remove('show');
-                    alert.classList.add('hide');
-                });
-            }, 1500);
+            window.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    const alerts = document.querySelectorAll('.alert');
+                    alerts.forEach(alert => {
+                        alert.classList.remove('show');
+                        alert.classList.add('hide');
+                    });
+                }, 2000);
+            });
         </script>
     {% endif %}
 {% endwith %}
