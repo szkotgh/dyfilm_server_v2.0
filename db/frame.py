@@ -8,6 +8,25 @@ def frame_get_list():
     rows.reverse()
     return rows
 
+def frame_get_list_paginated(limit: int, offset: int):
+    try:
+        db.cursor.execute('SELECT * FROM frame ORDER BY "create" DESC LIMIT ? OFFSET ?', (limit, offset))
+        rows = db.cursor.fetchall()
+        return rows
+    except Exception:
+        db.cursor.execute("SELECT * FROM frame")
+        rows = db.cursor.fetchall()
+        rows.reverse()
+        return rows[offset:offset+limit]
+
+def frame_count() -> int:
+    try:
+        db.cursor.execute('SELECT COUNT(*) FROM frame')
+        row = db.cursor.fetchone()
+        return int(row[0]) if row else 0
+    except Exception:
+        return 0
+
 def frame_get(f_id: int):
     db.cursor.execute('''
         SELECT * FROM frame WHERE f_id = ?

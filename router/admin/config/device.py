@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, flash, redirect, render_template, request, send_file, session, url_for
+from flask import Blueprint, flash, redirect, render_template, request, send_file, session, url_for, jsonify
 import src.utils as utils
 import auth
 import db.device
@@ -13,7 +13,32 @@ def check_admin():
 
 @bp.route('/')
 def index():
-    return render_template('admin/config/device.html', user_ip=utils.get_ip(), devices=db.device.device_get_list())
+    return render_template('admin/config/device.html', user_ip=utils.get_ip())
+
+@bp.route('/list', methods=['GET'])
+def get_list():
+    try:
+        limit = int(request.args.get('limit', '30'))
+        offset = int(request.args.get('offset', '0'))
+    except ValueError:
+        limit = 30
+        offset = 0
+    rows = db.device.device_get_list_paginated(limit=limit, offset=offset)
+    items = []
+    for r in rows:
+        items.append({
+            'd_id': r[0],
+            'status': bool(r[1]),
+            'desc': r[2],
+            'auth_token': r[3],
+            'create': r[4],
+            'last_use': r[5],
+        })
+    return jsonify({ 'items': items })
+
+@bp.route('/count', methods=['GET'])
+def get_count():
+    return jsonify({ 'total': db.device.device_count() })
 
 @bp.route('/create', methods=['POST'])
 def create():

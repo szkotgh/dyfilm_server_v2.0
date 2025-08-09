@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, flash, json, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, json, redirect, render_template, request, session, url_for, jsonify
 import src.utils as utils
 import auth
 import db.frame
@@ -13,7 +13,34 @@ def check_admin():
 
 @bp.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('admin/config/frame.html', user_ip=utils.get_ip(), frames=db.frame.frame_get_list())
+    return render_template('admin/config/frame.html', user_ip=utils.get_ip())
+
+@bp.route('/list', methods=['GET'])
+def get_list():
+    try:
+        limit = int(request.args.get('limit', '30'))
+        offset = int(request.args.get('offset', '0'))
+    except ValueError:
+        limit = 30
+        offset = 0
+    rows = db.frame.frame_get_list_paginated(limit=limit, offset=offset)
+    items = []
+    for r in rows:
+        items.append({
+            'f_id': r[0],
+            'status': bool(r[1]),
+            'file_name': r[2],
+            'meta': r[3],
+            'desc': r[4],
+            'create': r[5],
+            'use_count': r[6],
+            'image_url': url_for('router.view.view_frame.send_frame', f_id=r[0])
+        })
+    return jsonify({ 'items': items })
+
+@bp.route('/count', methods=['GET'])
+def get_count():
+    return jsonify({ 'total': db.frame.frame_count() })
 
 @bp.route('/create', methods=['GET', 'POST'])
 def create():

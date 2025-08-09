@@ -18,6 +18,25 @@ def capframe_get_list():
     rows.reverse()
     return rows
 
+def capframe_get_list_paginated(limit: int, offset: int):
+    try:
+        db.cursor.execute('SELECT * FROM capframe ORDER BY "create" DESC LIMIT ? OFFSET ?', (limit, offset))
+        rows = db.cursor.fetchall()
+        return rows
+    except Exception:
+        db.cursor.execute("SELECT * FROM capframe")
+        rows = db.cursor.fetchall()
+        rows.reverse()
+        return rows[offset:offset+limit]
+
+def capframe_count() -> int:
+    try:
+        db.cursor.execute('SELECT COUNT(*) FROM capframe')
+        row = db.cursor.fetchone()
+        return int(row[0]) if row else 0
+    except Exception:
+        return 0
+
 def capframe_get(cf_id):
     db.cursor.execute("SELECT * FROM capframe WHERE cf_id = ?", (cf_id,))
     row = db.cursor.fetchone()
