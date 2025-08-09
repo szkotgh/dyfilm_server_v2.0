@@ -1,7 +1,7 @@
 import json
 import os
 import time
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for, jsonify
 import src.utils as utils
 import auth
 import db.capframe
@@ -20,7 +20,35 @@ def check_admin():
 
 @bp.route('/', methods=['GET'])
 def index():
-    return render_template('admin/config/capframe.html', user_ip=utils.get_ip(), capframes=db.capframe.capframe_get_list())
+    return render_template('admin/config/capframe.html', user_ip=utils.get_ip())
+
+@bp.route('/list', methods=['GET'])
+def get_list():
+    try:
+        limit = int(request.args.get('limit', '30'))
+        offset = int(request.args.get('offset', '0'))
+    except ValueError:
+        limit = 30
+        offset = 0
+    rows = db.capframe.capframe_get_list_paginated(limit=limit, offset=offset)
+    items = []
+    for r in rows:
+        items.append({
+            'cf_id': r[0],
+            'd_id': r[1],
+            'f_id': r[2],
+            'status': bool(r[3]),
+            'file_name': r[4],
+            'desc': r[5],
+            'create': r[6],
+            'processing_time': r[7],
+            'image_url': url_for('router.view.view_capframe.send_capframe', cf_id=r[0])
+        })
+    return jsonify({ 'items': items })
+
+@bp.route('/count', methods=['GET'])
+def get_count():
+    return jsonify({ 'total': db.capframe.capframe_count() })
 
 @bp.route('/create', methods=['GET'])
 def create():

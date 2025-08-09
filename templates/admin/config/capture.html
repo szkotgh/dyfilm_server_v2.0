@@ -12,7 +12,7 @@
     <h4><a href="/admin">홈</a> | Capture 관리</h4>
     <p>값을 클릭해 수정하세요.<br><a href="/admin/config/capture/create">Capture 수동 추가</a></p>
     <div class="table-content">
-        <table class="table table-hover">
+        <table class="table table-hover" id="capture-table">
             <thead>
                 <tr>
                     <th>
@@ -59,76 +59,117 @@
                     </th>
                 </tr>
             </thead>
-            <tbody class="table-group-divider">
-                {% for capture in captures %}
-                    <tr>
-                        <td>
-                            {% set modal_id = 'c_id' ~ capture.0|escape %}
-                            {% set display_text = capture.0|escape %}
-                            {% set title = '캡쳐 삭제' %}
-                            {% set message = '캡쳐' ~ capture.0|escape ~ '을 삭제하시겠습니까? 되돌릴 수 없습니다.' %}
-                            {% set action = url_for('router.admin.config.capture.remove') %}
-                            {% set hidden_name = 'c_id' %}
-                            {% set hidden_value = capture.0|escape %}
-                            {% include 'components/modals/dialog_yesnoparam_modal.html' %}
-                        </td>
-                        <td>
-                            {% set modal_id = 'd_id' ~ capture.0|escape %}
-                            {% set display_text = capture.1|escape %}
-                            {% set title = '장치 아이디' %}
-                            {% set message = '이 값은 변경할 수 없습니다.' %}
-                            {% include 'components/modals/view_message_modal.html' %}
-                        </td>
-                        <td>
-                            {% set modal_id = 'status' ~ capture.0|escape %}
-                            {% set display_text = '활성화' if capture.2 else '비활성화' %}
-                            {% set title = '캡쳐 상태 변경' %}
-                            {% set message = '캡쳐' ~ capture.0|escape ~ '의 상태를 변경하시겠습니까?' %}
-                            {% set action = url_for('router.admin.config.capture.config_status') %}
-                            {% set hidden_name = 'c_id' %}
-                            {% set hidden_value = capture.0|escape %}
-                            {% include 'components/modals/dialog_yesnoparam_modal.html' %}
-                        </td>
-                        <td>
-                            {% set modal_id = 'file_name' ~ capture.0|escape %}
-                            {% set display_text = capture.3|escape %}
-                            {% set title = '캡쳐 이미지' %}
-                            {% set message = '이 이미지는 변경할 수 없습니다.' %}
-                            {% set image_url = url_for('router.view.view_capture.send_capture', c_id=capture.0) %}
-                            {% set image_fallback_url = url_for('static', filename='images/loading.gif') %}
-                            {% include 'components/modals/view_image_modal.html' %}
-                        </td>
-                        <td>
-                            {% set modal_id = 'desc' ~ capture.0|escape %}
-                            {% set display_text = capture.4|escape %}
-                            {% set title = '캡쳐 설명 수정' %}
-                            {% set label = '캡쳐' ~ capture.0|escape ~ '의 설명을 수정하시겠습니까?' %}
-                            {% set action = url_for('router.admin.config.capture.config_desc') %}
-                            {% set hidden_name = 'c_id' %}
-                            {% set hidden_value = capture.0|escape %}
-                            {% set input_id = 'descInput' ~ capture.0|escape %}
-                            {% set input_name = 'config_desc' %}
-                            {% set input_value = capture.4|escape %}
-                            {% include 'components/modals/config_text_modal.html' %}
-                        </td>
-                        <td>
-                            {% set modal_id = 'create' ~ capture.0|escape %}
-                            {% set display_text = capture.5|escape %}
-                            {% set title = '캡쳐 생성 날짜' %}
-                            {% set message = '이 값은 수정할 수 없습니다.' %}
-                            {% include 'components/modals/view_message_modal.html' %}
-                        </td>
-                    </tr>
-                {% endfor %}
-
-                {% if captures|length == 0 %}
+            <tbody class="table-group-divider" id="capture-tbody">
                 <tr>
-                    <td colspan="6" style="text-align: center;">
-                        등록된 Capture가 없습니다.
-                    </td>
+                    <td colspan="6" style="text-align: center;">로딩 중...</td>
                 </tr>
-                {% endif %}
             </tbody>
         </table>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tbody = document.getElementById('capture-tbody');
+            const table = document.getElementById('capture-table');
+            const container = table.closest('.table-content');
+            const footerDiv = document.createElement('div');
+            footerDiv.style.textAlign = 'center';
+            footerDiv.style.margin = '1rem 0';
+            const loadMoreButton = document.createElement('button');
+            loadMoreButton.className = 'btn btn-outline-secondary';
+            loadMoreButton.textContent = '더 불러오기';
+            loadMoreButton.style.display = 'none';
+            const counterSpan = document.createElement('span');
+            counterSpan.style.marginLeft = '12px';
+            counterSpan.style.color = '#6c757d';
+            footerDiv.appendChild(loadMoreButton);
+            footerDiv.appendChild(counterSpan);
+            container.appendChild(footerDiv);
+
+            const state = { limit: 30, offset: 0, loading: false, done: false };
+
+            function updateCounter(shown, total) { counterSpan.textContent = `${shown}/${total}`; }
+
+            async function fetchTotal() {
+                try { const res = await fetch(`{{ url_for('router.admin.config.capture.get_count') }}`); const json = await res.json(); return typeof json.total === 'number' ? json.total : 0; } catch { return 0; }
+            }
+
+            async function loadRows() {
+                if (state.loading || state.done) return; state.loading = true;
+                try {
+                    const params = new URLSearchParams({ limit: String(state.limit), offset: String(state.offset) });
+                    const response = await fetch(`{{ url_for('router.admin.config.capture.get_list') }}?${params.toString()}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                    const data = await response.json();
+                    const items = Array.isArray(data.items) ? data.items : [];
+                    if (state.offset === 0) tbody.innerHTML = '';
+                    for (const item of items) {
+                        const tr = document.createElement('tr');
+                        tr.setAttribute('data-row', 'capture');
+                        tr.innerHTML = `
+                            <td>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#c_id${item.c_id}">${item.c_id}</span>
+                                <div class="modal fade" id="c_id${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
+                                  <div class="modal-header"><h5 class="modal-title">캡쳐 삭제</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                                  <form action="{{ url_for('router.admin.config.capture.remove') }}" method="post">
+                                    <div class="modal-body"><p>캡쳐 ${item.c_id}을 삭제하시겠습니까? 되돌릴 수 없습니다.</p><input type="hidden" name="c_id" value="${item.c_id}"></div>
+                                    <div class="modal-footer"><button type="submit" class="btn btn-primary">네</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button></div>
+                                  </form>
+                                </div></div></div>
+                            </td>
+                            <td>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#d_id${item.c_id}">${item.d_id ?? ''}</span>
+                                <div class="modal fade" id="d_id${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">장치 아이디</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p>이 값은 변경할 수 없습니다.</p></div><div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button></div></div></div></div>
+                            </td>
+                            <td>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#status${item.c_id}">${item.status ? '활성화' : '비활성화'}</span>
+                                <div class="modal fade" id="status${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
+                                  <div class="modal-header"><h5 class="modal-title">캡쳐 상태 변경</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                                  <form action="{{ url_for('router.admin.config.capture.config_status') }}" method="post">
+                                    <div class="modal-body"><p>캡쳐 ${item.c_id}의 상태를 변경하시겠습니까?</p><input type="hidden" name="c_id" value="${item.c_id}"></div>
+                                    <div class="modal-footer"><button type="submit" class="btn btn-primary">네</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button></div>
+                                  </form>
+                                </div></div></div>
+                            </td>
+                            <td>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#file_name${item.c_id}">${item.file_name}</span>
+                                <div class="modal fade" id="file_name${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
+                                  <div class="modal-header"><h5 class="modal-title">캡쳐 이미지</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                                <div class="modal-body text-center"><img id="modalImagefile_name${item.c_id}" data-src="${item.image_url}" src="" class="img-fluid" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/loading.gif') }}';"></div>
+                                  <div class="modal-body"><p>이 이미지는 변경할 수 없습니다.</p></div>
+                                  <div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button></div>
+                                </div></div></div>
+                            </td>
+                            <td>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#desc${item.c_id}">${(item.desc ?? '') || 'NULL'}</span>
+                                <div class="modal fade" id="desc${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
+                                  <div class="modal-header"><h5 class="modal-title">캡쳐 설명 수정</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                                  <form action="{{ url_for('router.admin.config.capture.config_desc') }}" method="post">
+                                    <div class="modal-body"><p>캡쳐 ${item.c_id}의 설명을 수정하시겠습니까?</p><input type="hidden" name="c_id" value="${item.c_id}"><input type="text" class="form-control" name="config_desc" value="${item.desc ?? ''}"></div>
+                                    <div class="modal-footer"><button type="submit" class="btn btn-primary">저장</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button></div>
+                                  </form>
+                                </div></div></div>
+                            </td>
+                            <td>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#create${item.c_id}">${item.create}</span>
+                                <div class="modal fade" id="create${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">캡쳐 생성 날짜</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p>이 값은 수정할 수 없습니다.</p></div><div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button></div></div></div></div>
+                            </td>`;
+                        tbody.appendChild(tr);
+                        const modalEl = document.getElementById(`file_name${item.c_id}`);
+                        if (modalEl) {
+                            modalEl.addEventListener('show.bs.modal', () => {
+                                const img = document.getElementById(`modalImagefile_name${item.c_id}`);
+                                if (img && !img.getAttribute('src')) img.src = img.dataset.src;
+                            });
+                        }
+                    }
+                    if (items.length < state.limit) state.done = true;
+                    state.offset += items.length; loadMoreButton.style.display = state.done ? 'none' : 'inline-block';
+                    const total = await fetchTotal(); const shown = tbody.querySelectorAll('tr[data-row="capture"]').length; updateCounter(shown, total);
+                } catch (e) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">불러오기 실패</td></tr>'; state.done = true; }
+                finally { state.loading = false; if (!state.done) loadMoreButton.style.display = 'inline-block'; }
+            }
+
+            loadMoreButton.addEventListener('click', () => loadRows());
+            (async () => { const total = await fetchTotal(); updateCounter(0, total); loadRows(); })();
+        });
+    </script>
 {% endblock body %}

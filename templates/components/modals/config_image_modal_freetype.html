@@ -13,7 +13,7 @@
             </div>
             <div class="modal-body text-center">
                 <!-- Display the image -->
-                <img id="modalImage{{ modal_id }}" src="" alt="{{ title }}" class="img-fluid mb-3"
+                <img id="modalImage{{ modal_id }}" src="{{ url_for('static', filename='images/loading.gif') }}" data-src="{{ image_url }}" alt="{{ title }}" class="img-fluid mb-3" loading="lazy" decoding="async"
                      onerror="this.onerror=null;this.src='{{ fallback_image_url }}';">
 
                 <!-- File upload form -->
@@ -35,8 +35,13 @@
 </div>
 
 <script>
-    document.getElementById("{{ modal_id }}").addEventListener('show.bs.modal', function () {
+    const modalEl_{{ modal_id|replace('-', '_') }} = document.getElementById("{{ modal_id }}");
+    modalEl_{{ modal_id|replace('-', '_') }}.addEventListener('show.bs.modal', function () {
         const imageElement = document.getElementById("modalImage{{ modal_id }}");
-        imageElement.src = "{{ image_url }}";
+        imageElement.src = imageElement.dataset.src;
+    });
+    modalEl_{{ modal_id|replace('-', '_') }}.addEventListener('hidden.bs.modal', function () {
+        const imageElement = document.getElementById("modalImage{{ modal_id }}");
+        imageElement.src = "{{ url_for('static', filename='images/loading.gif') }}";
     });
 </script>

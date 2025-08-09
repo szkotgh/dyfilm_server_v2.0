@@ -8,6 +8,25 @@ def capture_get_list():
     rows.reverse()
     return rows
 
+def capture_get_list_paginated(limit: int, offset: int):
+    try:
+        db.cursor.execute('SELECT * FROM capture ORDER BY "create" DESC LIMIT ? OFFSET ?', (limit, offset))
+        rows = db.cursor.fetchall()
+        return rows
+    except Exception:
+        db.cursor.execute("SELECT * FROM capture")
+        rows = db.cursor.fetchall()
+        rows.reverse()
+        return rows[offset:offset+limit]
+
+def capture_count() -> int:
+    try:
+        db.cursor.execute('SELECT COUNT(*) FROM capture')
+        row = db.cursor.fetchone()
+        return int(row[0]) if row else 0
+    except Exception:
+        return 0
+
 def capture_get(c_id: str):
     db.cursor.execute('''
         SELECT * FROM capture WHERE c_id = ?

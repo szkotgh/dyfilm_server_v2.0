@@ -7,6 +7,24 @@ def device_get_list():
     rows = db.cursor.fetchall()
     return rows
 
+def device_get_list_paginated(limit: int, offset: int):
+    try:
+        db.cursor.execute('SELECT * FROM device ORDER BY "create" DESC LIMIT ? OFFSET ?', (limit, offset))
+        rows = db.cursor.fetchall()
+        return rows
+    except Exception:
+        db.cursor.execute("SELECT * FROM device")
+        rows = db.cursor.fetchall()
+        return rows[offset:offset+limit]
+
+def device_count() -> int:
+    try:
+        db.cursor.execute('SELECT COUNT(*) FROM device')
+        row = db.cursor.fetchone()
+        return int(row[0]) if row else 0
+    except Exception:
+        return 0
+
 def device_get(d_id: int):
     db.cursor.execute('''
         SELECT * FROM device WHERE d_id = ?
