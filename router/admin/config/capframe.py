@@ -18,7 +18,7 @@ bp = Blueprint('capframe', __name__, url_prefix='/capframe')
 def check_admin():
     pass
 
-@bp.route('/', methods=['GET'])
+@bp.route('', methods=['GET'])
 def index():
     return render_template('admin/config/capframe.html', user_ip=utils.get_ip())
 

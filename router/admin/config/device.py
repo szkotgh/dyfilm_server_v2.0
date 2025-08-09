@@ -11,7 +11,7 @@ bp = Blueprint('device', __name__, url_prefix='/device')
 def check_admin():
     pass
 
-@bp.route('/')
+@bp.route('')
 def index():
     return render_template('admin/config/device.html', user_ip=utils.get_ip())
 

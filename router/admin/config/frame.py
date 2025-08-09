@@ -11,7 +11,7 @@ bp = Blueprint('frame', __name__, url_prefix='/frame')
 def check_admin():
     pass
 
-@bp.route('/', methods=['GET', 'POST'])
+@bp.route('', methods=['GET', 'POST'])
 def index():
     return render_template('admin/config/frame.html', user_ip=utils.get_ip())
 
