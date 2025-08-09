@@ -8,7 +8,7 @@ import db
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 bp.register_blueprint(config.bp)
 
-@bp.route('/', methods=['GET', 'POST'])
+@bp.route('', methods=['GET', 'POST'])
 @auth.admin_required
 def index():
     stats = db.get_statistics()

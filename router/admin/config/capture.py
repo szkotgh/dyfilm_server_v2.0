@@ -11,7 +11,7 @@ bp = Blueprint('capture', __name__, url_prefix='/capture')
 def check_admin():
     pass
 
-@bp.route('/', methods=['GET', 'POST'])
+@bp.route('', methods=['GET', 'POST'])
 def index():
     return render_template('admin/config/capture.html', user_ip=utils.get_ip())
 
