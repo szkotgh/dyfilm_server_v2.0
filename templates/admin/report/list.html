@@ -205,7 +205,6 @@
 {% block body %}
 <h4><a href="/admin">홈</a> | CapFrame 신고 확인</h4>
 <div class="report-container">
-    
     {% if reports %}
     <div class="report-table">
         <table>
@@ -244,12 +243,12 @@
                         <div class="report-actions">
                             {% if report[4] is none %}
                                 <form method="POST" action="/admin/report/{{ report[0] }}/approve" style="display: inline;">
-                                    <button type="submit" class="btn-approve" onclick="return confirm('이 신고를 승인하시겠습니까? 해당 capframe이 비활성화됩니다.')">
+                                    <button type="submit" class="btn-approve" onclick="return confirm('신고를 승인하시겠습니까?')">
                                         승인
                                     </button>
                                 </form>
                                 <form method="POST" action="/admin/report/{{ report[0] }}/reject" style="display: inline;">
-                                    <button type="submit" class="btn-reject" onclick="return confirm('이 신고를 반려하시겠습니까?')">
+                                    <button type="submit" class="btn-reject" onclick="return confirm('신고를 반려하시겠습니까?')">
                                         반려
                                     </button>
                                 </form>

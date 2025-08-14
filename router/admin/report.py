@@ -3,12 +3,11 @@ import db.report
 import auth
 import src.utils as utils
 
-bp = Blueprint('admin_report', __name__, url_prefix='/report')
+bp = Blueprint('report_manage', __name__, url_prefix='/report')
 
 @bp.route('', methods=['GET'])
 @auth.admin_required
 def report_list():
-    """신고 목록을 보여줍니다."""
     reports = db.report.report_get_all()
     pending_count = db.report.report_get_pending_count()
     
@@ -20,29 +19,27 @@ def report_list():
 @bp.route('/<int:report_id>/approve', methods=['POST'])
 @auth.admin_required
 def approve_report(report_id):
-    """신고를 승인합니다."""
     try:
         if db.report.report_approve(report_id):
-            flash('신고가 승인되었습니다.', 'success')
+            flash('요청이 접수되었습니다.', 'success')
         else:
-            flash('신고 승인 중 오류가 발생했습니다.', 'error')
+            flash('요청 접수 중 오류가 발생했습니다.', 'error')
     except Exception as e:
         print(f"Error approving report: {e}")
-        flash('신고 승인 중 오류가 발생했습니다.', 'error')
+        flash('요청 접수 중 오류가 발생했습니다.', 'error')
     
-    return redirect(url_for('router.admin.admin_report.report_list'))
+    return redirect(url_for('router.admin.report_manage.report_list'))
 
 @bp.route('/<int:report_id>/reject', methods=['POST'])
 @auth.admin_required
 def reject_report(report_id):
-    """신고를 반려합니다."""
     try:
         if db.report.report_reject(report_id):
-            flash('신고가 반려되었습니다.', 'success')
+            flash('요청이 반려되었습니다.', 'success')
         else:
-            flash('신고 반려 중 오류가 발생했습니다.', 'error')
+            flash('요청 반려 중 오류가 발생했습니다.', 'error')
     except Exception as e:
         print(f"Error rejecting report: {e}")
-        flash('신고 반려 중 오류가 발생했습니다.', 'error')
+        flash('요청 반려 중 오류가 발생했습니다.', 'error')
     
-    return redirect(url_for('router.admin.admin_report.report_list'))
+    return redirect(url_for('router.admin.report_manage.report_list'))
