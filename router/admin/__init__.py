@@ -3,10 +3,12 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 import src.utils as utils
 import auth
 import router.admin.config as config
+import router.admin.report as admin_report
 import db
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 bp.register_blueprint(config.bp)
+bp.register_blueprint(admin_report.bp)
 
 @bp.route('', methods=['GET', 'POST'])
 @auth.admin_required

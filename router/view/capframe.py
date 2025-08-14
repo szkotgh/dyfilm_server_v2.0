@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, flash, redirect, send_file, session, render_template
+from flask import Blueprint, flash, redirect, send_file, session, render_template, url_for
 import db.capframe
 import src.utils as utils
 import db
@@ -7,7 +7,7 @@ import db
 bp = Blueprint('view_capframe', __name__, url_prefix='/capframe')
 
 @bp.route('/<cf_id>', methods=['GET'])
-def send_capframe(cf_id):
+def view_capframe(cf_id):
     cf_result = db.capframe.capframe_get(cf_id)
     if not cf_result:
         return utils.get_code('file_not_found')
@@ -23,6 +23,57 @@ def send_capframe(cf_id):
     
     try:
         filename = f"{cf_result[6]}.{utils.get_extension(cf_result[4])}"
-        return send_file(file_path, as_attachment=False, download_name=filename) # as_attachment=utils.is_mobile_user()
+        
+        # HTML 템플릿에 전달할 데이터
+        template_data = {
+            'cf_id': cf_id,
+            'filename': filename,
+            'capture_time': cf_result[6],
+            'image_url': url_for('router.view.view_capframe.serve_capframe', cf_id=cf_id),
+            'download_url': url_for('router.view.view_capframe.download_capframe', cf_id=cf_id)
+        }
+    
+        return render_template('view/capframe_view.html', **template_data)
+    except:
+        return utils.get_code('file_not_found')
+
+@bp.route('/<cf_id>/image', methods=['GET'])
+def serve_capframe(cf_id):
+    cf_result = db.capframe.capframe_get(cf_id)
+    if not cf_result:
+        return utils.get_code('file_not_found')
+    
+    is_admin = session.get('ADMIN', False)
+    if not cf_result[3] and not is_admin:
+        return utils.get_code('file_not_found'), 403
+    
+    file_path = os.path.join(db.CAPFRAMES_PATH, cf_result[4])
+    
+    if not utils.is_safe_path(db.CAPFRAMES_PATH, cf_result[4]) or not os.path.exists(file_path) or not os.path.isfile(file_path):
+        return utils.get_code('file_not_found')
+    
+    try:
+        return send_file(file_path, mimetype='image/*')
+    except:
+        return utils.get_code('file_not_found')
+
+@bp.route('/<cf_id>/download', methods=['GET'])
+def download_capframe(cf_id):
+    cf_result = db.capframe.capframe_get(cf_id)
+    if not cf_result:
+        return utils.get_code('file_not_found')
+    
+    is_admin = session.get('ADMIN', False)
+    if not cf_result[3] and not is_admin:
+        return utils.get_code('file_not_found'), 403
+    
+    file_path = os.path.join(db.CAPFRAMES_PATH, cf_result[4])
+    
+    if not utils.is_safe_path(db.CAPFRAMES_PATH, cf_result[4]) or not os.path.exists(file_path) or not os.path.isfile(file_path):
+        return utils.get_code('file_not_found')
+    
+    try:
+        filename = f"{cf_result[6]}.{utils.get_extension(cf_result[4])}"
+        return send_file(file_path, as_attachment=True, download_name=filename)
     except:
         return utils.get_code('file_not_found')
