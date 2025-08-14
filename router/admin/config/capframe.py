@@ -42,7 +42,7 @@ def get_list():
             'desc': r[5],
             'create': r[6],
             'processing_time': r[7],
-            'image_url': url_for('router.view.view_capframe.send_capframe', cf_id=r[0])
+            'image_url': url_for('router.view.view_capframe.serve_capframe', cf_id=r[0])
         })
     return jsonify({ 'items': items })
 

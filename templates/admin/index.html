@@ -182,6 +182,10 @@
                     <div class="stat-number">{{ stats.active_frames }}/{{ stats.total_frames }}</div>
                     <div class="stat-label">활성 프레임</div>
                 </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.pending_reports }}</div>
+                    <div class="stat-label">처리 대기 신고</div>
+                </div>
             </div>
             <div class="top-frames">
                 <div class="chart-title">가장 많이 사용된 프레임</div>
@@ -205,6 +209,7 @@
                 <a href="/admin/config/frame" class="list-group-item list-group-item-action">Frame 관리</a>
                 <a href="/admin/config/capture" class="list-group-item list-group-item-action">Capture 관리</a>
                 <a href="/admin/config/capframe" class="list-group-item list-group-item-action">CapFrame 관리</a>
+                <a href="/admin/report" class="list-group-item list-group-item-action">Capframe 신고 확인</a>
             </div><br>
             <a href="/">메인으로</a> | <a href="/admin/logout">로그아웃</a>
         </div>

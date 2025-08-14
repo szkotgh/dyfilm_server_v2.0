@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>{{ filename }} - 캡프레임 | 덕영필름</title>
+<style>
+    body {
+        background-color: #2b2a33;
+    }
+
+    .capframe-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        position: relative;
+    }
+    
+    .capframe-image {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+        display: block;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+    
+    .capframe-image:hover {
+        transform: scale(1.02);
+    }
+    
+    .floating-download {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(90deg,rgb(0, 0, 0),rgb(36, 36, 36));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'AppleSDGothicNeoB', sans-serif;
+    }
+    
+    .floating-download:hover {
+        background: linear-gradient(45deg, #ee5a24, #ff6b6b);
+    }
+    
+    .download-icon {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+    }
+    
+    .report-button {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        background: rgba(220, 53, 69, 0.7);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'AppleSDGothicNeoB', sans-serif;
+        opacity: 0.8;
+    }
+    
+    .report-button:hover {
+        background: rgba(220, 53, 69, 0.9);
+        opacity: 1;
+        transform: translateY(-1px);
+    }
+    
+    .report-icon {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+    }
+    
+    .report-success {
+        display: none;
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .report-error {
+        display: none;
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .modal-content {
+        background-color:rgb(21, 21, 21) !important;
+        border: 1px solidrgb(29, 37, 58) !important;
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid #333;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid #333;
+    }
+    
+    #reportModalLabel {
+        color: #ff6b6b !important;
+        font-weight: bold;
+    }
+    
+    .modal-body {
+        color: white !important;
+    }
+    
+    .form-label {
+        color: white !important;
+    }
+    
+    .form-control {
+        background-color: #1a1a1a !important;
+        border: 1px solid #333 !important;
+        color: white !important;
+    }
+    
+    .form-control:focus {
+        background-color: #1a1a1a !important;
+        border-color: #ff6b6b !important;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25) !important;
+        color: white !important;
+    }
+    
+    .form-control::placeholder {
+        color: #888 !important;
+    }
+    
+    .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+    
+    @media (max-width: 768px) {
+        .floating-download, .report-button {
+            bottom: 20px;
+        }
+        
+        .floating-download {
+            right: 20px;
+            padding: 12px 20px;
+            font-size: 14px;
+        }
+        
+        .report-button {
+            left: 20px;
+            padding: 12px 12px;
+            font-size: 14px;
+        }
+        
+        .capframe-container {
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="capframe-container">
+    <img src="{{ image_url }}" alt="{{ filename }}" class="capframe-image" id="capframeImage" onclick="openImageModal()">
+</div>
+
+<button class="floating-download" onclick="downloadImage()">
+    <svg class="download-icon" viewBox="0 0 24 24">
+        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+    </svg>
+    다운로드
+</button>
+
+<button class="report-button" onclick="openReportModal()">
+    <svg class="report-icon" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+    </svg>
+</button>
+
+<!-- 비공개 처리 요청 모달 -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">비공개 처리 요청</h5>
+            </div>
+            
+            <form id="reportForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="reportReason" class="form-label">요청 사유</label>
+                        <textarea 
+                            class="form-control" 
+                            id="reportReason" 
+                            name="reason" 
+                            rows="6"
+                            placeholder="요청 사유를 구체적으로 작성해주세요. (500자 이내)"
+                            maxlength="500"
+                            required
+                        ></textarea>
+                    </div>
+                    
+                    <div class="alert alert-success" id="reportSuccess" style="display: none;">
+                        요청이 성공적으로 접수되었습니다.
+                    </div>
+                    
+                    <div class="alert alert-danger" id="reportError" style="display: none;">
+                        요청 접수 중 오류가 발생했습니다.
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="submit" class="btn btn-primary">요청 제출</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% with modal_id='capframeImageModal', display_text='', title=filename, image_url=image_url, message='', image_fallback_url=image_url %}
+    {% include "components/modals/view_image_modal.html" %}
+{% endwith %}
+
+<script>
+    function downloadImage() {
+        const link = document.createElement('a');
+        link.href = '{{ download_url }}';
+        link.download = '{{ filename }}';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    
+    function openImageModal() {
+        const modal = new bootstrap.Modal(document.getElementById('capframeImageModal'));
+        modal.show();
+    }
+    
+    function openReportModal() {
+        const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+        document.getElementById('reportSuccess').style.display = 'none';
+        document.getElementById('reportError').style.display = 'none';
+        document.getElementById('reportForm').reset();
+        
+        // 제출 버튼 활성화
+        const submitBtn = document.querySelector('#reportForm button[type="submit"]');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '요청 제출';
+        
+        modal.show();
+    }
+    
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const reason = document.getElementById('reportReason').value.trim();
+        if (!reason) {
+            alert('요청 사유를 입력해주세요.');
+            return;
+        }
+        
+        // 제출 버튼 비활성화하여 중복 제출 방지
+        const submitBtn = document.querySelector('#reportForm button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = '처리 중...';
+        
+        const formData = new FormData();
+        formData.append('reason', reason);
+        
+        fetch('/report/{{ cf_id }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            return response.json().then(data => ({ data, status: response.status }));
+        })
+        .then(({ data, status }) => {
+            if (data.success) {
+                document.getElementById('reportSuccess').style.display = 'block';
+                document.getElementById('reportError').style.display = 'none';
+                
+                // 성공 시 모달 자동 닫기
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                    modal.hide();
+                }, 2000);
+            } else {
+                document.getElementById('reportError').style.display = 'block';
+                document.getElementById('reportSuccess').style.display = 'none';
+                
+                // 중복 신고인 경우 특별한 메시지 표시
+                if (status === 409) {
+                    document.getElementById('reportError').textContent = '이미 신고가 접수된 콘텐츠입니다.';
+                } else {
+                    document.getElementById('reportError').textContent = data.message || '요청 접수 중 오류가 발생했습니다.';
+                }
+                
+                // 에러 시 제출 버튼 다시 활성화
+                submitBtn.disabled = false;
+                submitBtn.textContent = '요청 제출';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('reportError').style.display = 'block';
+            document.getElementById('reportSuccess').style.display = 'none';
+            document.getElementById('reportError').textContent = '요청 접수 중 오류가 발생했습니다.';
+            
+            // 에러 시 제출 버튼 다시 활성화
+            submitBtn.disabled = false;
+            submitBtn.textContent = '요청 제출';
+            });
+        });
+    
+    // 이미지 로드 완료 시 처리
+    document.getElementById('capframeImage').addEventListener('load', function() {
+        console.log('이미지 로드 완료');
+    });
+    
+    // 이미지 로드 실패 시 처리
+    document.getElementById('capframeImage').addEventListener('error', function() {
+        alert('이미지를 불러올 수 없습니다.');
+    });
+</script>
+{% endblock %}

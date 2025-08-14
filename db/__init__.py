@@ -94,6 +94,21 @@ cursor.execute('''
     )
 ''')
 
+## REPORT
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS report (
+        report_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cf_id TEXT NOT NULL,
+        reason TEXT NOT NULL,
+        admin_review_time DATETIME,
+        is_approved INTEGER DEFAULT NULL,
+        reporter_ip TEXT NOT NULL,
+        report_time DATETIME NOT NULL,
+        
+        FOREIGN KEY (cf_id) REFERENCES capframe (cf_id) ON DELETE CASCADE
+    )
+''')
+
 def get_statistics():
     stats = {}
     
@@ -134,6 +149,10 @@ def get_statistics():
     # 전체 프레임 개수
     cursor.execute("SELECT COUNT(*) FROM frame")
     stats['total_frames'] = cursor.fetchone()[0]
+    
+    # 처리 대기 중인 신고 개수
+    cursor.execute("SELECT COUNT(*) FROM report WHERE is_approved IS NULL")
+    stats['pending_reports'] = cursor.fetchone()[0]
     
     # 가장 많이 사용된 프레임 (상위 3개)
     # cursor.execute("""
