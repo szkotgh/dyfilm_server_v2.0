@@ -33,7 +33,7 @@
         position: fixed;
         bottom: 30px;
         right: 30px;
-        background: linear-gradient(90deg,rgb(0, 0, 0),rgb(36, 36, 36));
+        background: rgb(0, 0, 0);
         color: white;
         border: none;
         border-radius: 10px;
@@ -51,7 +51,7 @@
     }
     
     .floating-download:hover {
-        background: linear-gradient(45deg, #ee5a24, #ff6b6b);
+        background: rgb(22, 22, 22);
     }
     
     .download-icon {
@@ -73,7 +73,7 @@
         font-weight: 500;
         cursor: pointer;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        transition: all 0.3s ease;
+        transition: all 0.3s ease, background 0.3s ease;
         z-index: 1000;
         display: flex;
         align-items: center;
@@ -85,7 +85,6 @@
     .report-button:hover {
         background: rgba(220, 53, 69, 0.9);
         opacity: 1;
-        transform: translateY(-1px);
     }
     
     .report-icon {
