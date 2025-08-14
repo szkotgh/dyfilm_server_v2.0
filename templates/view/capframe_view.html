@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<title>{{ filename }} - 캡프레임 | 덕영필름</title>
+<title>{{ filename }} | 덕영필름</title>
 <style>
     body {
         background-color: #2b2a33;
@@ -268,7 +268,6 @@
         document.getElementById('reportError').style.display = 'none';
         document.getElementById('reportForm').reset();
         
-        // 제출 버튼 활성화
         const submitBtn = document.querySelector('#reportForm button[type="submit"]');
         submitBtn.disabled = false;
         submitBtn.textContent = '요청 제출';
@@ -285,7 +284,6 @@
             return;
         }
         
-        // 제출 버튼 비활성화하여 중복 제출 방지
         const submitBtn = document.querySelector('#reportForm button[type="submit"]');
         submitBtn.disabled = true;
         submitBtn.textContent = '처리 중...';
@@ -293,7 +291,7 @@
         const formData = new FormData();
         formData.append('reason', reason);
         
-        fetch('/report/{{ cf_id }}', {
+        fetch('/view/capframe/report/{{ cf_id }}', {
             method: 'POST',
             body: formData
         })
@@ -305,7 +303,6 @@
                 document.getElementById('reportSuccess').style.display = 'block';
                 document.getElementById('reportError').style.display = 'none';
                 
-                // 성공 시 모달 자동 닫기
                 setTimeout(() => {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
                     modal.hide();
@@ -314,14 +311,12 @@
                 document.getElementById('reportError').style.display = 'block';
                 document.getElementById('reportSuccess').style.display = 'none';
                 
-                // 중복 신고인 경우 특별한 메시지 표시
                 if (status === 409) {
                     document.getElementById('reportError').textContent = '이미 신고가 접수된 콘텐츠입니다.';
                 } else {
                     document.getElementById('reportError').textContent = data.message || '요청 접수 중 오류가 발생했습니다.';
                 }
                 
-                // 에러 시 제출 버튼 다시 활성화
                 submitBtn.disabled = false;
                 submitBtn.textContent = '요청 제출';
             }
@@ -330,20 +325,13 @@
             console.error('Error:', error);
             document.getElementById('reportError').style.display = 'block';
             document.getElementById('reportSuccess').style.display = 'none';
-            document.getElementById('reportError').textContent = '요청 접수 중 오류가 발생했습니다.';
+            document.getElementById('reportError').textContent = '오류가 발생했습니다.';
             
-            // 에러 시 제출 버튼 다시 활성화
             submitBtn.disabled = false;
             submitBtn.textContent = '요청 제출';
             });
         });
     
-    // 이미지 로드 완료 시 처리
-    document.getElementById('capframeImage').addEventListener('load', function() {
-        console.log('이미지 로드 완료');
-    });
-    
-    // 이미지 로드 실패 시 처리
     document.getElementById('capframeImage').addEventListener('error', function() {
         alert('이미지를 불러올 수 없습니다.');
     });

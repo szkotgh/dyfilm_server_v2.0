@@ -3,8 +3,10 @@ from flask import Blueprint, flash, redirect, send_file, session, render_templat
 import db.capframe
 import src.utils as utils
 import db
+from .capframe_report import bp as capframe_report_bp
 
 bp = Blueprint('view_capframe', __name__, url_prefix='/capframe')
+bp.register_blueprint(capframe_report_bp)
 
 @bp.route('/<cf_id>', methods=['GET'])
 def view_capframe(cf_id):
@@ -24,7 +26,6 @@ def view_capframe(cf_id):
     try:
         filename = f"{cf_result[6]}.{utils.get_extension(cf_result[4])}"
         
-        # HTML 템플릿에 전달할 데이터
         template_data = {
             'cf_id': cf_id,
             'filename': filename,
