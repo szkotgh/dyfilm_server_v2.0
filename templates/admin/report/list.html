@@ -2,86 +2,8 @@
 
 {% block head %}
 <style>
-    .report-container {
-        max-width: 90%;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    
-    .report-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid #eee;
-    }
-    
-    .report-title {
-        font-size: 28px;
-        font-weight: bold;
-        color: #333;
-    }
-    
-    .report-stats {
-        display: flex;
-        gap: 20px;
-    }
-    
-    .stat-card {
-        background: #316cf4;
-        color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .stat-number {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-    
-    .stat-label {
-        font-size: 14px;
-        opacity: 0.9;
-    }
-    
-    .report-table {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-    
-    .report-table table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    
-    .report-table th {
-        background: #f8f9fa;
-        padding: 15px;
-        text-align: left;
-        font-weight: 600;
-        color: #333;
-        border-bottom: 2px solid #dee2e6;
-    }
-    
-    .report-table td {
-        padding: 15px;
-        border-bottom: 1px solid #dee2e6;
-        vertical-align: top;
-    }
-    
-    .report-table tr:hover {
-        background-color: #f8f9fa;
-    }
-    
-    .report-reason {
-        max-width: 300px;
-        word-wrap: break-word;
+    .table-content {
+        margin: 1rem 6% 1rem 6%;
     }
     
     .report-status {
@@ -94,23 +16,18 @@
     }
     
     .status-pending {
-        background: #ffc107;
-        color: #212529;
+        background: rgb(179, 179, 179);
+        color: white;
     }
     
     .status-approved {
-        background: #28a745;
+        background: rgb(48, 160, 74);
         color: white;
     }
     
     .status-rejected {
-        background: #dc3545;
+        background: rgb(190, 42, 56);
         color: white;
-    }
-    
-    .report-actions {
-        display: flex;
-        gap: 10px;
     }
     
     .btn-approve {
@@ -152,23 +69,9 @@
         background: #6c757d;
     }
     
-    .no-reports {
-        text-align: center;
-        padding: 60px 20px;
-        color: #666;
-        font-size: 18px;
-    }
-    
-    .back-link {
-        display: inline-block;
-        margin-bottom: 20px;
-        color: #316cf4;
-        text-decoration: none;
-        font-weight: 500;
-    }
-    
-    .back-link:hover {
-        text-decoration: underline;
+    .report-reason {
+        max-width: 300px;
+        word-wrap: break-word;
     }
     
     .report-time {
@@ -181,95 +84,215 @@
         font-size: 12px;
         color: #666;
     }
-    
-    @media (max-width: 768px) {
-        .report-header {
-            flex-direction: column;
-            gap: 20px;
-            align-items: flex-start;
-        }
-        
-        .report-stats {
-            width: 100%;
-            justify-content: space-between;
-        }
-        
-        .report-actions {
-            flex-direction: column;
-            gap: 5px;
-        }
-    }
 </style>
 {% endblock %}
 
 {% block body %}
-<h4><a href="/admin">홈</a> | CapFrame 신고 확인</h4>
-<div class="report-container">
-    {% if reports %}
-    <div class="report-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>신고 ID</th>
-                    <th>Capframe ID</th>
-                    <th>신고 사유</th>
-                    <th>신고자 IP</th>
-                    <th>신고 시간</th>
-                    <th>상태</th>
-                    <th>관리자 처리</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for report in reports %}
-                <tr>
-                    <td>#{{ report[0] }}</td>
-                    <td>
-                        <code>{{ report[1] }}</code><br>
-                        <small class="report-time">{{ report[8] if report[8] else 'N/A' }}</small>
-                    </td>
-                    <td class="report-reason">{{ report[2] }}</td>
-                    <td class="report-ip">{{ report[5] }}</td>
-                    <td class="report-time">{{ report[6] }}</td>
-                    <td>
-                        {% if report[4] is none %}
-                            <span class="report-status status-pending">대기중</span>
-                        {% elif report[4] == 1 %}
-                            <span class="report-status status-approved">승인됨</span>
-                        {% else %}
-                            <span class="report-status status-rejected">반려됨</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <div class="report-actions">
-                            {% if report[4] is none %}
-                                <form method="POST" action="/admin/report/{{ report[0] }}/approve" style="display: inline;">
-                                    <button type="submit" class="btn-approve" onclick="return confirm('신고를 승인하시겠습니까?')">
-                                        승인
-                                    </button>
-                                </form>
-                                <form method="POST" action="/admin/report/{{ report[0] }}/reject" style="display: inline;">
-                                    <button type="submit" class="btn-reject" onclick="return confirm('신고를 반려하시겠습니까?')">
-                                        반려
-                                    </button>
-                                </form>
-                            {% else %}
-                                <span class="report-time">
-                                    {% if report[3] %}
-                                        {{ report[3] }}
-                                    {% endif %}
-                                </span>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <div class="no-reports">
-        <p>아직 신고된 내용이 없습니다.</p>
-    </div>
-    {% endif %}
+<h4><a href="/admin">홈</a> | CapFrame 비공개 처리 요청 확인</h4>
+<div class="table-content">
+    <table class="table table-hover" id="report-table">
+        <thead>
+            <tr>
+                <th>
+                    {% set modal_id = 'report_id' %}
+                    {% set display_text = 'report_id' %}
+                    {% set title = '요청 ID' %}
+                    {% set message = '요청 ID입니다. 이 값은 수정할 수 없습니다.' %}
+                    {% include 'components/modals/view_message_modal.html' %}
+                </th>
+                <th>
+                    {% set modal_id = 'cf_id' %}
+                    {% set display_text = 'cf_id' %}
+                    {% set title = 'CapFrame ID' %}
+                    {% set message = '비공개 처리 요청된 CapFrame ID입니다. 클릭해 이미지를 확인할 수 있습니다. 이 값은 수정할 수 없습니다.' %}
+                    {% include 'components/modals/view_message_modal.html' %}
+                </th>
+                <th>
+                    {% set modal_id = 'reason' %}
+                    {% set display_text = 'reason' %}
+                    {% set title = '요청 사유' %}
+                    {% set message = '비공개 처리 요청 사유입니다. 이 값은 수정할 수 없습니다.' %}
+                    {% include 'components/modals/view_message_modal.html' %}
+                </th>
+                <th>
+                    {% set modal_id = 'reporter_ip' %}
+                    {% set display_text = 'reporter_ip' %}
+                    {% set title = '요청 IP' %}
+                    {% set message = '비공개 처리 요청자의 IP입니다. 이 값은 수정할 수 없습니다.' %}
+                    {% include 'components/modals/view_message_modal.html' %}
+                </th>
+                <th>
+                    {% set modal_id = 'report_time' %}
+                    {% set display_text = 'report_time' %}
+                    {% set title = '요청 시간' %}
+                    {% set message = '요청이 접수된 시간입니다. 이 값은 수정할 수 없습니다.' %}
+                    {% include 'components/modals/view_message_modal.html' %}
+                </th>
+                <th>
+                    {% set modal_id = 'status' %}
+                    {% set display_text = 'status' %}
+                    {% set title = '상태' %}
+                    {% set message = '비공개 처리 요청의 처리 상태입니다. 이 값은 수정할 수 없습니다.' %}
+                    {% include 'components/modals/view_message_modal.html' %}
+                </th>
+                <th>
+                    {% set modal_id = 'admin_review_time' %}
+                    {% set display_text = 'admin_review_time' %}
+                    {% set title = '관리자 처리' %}
+                    {% set message = '관리자가 요청을 처리한 시간입니다. 처리를 하지 않았을 경우 처리 메뉴 버튼이 표시됩니다. 이 값은 수정할 수 없습니다.' %}
+                    {% include 'components/modals/view_message_modal.html' %}
+                </th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider" id="report-tbody">
+            <tr>
+                <td colspan="7" style="text-align: center;">로딩 중...</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tbody = document.getElementById('report-tbody');
+        const container = document.querySelector('.table-content');
+        const footerDiv = document.createElement('div');
+        footerDiv.style.textAlign = 'center';
+        footerDiv.style.margin = '1rem 0';
+        const loadMoreButton = document.createElement('button');
+        loadMoreButton.className = 'btn btn-outline-secondary';
+        loadMoreButton.textContent = '더 불러오기';
+        loadMoreButton.style.display = 'none';
+        const counterSpan = document.createElement('span');
+        counterSpan.style.marginLeft = '12px';
+        counterSpan.style.color = '#6c757d';
+        footerDiv.appendChild(loadMoreButton);
+        footerDiv.appendChild(counterSpan);
+        container.appendChild(footerDiv);
+
+        const state = { limit: 30, offset: 0, loading: false, done: false };
+
+        function updateCounter(shown, total) { 
+            counterSpan.textContent = `${shown}/${total}`; 
+        }
+
+        async function fetchTotal() {
+            try { 
+                const res = await fetch(`{{ url_for('router.admin.report_manage.report_count_ajax') }}`); 
+                const json = await res.json(); 
+                return typeof json.total === 'number' ? json.total : 0; 
+            } catch { 
+                return 0; 
+            }
+        }
+
+        async function loadRows() {
+            if (state.loading || state.done) return; 
+            state.loading = true;
+            try {
+                const params = new URLSearchParams({ 
+                    limit: String(state.limit), 
+                    offset: String(state.offset) 
+                });
+                const response = await fetch(`{{ url_for('router.admin.report_manage.report_list_ajax') }}?${params.toString()}`, { 
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' } 
+                });
+                const data = await response.json();
+                const items = Array.isArray(data.items) ? data.items : [];
+                
+                if (state.offset === 0) { 
+                    tbody.innerHTML = ''; 
+                }
+                
+                for (const item of items) {
+                    const tr = document.createElement('tr'); 
+                    tr.setAttribute('data-row', 'report');
+                    
+                    // 상태에 따른 버튼 렌더링
+                    let actionButtons = '';
+                    if (item.is_approved === null) {
+                        actionButtons = `
+                            <form method="POST" action="/admin/report/${item.report_id}/approve" style="display: inline;">
+                                <button type="submit" class="btn-approve" onclick="return confirm('요청을 승인하시겠습니까?\n해당 CapFrame은 비활성화 처리됩니다.')">
+                                    승인
+                                </button>
+                            </form>
+                            <form method="POST" action="/admin/report/${item.report_id}/reject" style="display: inline;">
+                                <button type="submit" class="btn-reject" onclick="return confirm('요청을 반려하시겠습니까?')">
+                                    반려
+                                </button>
+                            </form>
+                        `;
+                    } else {
+                        actionButtons = `<span class="report-time">${item.admin_review_time || ''}</span>`;
+                    }
+                    
+                    // 상태 표시
+                    let statusDisplay = '';
+                    if (item.is_approved === null) {
+                        statusDisplay = '<span class="report-status status-pending">대기중</span>';
+                    } else if (item.is_approved == 1) {
+                        statusDisplay = '<span class="report-status status-approved">승인됨</span>';
+                    } else {
+                        statusDisplay = '<span class="report-status status-rejected">반려됨</span>';
+                    }
+                    
+                    tr.innerHTML = `
+                        <td>#${item.report_id}</td>
+                        <td>
+                            <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#capframe${item.report_id}">${item.cf_id}</span>
+                            <div class="modal fade" id="capframe${item.report_id}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">캡프레임 이미지</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <img src="/view/capframe/${item.cf_id}/image" alt="CapFrame" style="max-width: 100%; height: auto;" 
+                                                 onerror="this.src='/static/images/loading.gif'">
+                                            <p class="mt-3 text-muted">이 이미지는 변경할 수 없습니다.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <small class="report-time">촬영시각: ${item.capframe_create_time || 'N/A'}</small>
+                        </td>
+                        <td class="report-reason">${item.reason}</td>
+                        <td class="report-ip">${item.reporter_ip}</td>
+                        <td class="report-time">${item.report_time}</td>
+                        <td>${statusDisplay}</td>
+                        <td>${actionButtons}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+                
+                if (items.length < state.limit) state.done = true; 
+                state.offset += items.length; 
+                loadMoreButton.style.display = state.done ? 'none' : 'inline-block';
+                
+                const total = await fetchTotal(); 
+                const shown = tbody.querySelectorAll('tr[data-row="report"]').length; 
+                updateCounter(shown, total);
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">불러오기 실패</td></tr>'; 
+                state.done = true;
+            } finally { 
+                state.loading = false; 
+                if (!state.done) loadMoreButton.style.display = 'inline-block'; 
+            }
+        }
+
+        loadMoreButton.addEventListener('click', () => loadRows());
+        (async () => { 
+            const total = await fetchTotal(); 
+            updateCounter(0, total); 
+            loadRows(); 
+        })();
+    });
+</script>
 {% endblock %}

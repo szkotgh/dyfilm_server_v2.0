@@ -120,3 +120,29 @@ def report_get_by_cf_id(cf_id: str):
     except Exception as e:
         print(f"Error getting report by cf_id: {e}")
         return None
+
+def report_get_list_paginated(limit: int, offset: int):
+    """페이지네이션을 위한 신고 목록을 가져옵니다."""
+    try:
+        db.cursor.execute("""
+            SELECT r.*, c.file_name, c."create" as capframe_create_time 
+            FROM report r 
+            JOIN capframe c ON r.cf_id = c.cf_id 
+            ORDER BY r.report_time DESC
+            LIMIT ? OFFSET ?
+        """, (limit, offset))
+        rows = db.cursor.fetchall()
+        return rows
+    except Exception as e:
+        print(f"Error getting paginated reports: {e}")
+        return []
+
+def report_count() -> int:
+    """전체 신고 개수를 반환합니다."""
+    try:
+        db.cursor.execute("SELECT COUNT(*) FROM report")
+        row = db.cursor.fetchone()
+        return int(row[0]) if row else 0
+    except Exception as e:
+        print(f"Error getting report count: {e}")
+        return 0
