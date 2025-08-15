@@ -275,12 +275,12 @@
         modal.show();
     }
     
-    document.getElementById('reportForm').addEventListener('submit', function(e) {
+    document.getElementById('reportForm').addEventListener('submit', (e) => {
         e.preventDefault();
         
         const reason = document.getElementById('reportReason').value.trim();
         if (!reason) {
-            alert('요청 사유를 입력해주세요.');
+            alert('사유를 입력해주세요.');
             return;
         }
         
@@ -311,11 +311,7 @@
                 document.getElementById('reportError').style.display = 'block';
                 document.getElementById('reportSuccess').style.display = 'none';
                 
-                if (status === 409) {
-                    document.getElementById('reportError').textContent = '이미 신고가 접수된 콘텐츠입니다.';
-                } else {
-                    document.getElementById('reportError').textContent = data.message || '요청 접수 중 오류가 발생했습니다.';
-                }
+                document.getElementById('reportError').textContent = data.message || '접수 중 오류가 발생했습니다.';
                 
                 submitBtn.disabled = false;
                 submitBtn.textContent = '요청 제출';
@@ -332,7 +328,7 @@
             });
         });
     
-    document.getElementById('capframeImage').addEventListener('error', function() {
+    document.getElementById('capframeImage').addEventListener('error', () => {
         alert('이미지를 불러올 수 없습니다.');
     });
 </script>

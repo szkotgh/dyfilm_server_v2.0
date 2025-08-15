@@ -54,7 +54,9 @@ def serve_capframe(cf_id):
         return utils.get_code('file_not_found')
     
     try:
-        return send_file(file_path, mimetype='image/*')
+        response = send_file(file_path, mimetype='image/*', as_attachment=False)
+        response.headers['Content-Disposition'] = 'inline'
+        return response
     except:
         return utils.get_code('file_not_found')
 

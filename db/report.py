@@ -92,8 +92,18 @@ def report_get_pending_count() -> int:
         print(f"Error getting pending report count: {e}")
         return 0
 
+def report_pending_exists_for_cf_id(cf_id: str) -> bool:
+    """특정 cf_id에 대한 관리자 확인 대기 중인 신고가 이미 존재하는지 확인합니다."""
+    try:
+        db.cursor.execute("SELECT COUNT(*) FROM report WHERE cf_id = ? AND is_approved IS NULL", (cf_id,))
+        result = db.cursor.fetchone()
+        return result[0] > 0 if result else False
+    except Exception as e:
+        print(f"Error checking pending report existence: {e}")
+        return False
+
 def report_exists_for_cf_id(cf_id: str) -> bool:
-    """특정 cf_id에 대한 신고가 이미 존재하는지 확인합니다."""
+    """특정 cf_id에 대한 신고가 이미 존재하는지 확인합니다. (하위 호환성용)"""
     try:
         db.cursor.execute("SELECT COUNT(*) FROM report WHERE cf_id = ?", (cf_id,))
         result = db.cursor.fetchone()
