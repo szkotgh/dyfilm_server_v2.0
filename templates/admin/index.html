@@ -156,36 +156,22 @@
     <div class="admin-main-left">
         <div class="stats-container">
             <div class="stats-grid">
-                <div class="stat-card">
+                <button class="stat-card" onclick="window.location.href='/admin/config/capframe'">
                     <div class="stat-number">{{ stats.total_capframes }}</div>
                     <div class="stat-label">전체 캡프레임 수</div>
-                </div>
-                <!--
-                <div class="stat-card">
-                    <div class="stat-number">{{ stats.weekly_capframes }}</div>
-                    <div class="stat-label">이번 주 생성된 캡프레임 수</div>
-                </div> 
-                <div class="stat-card">
-                    <div class="stat-number">{{ stats.today_capframes }}</div>
-                    <div class="stat-label">오늘 생성된 캡프레임 수</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{{ stats.total_captures }}</div>
-                    <div class="stat-label">전체 캡쳐 수</div>
-                </div>
-                -->
-                <div class="stat-card">
+                </button>
+                <button class="stat-card" onclick="window.location.href='/admin/config/device'">
                     <div class="stat-number">{{ stats.active_devices }}/{{ stats.total_devices }}</div>
                     <div class="stat-label">활성 장치</div>
-                </div>
-                <div class="stat-card">
+                </button>
+                <button class="stat-card" onclick="window.location.href='/admin/config/frame'">
                     <div class="stat-number">{{ stats.active_frames }}/{{ stats.total_frames }}</div>
                     <div class="stat-label">활성 프레임</div>
-                </div>
-                <div class="stat-card">
+                </button>
+                <button class="stat-card" onclick="window.location.href='/admin/report'">
                     <div class="stat-number">{{ stats.pending_reports }}</div>
                     <div class="stat-label">처리 대기 신고</div>
-                </div>
+                </button>
             </div>
             <div class="top-frames">
                 <div class="chart-title">가장 많이 사용된 프레임</div>
