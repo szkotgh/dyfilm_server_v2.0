@@ -16,7 +16,7 @@ def create_report(cf_id):
             return jsonify({'success': False, 'message': '사유는 500자 이내로 입력해주세요.'}), 400
         
         if db.report.report_pending_exists_for_cf_id(cf_id):
-            return jsonify({'success': False, 'message': '이미 요청이 접수된 콘텐츠입니다.'}), 409
+            return jsonify({'success': False, 'message': '요청이 접수되어 확인 대기 중인 사진입니다.'}), 409
         
         reporter_ip = utils.get_ip()
         
