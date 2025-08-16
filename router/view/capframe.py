@@ -77,6 +77,8 @@ def download_capframe(cf_id):
     
     try:
         filename = f"{cf_result[6]}.{utils.get_extension(cf_result[4])}"
-        return send_file(file_path, as_attachment=True, download_name=filename)
+        response = send_file(file_path, as_attachment=True, download_name=filename)
+        response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
     except:
         return utils.get_code('file_not_found')
