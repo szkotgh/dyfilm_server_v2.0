@@ -98,7 +98,7 @@ def device_update_last_use_time(d_id: int) -> bool:
 
 def device_config_auth_token(d_id: int) -> bool:
     try:
-        auth_token = f"Bearer {utils.gen_hash(len=16)}"
+        auth_token = f"{utils.gen_hash(len=16)}"
         
         db.cursor.execute('''
             UPDATE device SET auth_token = ? WHERE d_id = ?
