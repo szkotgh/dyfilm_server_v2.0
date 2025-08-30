@@ -142,7 +142,7 @@ def capframe_create(d_id:int, f_id:int, c_id: list):
     QR_PATH = os.path.join(db.QR_PATH, f'{cf_id}.png')
     utils.gen_qr(
         save_path=QR_PATH,
-        url_path=url_for('router.view.view_capframe.send_capframe', cf_id=cf_id)
+        url_path=url_for('router.view.view_capframe.view_capframe', cf_id=cf_id)
     )
     qr_img = Image.open(QR_PATH)
     qr_img = qr_img.resize(QR_SIZE)
