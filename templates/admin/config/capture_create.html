@@ -14,6 +14,7 @@
     <div class="main-content">
         <h5 class="text-danger"></h5>
         <form method="post" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="mb-3">
                 <label for="image_file" class="form-label">이미지 <span class="text-danger">*</span></label>
                 <small class="form-text text-muted">PNG 파일만 가능</small>

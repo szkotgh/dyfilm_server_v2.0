@@ -7,26 +7,49 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
-            session['ADMIN']
-            session['ADMIN_LAST_ACTIVE_TIME']
-        except:
+            admin_status = session.get('ADMIN')
+            admin_last_active_time = session.get('ADMIN_LAST_ACTIVE_TIME')
+            
+            if admin_status is None or admin_last_active_time is None:
+                session.clear()
+                flash('Admin login required', 'error')
+                return redirect(url_for('router.admin.login'))
+            
+            if admin_status != True:
+                session.clear()
+                flash('Admin login required', 'error')
+                return redirect(url_for('router.admin.login'))
+            
+            admin_last_active_datetime = utils.convert_string_to_datetime(admin_last_active_time)
+            if admin_last_active_datetime is False:
+                session.clear()
+                flash('Invalid session data. Please log in again.', 'error')
+                return redirect(url_for('router.admin.login'))
+            
+            now_datetime = utils.get_now_datetime()
+            time_diff = now_datetime - admin_last_active_datetime
+            
+            if time_diff.total_seconds() < 0:
+                session.clear()
+                flash('Invalid session time. Please log in again.', 'error')
+                return redirect(url_for('router.admin.login'))
+            
+            session_timeout = int(utils.get_env('ADMIN_SESSION_TIMEOUT'))
+            if time_diff.total_seconds() > session_timeout:
+                session.clear()
+                flash('Admin session expired. Log again.', 'error')
+                return redirect(url_for('router.admin.login'))
+            
+            session['ADMIN_LAST_ACTIVE_TIME'] = utils.get_now_datetime_str()
+            
+        except (KeyError, ValueError, TypeError) as e:
             session.clear()
-            flash('Admin login required', 'error')
+            flash('Invalid session data. Please log in again.', 'error')
             return redirect(url_for('router.admin.login'))
-        
-        if session.get('ADMIN', False) == False:
+        except Exception as e:
             session.clear()
-            flash('Admin login required', 'error')
+            flash('Session validation error. Please log in again.', 'error')
             return redirect(url_for('router.admin.login'))
-        
-        admin_last_active_datetime = utils.convert_string_to_datetime(session['ADMIN_LAST_ACTIVE_TIME'])
-        now_datetime_diff = utils.get_now_datetime() - admin_last_active_datetime
-        if int(now_datetime_diff.total_seconds()) > int(utils.get_env('ADMIN_SESSION_TIMEOUT')):
-            session.clear()
-            flash('Admin session expired. Log again.', 'error')
-            return redirect(url_for('router.admin.login'))
-        
-        session['ADMIN_LAST_ACTIVE_TIME'] = utils.get_now_datetime_str()
         
         return f(*args, **kwargs)
     return decorated_function

@@ -117,6 +117,7 @@
                                 <div class="modal fade" id="remove${item.f_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">프레임 삭제</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.frame.remove') }}" method="post">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <div class="modal-body"><p>프레임 ${item.f_id}을 삭제하시겠습니까? 되돌릴 수 없습니다.</p><input type="hidden" name="f_id" value="${item.f_id}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">네</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button></div>
                                   </form>
@@ -127,6 +128,7 @@
                                 <div class="modal fade" id="status${item.f_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">프레임 상태 변경</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.frame.config_status') }}" method="post">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <div class="modal-body"><p>프레임 ${item.f_id}의 상태를 변경하시겠습니까?</p><input type="hidden" name="f_id" value="${item.f_id}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">네</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button></div>
                                   </form>
@@ -139,6 +141,7 @@
                                   <div class="modal-body text-center"><img id="modalImageimage${item.f_id}" data-src="${item.image_url}" src="{{ url_for('static', filename='images/loading.gif') }}" class="img-fluid" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/loading.gif') }}';"></div>
                                   <div class="modal-body">
                                     <form method="post" action="{{ url_for('router.admin.config.frame.config_image') }}" enctype="multipart/form-data">
+                                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                       <input type="hidden" name="f_id" value="${item.f_id}">
                                       <div class="mb-3 text-start">
                                         <label class="form-label">이미지 선택 <span class="text-danger">*</span></label>
@@ -155,6 +158,7 @@
                                 <div class="modal fade" id="meta${item.f_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">프레임 메타 수정</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.frame.config_meta') }}" method="post">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <div class="modal-body">
                                       <input type="hidden" name="f_id" value="${item.f_id}">
                                       <label class="form-label">설명</label>
@@ -169,6 +173,7 @@
                                 <div class="modal fade" id="desc${item.f_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">프레임 설명 수정</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.frame.config_desc') }}" method="post">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <div class="modal-body"><input type="hidden" name="f_id" value="${item.f_id}"><input type="text" class="form-control" name="config_desc" value="${item.desc ?? ''}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">저장</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button></div>
                                   </form>

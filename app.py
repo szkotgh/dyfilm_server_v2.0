@@ -2,11 +2,12 @@ from flask import Flask, render_template, send_file, request
 import src.utils as utils
 import db
 import router
-from flask_wtf.csrf import CSRFError
+from flask_wtf.csrf import CSRFError, CSRFProtect
 
 app = Flask(__name__)
 
 app.secret_key = utils.get_env('SESSION_SECRET_KEY')
+csrf = CSRFProtect(app)
 
 @app.after_request
 def add_security_headers(response):

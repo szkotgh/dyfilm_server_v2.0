@@ -32,6 +32,7 @@
         {% include "components/loader.html" %}
 
         <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             Password: <input type="password" name="password" required>
             <button type="submit">Go</button>
         </form>
