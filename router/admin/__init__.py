@@ -32,6 +32,7 @@ def login():
             session.clear()
             session['ADMIN'] = True
             session['ADMIN_LAST_ACTIVE_TIME'] = utils.get_now_datetime_str()
+            session['SESSION_FINGERPRINT'] = auth.generate_session_fingerprint()
             utils.logger.info(f'ADMIN LOGIN FROM: {utils.get_ip()}')
             flash('Login successfully', 'success')
             return redirect(url_for('router.admin.index'))

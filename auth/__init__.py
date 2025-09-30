@@ -2,6 +2,26 @@ from functools import wraps
 import src.utils as utils
 from flask import flash, g, redirect, url_for, session, request
 import db.device
+import hashlib
+
+def generate_session_fingerprint():
+    user_ip = utils.get_ip()
+    user_agent = request.headers.get('User-Agent', '')
+    fingerprint_data = f"{user_ip}:{user_agent}"
+    return hashlib.sha256(fingerprint_data.encode()).hexdigest()[:16]
+
+def validate_session_fingerprint():
+    stored_fingerprint = session.get('SESSION_FINGERPRINT')
+    current_fingerprint = generate_session_fingerprint()
+    
+    if not stored_fingerprint:
+        return False
+    
+    if stored_fingerprint != current_fingerprint:
+        utils.logger.warning(f'Session fingerprint mismatch - Stored: {stored_fingerprint}, Current: {current_fingerprint}')
+        return False
+    
+    return True
 
 def admin_required(f):
     @wraps(f)
@@ -18,6 +38,12 @@ def admin_required(f):
             if admin_status != True:
                 session.clear()
                 flash('Admin login required', 'error')
+                return redirect(url_for('router.admin.login'))
+            
+            if not validate_session_fingerprint():
+                session.clear()
+                flash('Session security validation failed. Please log in again.', 'error')
+                utils.logger.warning(f'Session fingerprint validation failed for IP: {utils.get_ip()}')
                 return redirect(url_for('router.admin.login'))
             
             admin_last_active_datetime = utils.convert_string_to_datetime(admin_last_active_time)
