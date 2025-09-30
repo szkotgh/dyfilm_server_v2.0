@@ -19,6 +19,7 @@
                 <!-- File upload form -->
                 <hr>
                 <form method="post" action="{{ form_action }}" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <input type="hidden" name="{{ hidden_name }}" value="{{ hidden_value }}">
                     <div class="mb-3 text-start">
                         <label for="fileInput{{ modal_id }}" class="form-label">이미지 선택 <span class="text-danger">*</span></label>
