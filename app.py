@@ -1,6 +1,5 @@
 from flask import Flask, render_template, send_file, request
 import src.utils as utils
-import db
 import router
 from flask_wtf.csrf import CSRFError, CSRFProtect
 
@@ -13,7 +12,7 @@ app.config['SESSION_COOKIE_NAME'] = 'SESSION'
 app.config['SESSION_COOKIE_PATH'] = '/'
 app.config['SESSION_COOKIE_DOMAIN'] = None
 app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
 app.config['SESSION_COOKIE_MAX_AGE'] = 3600
 app.config['SESSION_COOKIE_SECURE'] = True
 
