@@ -42,7 +42,7 @@ def report_approve(report_id: int) -> bool:
         if not report:
             return False
         
-        cf_id = report[1]
+        cf_id = report['cf_id']
         current_time = utils.get_now_datetime_str()
         
         db.cursor.execute(
@@ -76,27 +76,27 @@ def report_reject(report_id: int) -> bool:
 
 def report_get_pending_count() -> int:
     try:
-        db.cursor.execute("SELECT COUNT(*) FROM report WHERE is_approved IS NULL")
+        db.cursor.execute("SELECT COUNT(*) as count FROM report WHERE is_approved IS NULL")
         result = db.cursor.fetchone()
-        return result[0] if result else 0
+        return result['count'] if result else 0
     except Exception as e:
         print(f"Error getting pending report count: {e}")
         return 0
 
 def report_pending_exists_for_cf_id(cf_id: str) -> bool:
     try:
-        db.cursor.execute("SELECT COUNT(*) FROM report WHERE cf_id = ? AND is_approved IS NULL", (cf_id,))
+        db.cursor.execute("SELECT COUNT(*) as count FROM report WHERE cf_id = ? AND is_approved IS NULL", (cf_id,))
         result = db.cursor.fetchone()
-        return result[0] > 0 if result else False
+        return result['count'] > 0 if result else False
     except Exception as e:
         print(f"Error checking pending report existence: {e}")
         return False
 
 def report_exists_for_cf_id(cf_id: str) -> bool:
     try:
-        db.cursor.execute("SELECT COUNT(*) FROM report WHERE cf_id = ?", (cf_id,))
+        db.cursor.execute("SELECT COUNT(*) as count FROM report WHERE cf_id = ?", (cf_id,))
         result = db.cursor.fetchone()
-        return result[0] > 0 if result else False
+        return result['count'] > 0 if result else False
     except Exception as e:
         print(f"Error checking report existence: {e}")
         return False
@@ -126,9 +126,9 @@ def report_get_list_paginated(limit: int, offset: int):
 
 def report_count() -> int:
     try:
-        db.cursor.execute("SELECT COUNT(*) FROM report")
+        db.cursor.execute("SELECT COUNT(*) as count FROM report")
         row = db.cursor.fetchone()
-        return int(row[0]) if row else 0
+        return int(row['count']) if row else 0
     except Exception as e:
         print(f"Error getting report count: {e}")
         return 0

@@ -27,14 +27,14 @@ def get_list():
     items = []
     for r in rows:
         items.append({
-            'f_id': r[0],
-            'status': bool(r[1]),
-            'file_name': r[2],
-            'meta': r[3],
-            'desc': r[4],
-            'create': r[5],
-            'use_count': r[6],
-            'image_url': url_for('router.view.view_frame.send_frame', f_id=r[0])
+            'f_id': r['f_id'],
+            'status': bool(r['status']),
+            'file_name': r['file_name'],
+            'meta': r['meta'],
+            'desc': r['desc'],
+            'create': r['create'],
+            'use_count': r['use_count'],
+            'image_url': url_for('router.view.view_frame.send_frame', f_id=r['f_id'])
         })
     return jsonify({ 'items': items })
 
@@ -105,7 +105,7 @@ def config_status():
         return redirect(url_for('router.admin.config.frame.index'))
     
     # change status
-    status = False if frame_result[1] == True else True
+    status = False if frame_result['status'] == True else True
     result = db.frame.frame_config_status(f_id, status)
     
     if result:
@@ -132,7 +132,7 @@ def config_image():
         flash('Frame not found', 'error')
         return redirect(url_for('router.admin.config.frame.index'))
     
-    file_name = frame_result[2]
+    file_name = frame_result['file_name']
     file_path = os.path.join(db.FRAMES_PATH, file_name)
     
     try:
@@ -213,7 +213,7 @@ def remove():
         flash('Failed to remove frame from database', 'error')
         return redirect(url_for('router.admin.config.frame.index'))
     
-    file_name = frame_result[2]
+    file_name = frame_result['file_name']
     file_path = os.path.join(db.FRAMES_PATH, file_name)
     try:
         os.remove(file_path)

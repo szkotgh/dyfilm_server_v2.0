@@ -164,7 +164,7 @@
                                 <div class="modal fade" id="file_name${item.cf_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">캡프레임 이미지</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <div class="modal-body text-center"><img id="modalImagefile_name${item.cf_id}" data-src="${item.image_url}" src="" class="img-fluid" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/loading.gif') }}';"></div>
-                                  <div class="modal-body"><p>이 이미지는 변경할 수 없습니다.</p></div>
+                                  <div class="modal-body"><a href="https://film.dyhs.kr/view/capframe/${item.cf_id}" target="_blank">이미지 열람</a><p>이 이미지는 변경할 수 없습니다.</p></div>
                                   <div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button></div>
                                 </div></div></div>
                         </td>

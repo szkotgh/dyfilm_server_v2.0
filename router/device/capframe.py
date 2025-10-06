@@ -12,7 +12,7 @@ bp = Blueprint('capframe', __name__, url_prefix='/capframe')
 @bp.route('/capframe_get', methods=['GET'])
 @auth.device_auth_with_status
 def capframe_get():
-    d_id = g.device_info[0]
+    d_id = g.device_info['d_id']
     
     cf_id = request.args.get('cf_id')
     if not cf_id or not utils.validate_id_format(cf_id):
@@ -22,9 +22,9 @@ def capframe_get():
     if not capframe_info:
         return utils.get_code('invalid_parameter')
     
-    file_path = os.path.join(db.CAPFRAMES_PATH, capframe_info[4])
+    file_path = os.path.join(db.CAPFRAMES_PATH, capframe_info['file_name'])
     
-    if not utils.is_safe_path(db.CAPFRAMES_PATH, capframe_info[4]) or not os.path.exists(file_path) or not os.path.isfile(file_path):
+    if not utils.is_safe_path(db.CAPFRAMES_PATH, capframe_info['file_name']) or not os.path.exists(file_path) or not os.path.isfile(file_path):
         return utils.get_code('file_not_found')
     
     try:
@@ -35,7 +35,7 @@ def capframe_get():
 @bp.route('/capframe_create', methods=['POST'])
 @auth.device_auth_with_status
 def capframe_create():
-    d_id = g.device_info[0]
+    d_id = g.device_info['d_id']
     
     f_id = request.form.get('f_id')
     if not f_id or not f_id.isdigit():
@@ -46,7 +46,7 @@ def capframe_create():
         return utils.get_code('invalid_parameter')
     
     try:
-        frame_meta = json.loads(frame_info[3])
+        frame_meta = json.loads(frame_info['meta'])
     except (json.JSONDecodeError, TypeError):
         return utils.get_code('invalid_parameter')
     
@@ -69,9 +69,9 @@ def capframe_create():
         
     c_id_list = []
     for ready_capture in ready_captures:
-        c_id_list.append(ready_capture[0])
+        c_id_list.append(ready_capture['c_id'])
     
-    result = db.capframe.capframe_create(d_id, frame_info[0], c_id_list)
+    result = db.capframe.capframe_create(d_id, frame_info['f_id'], c_id_list)
     if not result:
         return utils.get_code('unknown_error', info=g.capframe_fall_info)
     else:

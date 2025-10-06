@@ -23,9 +23,9 @@ def frame_get():
     if not f_info:
         return utils.get_code('invalid_parameter')
     
-    file_path = os.path.join(db.FRAMES_PATH, f_info[2])
+    file_path = os.path.join(db.FRAMES_PATH, f_info['file_name'])
     
-    if not utils.is_safe_path(db.FRAMES_PATH, f_info[2]) or not os.path.exists(file_path) or not os.path.isfile(file_path):
+    if not utils.is_safe_path(db.FRAMES_PATH, f_info['file_name']) or not os.path.exists(file_path) or not os.path.isfile(file_path):
         return utils.get_code('file_not_found')
     
     try:

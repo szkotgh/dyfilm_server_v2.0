@@ -43,7 +43,7 @@ def capture_get():
     if not db_result:
         return utils.get_code('invalid_parameter')
     
-    file_name = db_result[3]
+    file_name = db_result['file_name']
     file_path = os.path.join(db.CAPTURES_PATH, file_name)
     
     if not utils.is_safe_path(db.CAPTURES_PATH, file_name) or not os.path.exists(file_path) or not os.path.isfile(file_path):
@@ -57,7 +57,7 @@ def capture_get():
 @bp.route('/regi_capture', methods=['POST'])
 @auth.device_auth_with_status
 def regi_capture():
-    d_id = g.device_info[0]
+    d_id = g.device_info['d_id']
     image = request.files.get('image')
     
     if not image:
