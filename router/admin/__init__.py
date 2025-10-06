@@ -1,6 +1,7 @@
-import hmac
+import os
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 import src.utils as utils
+import bcrypt
 import auth
 import router.admin.config as config
 import router.admin.report as report
@@ -27,8 +28,8 @@ def login():
         
         if not input_pw or not input_pw.strip():
             return render_template('admin/login.html', user_ip=utils.get_ip(), getout=True)
-        
-        if hmac.compare_digest(input_pw, utils.get_env('ADMIN_PASSWORD')):
+
+        if bcrypt.checkpw(input_pw.encode('utf-8'), os.environ['ADMIN_PASSWORD'].encode('utf-8')):
             session.clear()
             session['ADMIN'] = True
             session['ADMIN_LAST_ACTIVE_TIME'] = utils.get_now_datetime_str()
