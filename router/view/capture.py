@@ -13,16 +13,16 @@ def send_capture(c_id):
         return utils.get_code('file_not_found')
     
     is_admin = session.get('ADMIN', False)
-    if not c_result[2] and not is_admin:
+    if not c_result['status'] and not is_admin:
         return utils.get_code('private_post')
     
-    file_path = os.path.join(db.CAPTURES_PATH, c_result[3])
+    file_path = os.path.join(db.CAPTURES_PATH, c_result['file_name'])
     
-    if not utils.is_safe_path(db.CAPTURES_PATH, c_result[3]) or not os.path.exists(file_path) or not os.path.isfile(file_path):
+    if not utils.is_safe_path(db.CAPTURES_PATH, c_result['file_name']) or not os.path.exists(file_path) or not os.path.isfile(file_path):
         return utils.get_code('file_not_found')
     
     try:
-        filename = f"{c_result[5]}.{utils.get_extension(c_result[3])}"
+        filename = f"{c_result['create']}.{utils.get_extension(c_result['file_name'])}"
         return send_file(file_path, as_attachment=False, download_name=filename) # as_attachment=utils.is_mobile_user()
     except:
         return utils.get_code('file_not_found')

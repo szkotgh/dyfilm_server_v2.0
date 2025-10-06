@@ -19,9 +19,9 @@ def device_get_list_paginated(limit: int, offset: int):
 
 def device_count() -> int:
     try:
-        db.cursor.execute('SELECT COUNT(*) FROM device')
+        db.cursor.execute('SELECT COUNT(*) as count FROM device')
         row = db.cursor.fetchone()
-        return int(row[0]) if row else 0
+        return int(row['count']) if row else 0
     except Exception:
         return 0
 

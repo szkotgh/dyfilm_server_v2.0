@@ -92,7 +92,7 @@ def device_auth(f):
             return utils.get_code('authorize_failed')
         
         # last use time update
-        db.device.device_update_last_use_time(db_result[0])
+        db.device.device_update_last_use_time(db_result['d_id'])
         
         # temp save device info data
         g.device_info = db_result
@@ -111,11 +111,11 @@ def device_auth_with_status(f):
             return utils.get_code('authorize_failed')
         
         # check device status
-        if db_result[1] == False:
+        if db_result['status'] == False:
             return utils.get_code('device_disabled')
         
         # last use time update
-        db.device.device_update_last_use_time(db_result[0])
+        db.device.device_update_last_use_time(db_result['d_id'])
         
         # temp save device info data
         g.device_info = (db_result)

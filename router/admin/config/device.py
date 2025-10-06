@@ -27,12 +27,12 @@ def get_list():
     items = []
     for r in rows:
         items.append({
-            'd_id': r[0],
-            'status': bool(r[1]),
-            'desc': r[2],
-            'auth_token': r[3],
-            'create': r[4],
-            'last_use': r[5],
+            'd_id': r['d_id'],
+            'status': bool(r['status']),
+            'desc': r['desc'],
+            'auth_token': r['auth_token'],
+            'create': r['create'],
+            'last_use': r['last_use'],
         })
     return jsonify({ 'items': items })
 
@@ -81,7 +81,7 @@ def config_status():
         flash('Device not found', 'error')
         return redirect(url_for('router.admin.config.device.index'))
     
-    status = False if equal_device[1] == True else True
+    status = False if equal_device['status'] == True else True
     result = db.device.device_config_status(d_id, status)
     
     if result:

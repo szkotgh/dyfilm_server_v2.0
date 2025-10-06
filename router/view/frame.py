@@ -13,12 +13,12 @@ def send_frame(f_id):
         return utils.get_code('file_not_found')
     
     is_admin = session.get('ADMIN', False)
-    if not f_info[1] and not is_admin:
+    if not f_info['status'] and not is_admin:
         return utils.get_code('private_post')
     
-    file_path = os.path.join(db.FRAMES_PATH, f_info[2])
+    file_path = os.path.join(db.FRAMES_PATH, f_info['file_name'])
     
-    if not utils.is_safe_path(db.FRAMES_PATH, f_info[2]) or not os.path.exists(file_path) or not os.path.isfile(file_path):
+    if not utils.is_safe_path(db.FRAMES_PATH, f_info['file_name']) or not os.path.exists(file_path) or not os.path.isfile(file_path):
         return utils.get_code('file_not_found')
     
     try:

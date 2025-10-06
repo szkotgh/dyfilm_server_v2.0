@@ -31,9 +31,9 @@ def capframe_get_list_paginated(limit: int, offset: int):
 
 def capframe_count() -> int:
     try:
-        db.cursor.execute('SELECT COUNT(*) FROM capframe')
+        db.cursor.execute('SELECT COUNT(*) as count FROM capframe')
         row = db.cursor.fetchone()
-        return int(row[0]) if row else 0
+        return int(row['count']) if row else 0
     except Exception:
         return 0
 
@@ -53,7 +53,7 @@ def capframe_create(d_id:int, f_id:int, c_id: list):
         g.capframe_fall_info = "invalid parameter: f_id, frame not found"
         return False
     
-    frame_meta = json.loads(frame_info[3])
+    frame_meta = json.loads(frame_info['meta'])
     frame_capture_count = len(frame_meta['captures'])
     if len(c_id) < frame_capture_count:
         g.capframe_fall_info = "invalid parameter: c_id list"
@@ -96,7 +96,7 @@ def capframe_create(d_id:int, f_id:int, c_id: list):
     for index, capture in enumerate(frame_meta['captures']):
         capture_info = ready_captures[index]
         
-        CAPTURE_PATH = os.path.join(db.CAPTURES_PATH, capture_info[3])
+        CAPTURE_PATH = os.path.join(db.CAPTURES_PATH, capture_info['file_name'])
         capture_img = Image.open(CAPTURE_PATH).convert("RGB")
         img_width, img_height = capture_img.size
         target_width, target_height = capture['size']
@@ -133,7 +133,7 @@ def capframe_create(d_id:int, f_id:int, c_id: list):
         capframe.paste(capture_img, capture['loca'])
     
     # draw frame
-    FRAME_PATH = os.path.join(db.FRAMES_PATH, frame_info[2])
+    FRAME_PATH = os.path.join(db.FRAMES_PATH, frame_info['file_name'])
     frame = Image.open(FRAME_PATH).convert("RGBA")
     frame = frame.resize(CANVAS_SIZE)
     capframe.paste(frame, (0, 0), frame)
@@ -184,7 +184,7 @@ def capframe_create(d_id:int, f_id:int, c_id: list):
         capture_info = ready_captures[index]
         result = db.capframe_info.capframe_info_add(
             cf_id=cf_id,
-            c_id=capture_info[0],
+            c_id=capture_info['c_id'],
             c_no=index
         )
         if not result:
@@ -202,7 +202,7 @@ def capframe_remove(cf_id: str):
         db.cursor.execute("SELECT f_id FROM capframe WHERE cf_id = ?", (cf_id,))
         row = db.cursor.fetchone()
         if row:
-            f_id = row[0]
+            f_id = row['f_id']
         else:
             return False
 

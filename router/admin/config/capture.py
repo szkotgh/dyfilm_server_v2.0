@@ -27,13 +27,13 @@ def get_list():
     items = []
     for r in rows:
         items.append({
-            'c_id': r[0],
-            'd_id': r[1],
-            'status': bool(r[2]),
-            'file_name': r[3],
-            'desc': r[4],
-            'create': r[5],
-            'image_url': url_for('router.view.view_capture.send_capture', c_id=r[0])
+            'c_id': r['c_id'],
+            'd_id': r['d_id'],
+            'status': bool(r['status']),
+            'file_name': r['file_name'],
+            'desc': r['desc'],
+            'create': r['create'],
+            'image_url': url_for('router.view.view_capture.send_capture', c_id=r['c_id'])
         })
     return jsonify({ 'items': items })
 
@@ -104,7 +104,7 @@ def remove():
         return redirect(url_for('router.admin.config.capture.index'))
 
     # delete capture image
-    file_name = capture_result[3]
+    file_name = capture_result['file_name']
     file_path = os.path.join(db.CAPTURES_PATH, file_name)
     try:
         os.remove(file_path)
@@ -128,7 +128,7 @@ def config_status():
         flash('Capture not found', 'error')
         return redirect(url_for('router.admin.config.capture.index'))
     
-    status = False if db_result[2] == True else True
+    status = False if db_result['status'] == True else True
     db_result = db.capture.capture_config_status(c_id, status)
     
     if not db_result:

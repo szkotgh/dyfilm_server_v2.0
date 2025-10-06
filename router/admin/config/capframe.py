@@ -34,15 +34,15 @@ def get_list():
     items = []
     for r in rows:
         items.append({
-            'cf_id': r[0],
-            'd_id': r[1],
-            'f_id': r[2],
-            'status': bool(r[3]),
-            'file_name': r[4],
-            'desc': r[5],
-            'create': r[6],
-            'processing_time': r[7],
-            'image_url': url_for('router.view.view_capframe.serve_capframe', cf_id=r[0])
+            'cf_id': r['cf_id'],
+            'd_id': r['d_id'],
+            'f_id': r['f_id'],
+            'status': bool(r['status']),
+            'file_name': r['file_name'],
+            'desc': r['desc'],
+            'create': r['create'],
+            'processing_time': r['processing_time'],
+            'image_url': url_for('router.view.view_capframe.serve_capframe', cf_id=r['cf_id'])
         })
     return jsonify({ 'items': items })
 
@@ -73,7 +73,7 @@ def remove():
         flash('Failed to remove CapFrame', 'error')
         return redirect(url_for('router.admin.config.capframe.index'))
     
-    file_name = capframe_result[4]
+    file_name = capframe_result['file_name']
     file_path = os.path.join(db.CAPFRAMES_PATH, file_name)
     try:
         os.remove(file_path)
@@ -97,7 +97,7 @@ def config_status():
         flash('CapFrame not found', 'error')
         return redirect(url_for('router.admin.config.capframe.index'))
     
-    status = False if db_result[3] == True else True
+    status = False if db_result['status'] == True else True
     db_result = db.capframe.capframe_config_status(cf_id, status)
     if not db_result:
         flash('Failed to update CapFrame status', 'error')
@@ -139,7 +139,7 @@ def create_frame_selected(f_id):
         flash('Frame not found. Select again', 'error')
         return redirect(url_for('router.admin.config.capframe.create'))
     
-    frame_meta = json.loads(frame_info[3])
+    frame_meta = json.loads(frame_info['meta'])
     frame_capture_count = len(frame_meta['captures'])
     
     if request.method == "POST":
@@ -152,7 +152,7 @@ def create_frame_selected(f_id):
                 flash('Capture ID Error. Select again', 'error')
                 return redirect(url_for('router.admin.config.capframe.create_frame_selected', f_id=f_id))
             
-            ready_capture_c_id_list.append(capture_info[0])
+            ready_capture_c_id_list.append(capture_info['c_id'])
 
         create_result = db.capframe.capframe_create(None, f_id, ready_capture_c_id_list)
         if not create_result:

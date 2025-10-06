@@ -15,21 +15,21 @@ def view_capframe(cf_id):
         return utils.get_code('file_not_found')
     
     is_admin = session.get('ADMIN', False)
-    if not cf_result[3] and not is_admin:
+    if not cf_result['status'] and not is_admin:
         return render_template('errors/private_post.html'), 403
     
-    file_path = os.path.join(db.CAPFRAMES_PATH, cf_result[4])
+    file_path = os.path.join(db.CAPFRAMES_PATH, cf_result['file_name'])
     
-    if not utils.is_safe_path(db.CAPFRAMES_PATH, cf_result[4]) or not os.path.exists(file_path) or not os.path.isfile(file_path):
+    if not utils.is_safe_path(db.CAPFRAMES_PATH, cf_result['file_name']) or not os.path.exists(file_path) or not os.path.isfile(file_path):
         return utils.get_code('file_not_found')
     
     try:
-        filename = f"{cf_result[6]}.{utils.get_extension(cf_result[4])}"
+        filename = f"{cf_result['create']}.{utils.get_extension(cf_result['file_name'])}"
         
         template_data = {
             'cf_id': cf_id,
             'filename': filename,
-            'capture_time': cf_result[6],
+            'capture_time': cf_result['create'],
             'image_url': url_for('router.view.view_capframe.serve_capframe', cf_id=cf_id),
             'download_url': url_for('router.view.view_capframe.download_capframe', cf_id=cf_id)
         }
@@ -45,12 +45,12 @@ def serve_capframe(cf_id):
         return utils.get_code('file_not_found')
     
     is_admin = session.get('ADMIN', False)
-    if not cf_result[3] and not is_admin:
+    if not cf_result['status'] and not is_admin:
         return utils.get_code('file_not_found'), 403
     
-    file_path = os.path.join(db.CAPFRAMES_PATH, cf_result[4])
+    file_path = os.path.join(db.CAPFRAMES_PATH, cf_result['file_name'])
     
-    if not utils.is_safe_path(db.CAPFRAMES_PATH, cf_result[4]) or not os.path.exists(file_path) or not os.path.isfile(file_path):
+    if not utils.is_safe_path(db.CAPFRAMES_PATH, cf_result['file_name']) or not os.path.exists(file_path) or not os.path.isfile(file_path):
         return utils.get_code('file_not_found')
     
     try:
@@ -67,16 +67,16 @@ def download_capframe(cf_id):
         return utils.get_code('file_not_found')
     
     is_admin = session.get('ADMIN', False)
-    if not cf_result[3] and not is_admin:
+    if not cf_result['status'] and not is_admin:
         return utils.get_code('file_not_found'), 403
     
-    file_path = os.path.join(db.CAPFRAMES_PATH, cf_result[4])
+    file_path = os.path.join(db.CAPFRAMES_PATH, cf_result['file_name'])
     
-    if not utils.is_safe_path(db.CAPFRAMES_PATH, cf_result[4]) or not os.path.exists(file_path) or not os.path.isfile(file_path):
+    if not utils.is_safe_path(db.CAPFRAMES_PATH, cf_result['file_name']) or not os.path.exists(file_path) or not os.path.isfile(file_path):
         return utils.get_code('file_not_found')
     
     try:
-        filename = f"{cf_result[6]}.{utils.get_extension(cf_result[4])}"
+        filename = f"{cf_result['create']}.{utils.get_extension(cf_result['file_name'])}"
         response = send_file(file_path, as_attachment=True, download_name=filename)
         response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response

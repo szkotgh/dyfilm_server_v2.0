@@ -30,15 +30,15 @@ def report_list_ajax():
         items = []
         for report in reports:
             items.append({
-                'report_id': report[0],
-                'cf_id': report[1],
-                'reason': report[2],
-                'admin_review_time': report[3],
-                'is_approved': report[4],
-                'reporter_ip': report[5],
-                'report_time': report[6],
-                'file_name': report[7],
-                'capframe_create_time': report[8]
+                'report_id': report['report_id'],
+                'cf_id': report['cf_id'],
+                'reason': report['reason'],
+                'admin_review_time': report['admin_review_time'],
+                'is_approved': report['is_approved'],
+                'reporter_ip': report['reporter_ip'],
+                'report_time': report['report_time'],
+                'file_name': report['file_name'],
+                'capframe_create_time': report['capframe_create_time']
             })
         
         return jsonify({'items': items})
