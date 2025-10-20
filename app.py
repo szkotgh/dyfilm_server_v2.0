@@ -1,12 +1,10 @@
 from flask import Flask, render_template, send_file, request
 import src.utils as utils
 import router
-from flask_wtf.csrf import CSRFError, CSRFProtect
 
 app = Flask(__name__)
 
 app.secret_key = utils.get_env('SESSION_SECRET_KEY')
-csrf = CSRFProtect(app)
 
 app.config['SESSION_COOKIE_NAME'] = 'SESSION'
 app.config['SESSION_COOKIE_PATH'] = '/'
@@ -61,9 +59,6 @@ def handle_exception_404(e):
 def handle_exception_405(e):
     return utils.get_code('method_not_allowed')
 
-@app.errorhandler(CSRFError)
-def handle_exception_csrf(e):
-    return utils.get_code('csrf_invalid')
 
 @app.errorhandler(Exception)
 def handle_exception(e):

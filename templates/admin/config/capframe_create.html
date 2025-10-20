@@ -77,7 +77,6 @@
         <div class="capture-select-content d-flex">
             <div class="form-section w-50 pe-3">
             <form method="post">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 {% for i in range(capture_len) %}
                 <div class="capture-list">
                     <label for="c_id-{{ i }}" class="form-label">{{ i + 1 }}번 캡쳐</label>
