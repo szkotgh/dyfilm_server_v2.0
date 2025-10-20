@@ -9,7 +9,9 @@ bp = Blueprint('frame', __name__, url_prefix='/frame')
 @bp.route('/frame_list', methods=['GET'])
 @auth.device_auth_with_status
 def frame_list():
-    return utils.get_code('success', db.frame.frame_get_list())
+    frame_list_data = db.frame.frame_get_list()
+    frame_list_serializable = [list(row) for row in frame_list_data]
+    return utils.get_code('success', frame_list_serializable)
 
 @bp.route('/frame_get', methods=['GET'])
 @auth.device_auth_with_status

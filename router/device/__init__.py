@@ -12,4 +12,5 @@ bp.register_blueprint(main_image.bp)
 @bp.route('/verify_token', methods=['GET'])
 @auth.device_auth
 def verify_token():
-    return utils.get_code('authorized_success', g.device_info)
+    device_info_list = list(g.device_info) if g.device_info else None
+    return utils.get_code('authorized_success', device_info_list)

@@ -144,7 +144,6 @@
                                 <div class="modal fade" id="d_id${item.d_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">장치 삭제</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.device.remove') }}" method="post">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <div class="modal-body"><p>장치 ${item.d_id}을 삭제하시겠습니까? 되돌릴 수 없습니다.</p><input type="hidden" name="d_id" value="${item.d_id}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">네</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button></div>
                                   </form>
@@ -155,7 +154,6 @@
                                 <div class="modal fade" id="status${item.d_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">장치 상태 변경</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.device.config_status') }}" method="post">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <div class="modal-body"><p>장치 ${item.d_id}의 상태를 변경하시겠습니까?</p><input type="hidden" name="d_id" value="${item.d_id}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">네</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button></div>
                                   </form>
@@ -166,7 +164,6 @@
                                 <div class="modal fade" id="desc${item.d_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">장치 설명 수정</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.device.config_desc') }}" method="post">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <div class="modal-body"><input type="hidden" name="d_id" value="${item.d_id}"><input type="text" class="form-control" name="config_desc" value="${item.desc ?? ''}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">저장</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button></div>
                                   </form>
@@ -177,7 +174,6 @@
                                 <div class="modal fade" id="refreshtoken${item.d_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">장치 토큰 갱신</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.device.refresh_token') }}" method="post">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <div class="modal-body"><p>장치 ${item.d_id}의 인증 토큰을 갱신하시겠습니까? 기존 토큰은 만료됩니다.</p><input type="hidden" name="d_id" value="${item.d_id}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">네</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button></div>
                                   </form>
