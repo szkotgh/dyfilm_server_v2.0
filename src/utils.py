@@ -27,8 +27,8 @@ def get_code(key: str, info = None):
     return code, code['code']
 
 def get_ip(): 
-    user_ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
-    return f'{user_ip}'
+    user_ip = request.headers.get("Cf-Connecting-Ip", request.remote_addr)
+    return user_ip
 
 def gen_hash(key: str = None, len=16):
     if key is None:
