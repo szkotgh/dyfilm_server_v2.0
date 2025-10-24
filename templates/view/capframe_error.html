@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>{{ filename }} | 덕영필름</title>
+<style>
+    body {
+        background-color: #2b2a33;
+    }
+
+    .capframe-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        position: relative;
+    }
+    
+    .not-found-content {
+        text-align: center;
+        color: white;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .not-found-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #ff4255;
+        font-family: 'AppleSDGothicNeoB', sans-serif;
+    }
+    
+    .not-found-message {
+        font-size: 1.2rem;
+        margin-bottom: 40px;
+        color: #ccc;
+        line-height: 1.6;
+    }
+    
+    
+    @media (max-width: 768px) {
+        .not-found-title {
+            font-size: 2rem;
+        }
+        
+        .not-found-message {
+            font-size: 1rem;
+        }
+        
+        .not-found-actions .btn {
+            padding: 10px 25px;
+            font-size: 14px;
+        }
+        
+        .capframe-container {
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="capframe-container">
+    <div class="not-found-content">
+        <h1 class="not-found-title">{{ title }}</h1>
+        <p class="not-found-message">{{ message }}</p>
+        <div class="not-found-actions">
+            <a href="/" class="btn btn-danger">홈으로</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

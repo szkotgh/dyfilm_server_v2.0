@@ -12,16 +12,15 @@ bp.register_blueprint(capframe_report_bp)
 def view_capframe(cf_id):
     cf_result = db.capframe.capframe_get(cf_id)
     if not cf_result:
-        return utils.get_code('file_not_found')
+        return render_template('view/capframe_error.html', title='사진을 찾을 수 없습니다', message='잘못된 아이디입니다.')
     
     is_admin = session.get('ADMIN', False)
     if not cf_result['status'] and not is_admin:
         return render_template('errors/private_post.html'), 403
     
     file_path = os.path.join(db.CAPFRAMES_PATH, cf_result['file_name'])
-    
     if not utils.is_safe_path(db.CAPFRAMES_PATH, cf_result['file_name']) or not os.path.exists(file_path) or not os.path.isfile(file_path):
-        return utils.get_code('file_not_found')
+        return render_template('view/capframe_error.html', title='사진을 찾을 수 없습니다', message='파일이 존재하지 않습니다.')
     
     try:
         filename = f"{cf_result['create']}.{utils.get_extension(cf_result['file_name'])}"
@@ -36,7 +35,7 @@ def view_capframe(cf_id):
     
         return render_template('view/capframe_view.html', **template_data)
     except:
-        return utils.get_code('file_not_found')
+        return render_template('view/capframe_error.html', title='오류가 발생했습니다', message='요청하신 사진을 불러올 수 없습니다.')
 
 @bp.route('/<cf_id>/image', methods=['GET'])
 def serve_capframe(cf_id):
