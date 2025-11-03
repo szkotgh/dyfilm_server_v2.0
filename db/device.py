@@ -9,7 +9,7 @@ def device_get_list():
 
 def device_get_list_paginated(limit: int, offset: int):
     try:
-        db.cursor.execute('SELECT * FROM device ORDER BY "create" DESC LIMIT ? OFFSET ?', (limit, offset))
+        db.cursor.execute('SELECT * FROM device ORDER BY "create" ASC LIMIT ? OFFSET ?', (limit, offset))
         rows = db.cursor.fetchall()
         return rows
     except Exception:

@@ -1,205 +1,118 @@
 {% extends "admin/base.html" %}
 
-{% block head %}
-<style>
-    .admin-main-split {
-        display: flex;
-        flex-direction: row;
-        gap: 2rem;
-        min-height: 70vh;
-    }
-    .admin-main-left, .admin-main-right {
-        flex: 1 1 0;
-        min-width: 0;
-    }
-    .admin-main-left {
-        padding-right: 1rem;
-        border-right: 1.5px solid #eee;
-    }
-    .admin-main-right {
-        padding-left: 1rem;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-    }
-    .stats-container {
-        margin-bottom: 2rem;
-    }
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-    .stat-card {
-        background: #316cf4;
-        color: white;
-        padding: 1rem 0.8rem;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 px 6px rgba(0, 0, 0, 0.08);
-        transition: transform 0.2s;
-    }
-    .stat-number {
-        font-size: 1.7rem;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-    }
-    .stat-label {
-        font-size: 0.9rem;
-        opacity: 0.9;
-    }
-    .chart-container {
-        background: white;
-        padding: 1.2rem 1rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-        margin-bottom: 2rem;
-    }
-    .chart-title {
-        font-size: 1.1rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-        color: #333;
-    }
-    .daily-chart {
-        display: flex;
-        align-items: end;
-        height: 120px;
-        gap: 8px;
-        padding: 1rem 0;
-    }
-    .chart-bar {
-        flex: 1;
-        background: #316cf4;
-        border-radius: 4px 4px 0 0;
-        min-height: 20px;
-        position: relative;
-        transition: opacity 0.2s;
-    }
-    .chart-bar:hover {
-        opacity: 0.8;
-    }
-    .chart-label {
-        position: absolute;
-        bottom: -22px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.8rem;
-        color: #666;
-    }
-    .chart-value {
-        position: absolute;
-        top: -22px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.8rem;
-        font-weight: bold;
-        color: #333;
-    }
-    .top-frames {
-        background: white;
-        padding: 1.2rem 1rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-    }
-    .frame-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #eee;
-    }
-    .frame-item:last-child {
-        border-bottom: none;
-    }
-    .frame-name {
-        font-weight: 500;
-    }
-    .frame-count {
-        background: #316cf4;
-        color: white;
-        padding: 0.2rem 0.6rem;
-        border-radius: 12px;
-        font-size: 0.8rem;
-    }
-    .admin-menu-list {
-        width: 100%;
-        margin-bottom: 2rem;
-    }
-    .admin-menu-list .list-group-item {
-        font-size: 1.05rem;
-    }
-    .admin-menu-footer {
-        margin-top: auto;
-        font-size: 0.95rem;
-        color: #666;
-    }
-    @media (max-width: 900px) {
-        .admin-main-split {
-            flex-direction: column;
-        }
-        .admin-main-left, .admin-main-right {
-            padding: 0;
-            border: none;
-        }
-        .admin-main-left {
-            margin-bottom: 2rem;
-        }
-    }
-</style>
-{% endblock head %}
-
 {% block body %}
-<div class="admin-main-split">
-    <div class="admin-main-left">
-        <div class="stats-container">
-            <div class="stats-grid">
-                <button class="stat-card" onclick="window.location.href='/admin/config/capframe'">
-                    <div class="stat-number">{{ stats.total_capframes }}</div>
-                    <div class="stat-label">전체 캡프레임 수</div>
-                </button>
-                <button class="stat-card" onclick="window.location.href='/admin/config/device'">
-                    <div class="stat-number">{{ stats.active_devices }}/{{ stats.total_devices }}</div>
-                    <div class="stat-label">활성 장치</div>
-                </button>
-                <button class="stat-card" onclick="window.location.href='/admin/config/frame'">
-                    <div class="stat-number">{{ stats.active_frames }}/{{ stats.total_frames }}</div>
-                    <div class="stat-label">활성 프레임</div>
-                </button>
-                <button class="stat-card" onclick="window.location.href='/admin/report'">
-                    <div class="stat-number">{{ stats.pending_reports }}</div>
-                    <div class="stat-label">처리 대기 신고</div>
-                </button>
-            </div>
-            <div class="top-frames">
-                <div class="chart-title">가장 많이 사용된 프레임</div>
-                {% for frame in stats.top_frames %}
-                <div class="frame-item">
-                    <div class="frame-name">{{ frame[1] if frame[1] else 'Frame #' ~ frame[0] }}</div>
-                    <div class="frame-count">{{ frame[2] }}회</div>
+<div class="row g-4" style="min-height: 70vh;">
+    <div class="col-lg-6 pe-lg-3 border-lg-end mb-lg-0 mb-4">
+        <div class="mb-4">
+            <div class="row g-3 mb-4">
+                <div class="col-md-6 col-lg-3">
+                    <button class="btn btn-primary w-100 p-3" onclick="window.location.href='/admin/config/capframe'">
+                        <div class="fs-3 fw-bold">{{ stats.total_capframes }}</div>
+                        <div class="small opacity-75">전체 캡프레임 수</div>
+                    </button>
                 </div>
-                {% endfor %}
-                {% if not stats.top_frames %}
-                <div class="text-muted">아직 사용된 프레임이 없습니다.</div>
-                {% endif %}
+                <div class="col-md-6 col-lg-3">
+                    <button class="btn btn-primary w-100 p-3" onclick="window.location.href='/admin/config/device'">
+                        <div class="fs-3 fw-bold">{{ stats.active_devices }}/{{ stats.total_devices }}</div>
+                        <div class="small opacity-75">활성 장치</div>
+                    </button>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <button class="btn btn-primary w-100 p-3" onclick="window.location.href='/admin/config/frame'">
+                        <div class="fs-3 fw-bold">{{ stats.active_frames }}/{{ stats.total_frames }}</div>
+                        <div class="small opacity-75">활성 프레임</div>
+                    </button>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <button class="btn btn-primary w-100 p-3" onclick="window.location.href='/admin/report'">
+                        <div class="fs-3 fw-bold">{{ stats.pending_reports }}</div>
+                        <div class="small opacity-75">처리 대기 신고</div>
+                    </button>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header fw-bold">많이 사용된 프레임</div>
+                <div class="card-body">
+                    {% if stats.top_frames %}
+                    <div class="list-group list-group-flush">
+                        {% for frame in stats.top_frames %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span class="fw-medium">{{ frame[1] if frame[1] else 'Frame #' ~ frame[0] }}</span>
+                            <span class="badge bg-primary">{{ frame[2] }}회</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-muted">아직 사용된 프레임이 없습니다.</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header fw-bold">저장공간 상태</div>
+                <div class="card-body">
+                    <div class="position-relative mb-3">
+                        {% if (hardware_info.used_disk / hardware_info.total_disk) * 100 <= 20 %}
+                            <div class="mt-1 small">전체 디스크: {{ hardware_info.used_disk | filesizeformat }} / {{ hardware_info.total_disk | filesizeformat }}</div>
+                        {% endif %}
+                        {% if (db_size.total / hardware_info.total_disk) * 100 <= 15 %}
+                            <div class="small mb-1">덕영필름: {{ db_size.total | filesizeformat }}</div>
+                        {% endif %}
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" style="width: {{ (hardware_info.used_disk / hardware_info.total_disk) * 100 }}%" aria-valuenow="{{ (hardware_info.used_disk / hardware_info.total_disk) * 100 }}" aria-valuemin="0" aria-valuemax="100">
+                                {% if (hardware_info.used_disk / hardware_info.total_disk) * 100 > 20 %}
+                                <span class="position-absolute top-50 start-50 translate-middle text-white fw-bold small">전체 디스크: {{ hardware_info.used_disk | filesizeformat }} / {{ hardware_info.total_disk | filesizeformat }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ (db_size.total / hardware_info.total_disk) * 100 }}%" aria-valuenow="{{ (db_size.total / hardware_info.total_disk) * 100 }}" aria-valuemin="0" aria-valuemax="100">
+                                {% if (db_size.total / hardware_info.total_disk) * 100 > 15 %}
+                                <span class="position-absolute top-50 start-50 translate-middle text-white fw-bold small">DB 총합: {{ db_size.total | filesizeformat }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span class="fw-medium">DB</span>
+                            <span class="badge bg-primary">{{ db_size.db | filesizeformat }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span class="fw-medium">main_image</span>
+                            <span class="badge bg-primary">{{ db_size.main_image | filesizeformat }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span class="fw-medium">frames</span>
+                            <span class="badge bg-primary">{{ db_size.frames | filesizeformat }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span class="fw-medium">captures</span>
+                            <span class="badge bg-primary">{{ db_size.captures | filesizeformat }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span class="fw-medium">capframes</span>
+                            <span class="badge bg-primary">{{ db_size.capframes | filesizeformat }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span class="fw-medium">qr</span>
+                            <span class="badge bg-primary">{{ db_size.qr | filesizeformat }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="admin-main-right">
-        <div class="admin-menu-list">
+    <div class="col-lg-6 ps-lg-3 d-flex flex-column">
+        <div class="w-100 mb-4">
             <div class="list-group">
-                <a class="list-group-item list-group-item-action active" aria-current="true">관리 메뉴</a>
-                <a href="/admin/config/device" class="list-group-item list-group-item-action">Device 관리</a>
-                <a href="/admin/config/frame" class="list-group-item list-group-item-action">Frame 관리</a>
-                <a href="/admin/config/capture" class="list-group-item list-group-item-action">Capture 관리</a>
-                <a href="/admin/config/capframe" class="list-group-item list-group-item-action">CapFrame 관리</a>
-                <a href="/admin/report" class="list-group-item list-group-item-action">CapFrame 비공개 처리 요청 확인</a>
+                <a class="list-group-item list-group-item-action active fs-6" aria-current="true">관리 메뉴</a>
+                <a href="/admin/config/device" class="list-group-item list-group-item-action fs-6">Device 관리</a>
+                <a href="/admin/config/frame" class="list-group-item list-group-item-action fs-6">Frame 관리</a>
+                <a href="/admin/config/capture" class="list-group-item list-group-item-action fs-6">Capture 관리</a>
+                <a href="/admin/config/capframe" class="list-group-item list-group-item-action fs-6">CapFrame 관리</a>
+                <a href="/admin/report" class="list-group-item list-group-item-action fs-6">CapFrame 비공개 처리 요청 확인</a>
             </div><br>
             <a href="/">메인으로</a> | <a href="/admin/logout">로그아웃</a>
         </div>
-        <div class="admin-menu-footer">
+        <div class="mt-auto text-muted small">
         </div>
     </div>
 </div>

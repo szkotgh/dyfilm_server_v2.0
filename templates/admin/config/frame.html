@@ -123,7 +123,7 @@
                                 </div></div></div>
                             </td>
                             <td>
-                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#status${item.f_id}">${item.status ? '활성화' : '비활성화'}</span>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#status${item.f_id}" class="${item.status ? 'text-success' : 'text-danger'}">${item.status ? '활성화' : '비활성화'}</span>
                                 <div class="modal fade" id="status${item.f_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">프레임 상태 변경</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.frame.config_status') }}" method="post">

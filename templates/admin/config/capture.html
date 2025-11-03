@@ -120,7 +120,7 @@
                                 <div class="modal fade" id="d_id${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">장치 아이디</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p>이 값은 변경할 수 없습니다.</p></div><div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button></div></div></div></div>
                             </td>
                             <td>
-                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#status${item.c_id}">${item.status ? '활성화' : '비활성화'}</span>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#status${item.c_id}" class="${item.status ? '' : 'text-danger'}">${item.status ? '활성화' : '비활성화'}</span>
                                 <div class="modal fade" id="status${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">캡쳐 상태 변경</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.capture.config_status') }}" method="post">
