@@ -15,7 +15,17 @@ bp.register_blueprint(report.bp)
 @auth.admin_required
 def index():
     stats = db.get_statistics()
-    return render_template('admin/index.html', user_ip=utils.get_ip(), stats=stats)
+    hardware_info = utils.get_hardware_info()
+    db_size = {
+        'db': utils.get_db_size(),
+        'capframes': utils.get_db_capframes_size(),
+        'captures': utils.get_db_captures_size(),
+        'frames': utils.get_db_frames_size(),
+        'qr': utils.get_db_qr_size(),
+        'main_image': utils.get_db_main_image_size(),
+        'total': utils.get_db_size() + utils.get_db_capframes_size() + utils.get_db_captures_size() + utils.get_db_frames_size() + utils.get_db_qr_size() + utils.get_db_main_image_size()
+    }
+    return render_template('admin/index.html', user_ip=utils.get_ip(), stats=stats, db_size=db_size, hardware_info=hardware_info)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():

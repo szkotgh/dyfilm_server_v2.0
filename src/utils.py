@@ -1,13 +1,14 @@
 from dotenv import load_dotenv
+from flask import request, session
+from user_agents import parse
 import datetime
 import json
 import os
 import re
-from flask import request, session
 import hashlib
 import qrcode
 import logging
-from user_agents import parse
+import psutil
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -133,6 +134,46 @@ def gen_qr(save_path, url_path: str):
     
     qr_img = qr.make_image(fill_color="black", back_color="white")
     qr_img.save(save_path)
+    
+def get_hardware_info():
+    cpu_usage = psutil.cpu_percent()
+    memory_info = psutil.virtual_memory()
+    try: cpu_temp = psutil.sensors_temperatures()['cpu_thermal'][0].current
+    except: cpu_temp = 0
+    info = {
+        "cpu_usages": psutil.cpu_percent(interval=1, percpu=True),
+        "cpu_count": psutil.cpu_count(),
+        "cpu_temp": cpu_temp,
+        "total_memory": memory_info.total,
+        "used_memory": memory_info.used,
+        "total_disk": psutil.disk_usage('/').total,
+        "used_disk": psutil.disk_usage('/').used
+    }
+    return info
+
+def get_db_size():
+    import db
+    return os.path.getsize(db.DB_FILE)
+
+def get_db_capframes_size():
+    import db
+    return sum(os.path.getsize(os.path.join(db.CAPFRAMES_PATH, file)) for file in os.listdir(db.CAPFRAMES_PATH))
+
+def get_db_captures_size():
+    import db
+    return sum(os.path.getsize(os.path.join(db.CAPTURES_PATH, file)) for file in os.listdir(db.CAPTURES_PATH))
+
+def get_db_frames_size():
+    import db
+    return sum(os.path.getsize(os.path.join(db.FRAMES_PATH, file)) for file in os.listdir(db.FRAMES_PATH))
+
+def get_db_qr_size():
+    import db
+    return sum(os.path.getsize(os.path.join(db.QR_PATH, file)) for file in os.listdir(db.QR_PATH))
+
+def get_db_main_image_size():
+    import db
+    return sum(os.path.getsize(os.path.join(db.MAIN_IMAGE_DIR_PATH, file)) for file in os.listdir(db.MAIN_IMAGE_DIR_PATH))
 
 # init
 load_dotenv()
