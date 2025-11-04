@@ -215,13 +215,13 @@
             <form id="reportForm">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="reportReason" class="form-label">요청 사유</label>
+                        <label for="reportReason" class="form-label">사유</label>
                         <textarea 
                             class="form-control" 
                             id="reportReason" 
                             name="reason" 
                             rows="6"
-                            placeholder="요청 사유를 구체적으로 작성해주세요. (500자 이내)"
+                            placeholder="사유를 구체적으로 작성하십시오. (최대 500자)"
                             maxlength="500"
                             required
                         ></textarea>
@@ -238,7 +238,7 @@
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="submit" class="btn btn-primary">요청 제출</button>
+                    <button type="submit" class="btn btn-danger">제출</button>
                 </div>
             </form>
         </div>
@@ -272,7 +272,7 @@
         
         const submitBtn = document.querySelector('#reportForm button[type="submit"]');
         submitBtn.disabled = false;
-        submitBtn.textContent = '요청 제출';
+        submitBtn.textContent = '제출';
         
         modal.show();
     }
@@ -283,6 +283,10 @@
         const reason = document.getElementById('reportReason').value.trim();
         if (!reason) {
             alert('사유를 입력해주세요.');
+            return;
+        }
+
+        if (!confirm('제출하시겠습니까?\n접수는 취소가 불가하며, 관리자 확인 후 처리됩니다.\n\n(요청한 기기 IP 정보는 자동으로 수집됩니다)')) {
             return;
         }
         
@@ -316,7 +320,7 @@
                 document.getElementById('reportError').textContent = data.message || '접수 중 오류가 발생했습니다.';
                 
                 submitBtn.disabled = false;
-                submitBtn.textContent = '요청 제출';
+                submitBtn.textContent = '제출';
             }
         })
         .catch(error => {
@@ -326,7 +330,7 @@
             document.getElementById('reportError').textContent = '오류가 발생했습니다.';
             
             submitBtn.disabled = false;
-            submitBtn.textContent = '요청 제출';
+            submitBtn.textContent = '제출';
             });
         });
     
