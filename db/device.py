@@ -50,7 +50,7 @@ def device_get_by_token(auth_token: str):
 def device_create() -> bool:
     try:
         current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        auth_token = f"Bearer {utils.gen_hash(len=16)}"
+        auth_token = f"{utils.gen_hash(len=16)}"
         
         db.cursor.execute('''
             INSERT INTO device (auth_token, "create") VALUES (?, ?)

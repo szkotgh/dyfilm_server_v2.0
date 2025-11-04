@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, session, url_for
 import src.utils as utils
 import bcrypt
 import auth
@@ -15,6 +15,11 @@ bp.register_blueprint(report.bp)
 @auth.admin_required
 def index():
     stats = db.get_statistics()
+    return render_template('admin/index.html', user_ip=utils.get_ip(), stats=stats)
+
+@bp.route('/state/storage', methods=['GET'])
+@auth.admin_required
+def state_storage():
     hardware_info = utils.get_hardware_info()
     db_size = {
         'db': utils.get_db_size(),
@@ -25,7 +30,7 @@ def index():
         'main_image': utils.get_db_main_image_size(),
         'total': utils.get_db_size() + utils.get_db_capframes_size() + utils.get_db_captures_size() + utils.get_db_frames_size() + utils.get_db_qr_size() + utils.get_db_main_image_size()
     }
-    return render_template('admin/index.html', user_ip=utils.get_ip(), stats=stats, db_size=db_size, hardware_info=hardware_info)
+    return jsonify({'hardware_info': hardware_info, 'db_size': db_size}), 200, {'Content-Type': 'application/json'}
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
