@@ -120,8 +120,8 @@
         const sign = bytes < 0 ? -1 : 1;
         let value = Math.abs(Number(bytes)) || 0;
         let unitIndex = 0;
-        while (value >= 1024 && unitIndex < units.length - 1) {
-            value /= 1024;
+        while (value >= 1000 && unitIndex < units.length - 1) {
+            value /= 1000;
             unitIndex++;
         }
         const formatted = unitIndex === 0 ? Math.round(value).toString() : value.toFixed(value >= 10 ? 0 : 2);
