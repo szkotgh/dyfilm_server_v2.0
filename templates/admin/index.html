@@ -8,30 +8,30 @@
                 <div class="col-md-6 col-lg-3">
                     <button class="btn btn-primary w-100 p-3" onclick="window.location.href='/admin/config/capframe'">
                         <div class="fs-3 fw-bold">{{ stats.total_capframes }}</div>
-                        <div class="small opacity-75">전체 캡프레임 수</div>
+                        <div class="small opacity-75">Total CapFrames</div>
                     </button>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <button class="btn btn-primary w-100 p-3" onclick="window.location.href='/admin/config/device'">
                         <div class="fs-3 fw-bold">{{ stats.active_devices }}/{{ stats.total_devices }}</div>
-                        <div class="small opacity-75">활성 장치</div>
+                        <div class="small opacity-75">Devices</div>
                     </button>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <button class="btn btn-primary w-100 p-3" onclick="window.location.href='/admin/config/frame'">
                         <div class="fs-3 fw-bold">{{ stats.active_frames }}/{{ stats.total_frames }}</div>
-                        <div class="small opacity-75">활성 프레임</div>
+                        <div class="small opacity-75">Frames</div>
                     </button>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <button class="btn btn-primary w-100 p-3" onclick="window.location.href='/admin/report'">
                         <div class="fs-3 fw-bold">{{ stats.pending_reports }}</div>
-                        <div class="small opacity-75">처리 대기 신고</div>
+                        <div class="small opacity-75">Pending Reports</div>
                     </button>
                 </div>
             </div>
             <div class="card mb-3">
-                <div class="card-header fw-bold">많이 사용된 프레임</div>
+                <div class="card-header fw-bold">인기 프레임</div>
                 <div class="card-body">
                     {% if stats.top_frames %}
                     <div class="list-group list-group-flush">
@@ -47,53 +47,50 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header fw-bold">저장공간 상태</div>
+            <div class="card" id="storage_card">
+                <div class="card-header fw-bold">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>저장공간 현황ㄴ</span>
+                        <button class="btn btn-sm btn-primary" onclick="updateStorageState()">새로고침</button>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="position-relative mb-3">
-                        {% if (hardware_info.used_disk / hardware_info.total_disk) * 100 <= 20 %}
-                            <div class="mt-1 small">전체 디스크: {{ hardware_info.used_disk | filesizeformat }} / {{ hardware_info.total_disk | filesizeformat }}</div>
-                        {% endif %}
-                        {% if (db_size.total / hardware_info.total_disk) * 100 <= 15 %}
-                            <div class="small mb-1">덕영필름: {{ db_size.total | filesizeformat }}</div>
-                        {% endif %}
+                        <div class="mt-1 small">전체 디스크: <span id="used_disk_size"></span> / <span id="total_disk_size"></span></div>
+                        <div class="small mb-1">덕영필름: <span id="db_total_size"></span></div>
                         <div class="progress" style="height: 20px;">
-                            <div class="progress-bar" role="progressbar" style="width: {{ (hardware_info.used_disk / hardware_info.total_disk) * 100 }}%" aria-valuenow="{{ (hardware_info.used_disk / hardware_info.total_disk) * 100 }}" aria-valuemin="0" aria-valuemax="100">
-                                {% if (hardware_info.used_disk / hardware_info.total_disk) * 100 > 20 %}
-                                <span class="position-absolute top-50 start-50 translate-middle text-white fw-bold small">전체 디스크: {{ hardware_info.used_disk | filesizeformat }} / {{ hardware_info.total_disk | filesizeformat }}</span>
-                                {% endif %}
+                            <div id="used_disk_bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100">
+                                <span class="position-absolute top-50 start-50 translate-middle text-white fw-bold small">전체 디스크: <span id="used_disk_size"></span> / <span id="total_disk_size"></span></span>
                             </div>
-                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ (db_size.total / hardware_info.total_disk) * 100 }}%" aria-valuenow="{{ (db_size.total / hardware_info.total_disk) * 100 }}" aria-valuemin="0" aria-valuemax="100">
-                                {% if (db_size.total / hardware_info.total_disk) * 100 > 15 %}
-                                <span class="position-absolute top-50 start-50 translate-middle text-white fw-bold small">DB 총합: {{ db_size.total | filesizeformat }}</span>
-                                {% endif %}
+                            <div id="db_total_bar" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100">
+                                <span class="position-absolute top-50 start-50 translate-middle text-white fw-bold small">DB 총합: <span id="db_total_size"></span></span>
                             </div>
                         </div>
                     </div>
                     <div class="list-group list-group-flush">
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <span class="fw-medium">DB</span>
-                            <span class="badge bg-primary">{{ db_size.db | filesizeformat }}</span>
+                            <span class="badge bg-primary" id="db_size"></span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <span class="fw-medium">main_image</span>
-                            <span class="badge bg-primary">{{ db_size.main_image | filesizeformat }}</span>
+                            <span class="badge bg-primary" id="main_image_size"></span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <span class="fw-medium">frames</span>
-                            <span class="badge bg-primary">{{ db_size.frames | filesizeformat }}</span>
+                            <span class="badge bg-primary" id="frames_size"></span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <span class="fw-medium">captures</span>
-                            <span class="badge bg-primary">{{ db_size.captures | filesizeformat }}</span>
+                            <span class="badge bg-primary" id="captures_size"></span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <span class="fw-medium">capframes</span>
-                            <span class="badge bg-primary">{{ db_size.capframes | filesizeformat }}</span>
+                            <span class="badge bg-primary" id="capframes_size"></span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <span class="fw-medium">qr</span>
-                            <span class="badge bg-primary">{{ db_size.qr | filesizeformat }}</span>
+                            <span class="badge bg-primary" id="qr_size"></span>
                         </div>
                     </div>
                 </div>
@@ -116,4 +113,117 @@
         </div>
     </div>
 </div>
+<script>
+    function filesize(bytes) {
+        const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+        if (!isFinite(bytes) || bytes === null) return `0 ${units[0]}`;
+        const sign = bytes < 0 ? -1 : 1;
+        let value = Math.abs(Number(bytes)) || 0;
+        let unitIndex = 0;
+        while (value >= 1024 && unitIndex < units.length - 1) {
+            value /= 1024;
+            unitIndex++;
+        }
+        const formatted = unitIndex === 0 ? Math.round(value).toString() : value.toFixed(value >= 10 ? 0 : 2);
+        return `${sign < 0 ? "-" : ""}${formatted} ${units[unitIndex]}`;
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        updateStorageState();
+    });
+
+    function updateStorageState() {
+        showStorageOverlay();
+        fetch('{{ url_for('router.admin.state_storage') }}')
+        .then(response => response.json())
+        .then(data => {
+            const hardware = data.hardware_info || {};
+            const sizes = data.db_size || {};
+
+            const totalDisk = Number(hardware.total_disk || 0);
+            const usedDisk = Number(hardware.used_disk || 0);
+            const dbTotal = Number(sizes.total || 0);
+
+            const usedDiskSizeEl = document.getElementById('used_disk_size');
+            const totalDiskSizeEl = document.getElementById('total_disk_size');
+            const dbTotalSizeEl = document.getElementById('db_total_size');
+            if (usedDiskSizeEl) usedDiskSizeEl.textContent = filesize(usedDisk);
+            if (totalDiskSizeEl) totalDiskSizeEl.textContent = filesize(totalDisk);
+            if (dbTotalSizeEl) dbTotalSizeEl.textContent = filesize(dbTotal);
+
+            const setBadge = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = filesize(Number(value || 0));
+            };
+            setBadge('db_size', sizes.db);
+            setBadge('main_image_size', sizes.main_image);
+            setBadge('frames_size', sizes.frames);
+            setBadge('captures_size', sizes.captures);
+            setBadge('capframes_size', sizes.capframes);
+            setBadge('qr_size', sizes.qr);
+
+            const safePercent = (num) => Math.max(0, Math.min(100, isFinite(num) ? num : 0));
+            const usedPercent = safePercent(totalDisk ? (usedDisk / totalDisk) * 100 : 0);
+            const dbPercent = safePercent(totalDisk ? (dbTotal / totalDisk) * 100 : 0);
+
+            const usedBar = document.getElementById('used_disk_bar');
+            const dbBar = document.getElementById('db_total_bar');
+            if (usedBar) {
+                usedBar.style.width = usedPercent.toFixed(2) + '%';
+                usedBar.setAttribute('aria-valuenow', usedPercent.toFixed(2));
+            }
+            if (dbBar) {
+                dbBar.style.width = dbPercent.toFixed(2) + '%';
+                dbBar.setAttribute('aria-valuenow', dbPercent.toFixed(2));
+            }
+        })
+        .catch(() => {
+            alert('용량 새로고침에 실패했습니다.');
+        })
+        .finally(() => {
+            hideStorageOverlay();
+        });
+    }
+
+    function showStorageOverlay() {
+        const card = document.getElementById('storage_card');
+        if (!card) return;
+        if (!card.dataset.prevPosition) {
+            card.dataset.prevPosition = card.style.position || '';
+        }
+        if (getComputedStyle(card).position === 'static') {
+            card.style.position = 'relative';
+        }
+        if (card.querySelector('#storage_overlay')) return;
+        const overlay = document.createElement('div');
+        overlay.id = 'storage_overlay';
+        overlay.style.position = 'absolute';
+        overlay.style.inset = '0';
+        overlay.style.background = 'rgba(0,0,0,0.4)';
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.zIndex = '10';
+        const spinner = document.createElement('div');
+        spinner.className = 'spinner-border text-light';
+        spinner.setAttribute('role', 'status');
+        const srOnly = document.createElement('span');
+        srOnly.className = 'visually-hidden';
+        srOnly.textContent = 'Loading...';
+        spinner.appendChild(srOnly);
+        overlay.appendChild(spinner);
+        card.appendChild(overlay);
+    }
+
+    function hideStorageOverlay() {
+        const card = document.getElementById('storage_card');
+        if (!card) return;
+        const overlay = card.querySelector('#storage_overlay');
+        if (overlay) overlay.remove();
+        if (card.dataset.prevPosition !== undefined) {
+            card.style.position = card.dataset.prevPosition;
+            delete card.dataset.prevPosition;
+        }
+    }
+</script>
 {% endblock body %}
