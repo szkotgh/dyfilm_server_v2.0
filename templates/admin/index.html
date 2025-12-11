@@ -53,6 +53,11 @@
                         <span>저장공간 현황</span>
                         <button class="btn btn-sm btn-primary" onclick="updateStorageState()">새로고침</button>
                     </div>
+                    <div class="mt-2">
+                        <div class="progress" style="height: 2px;">
+                            <div id="refresh_progress_bar" class="progress-bar bg-info" role="progressbar" style="width: 100%; transition: width 0.1s linear;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="position-relative mb-3">
@@ -129,8 +134,12 @@
         return `${sign < 0 ? "-" : ""}${formatted} ${units[unitIndex]}`;
     }
     
+    let refreshProgressInterval = null;
+    let refreshProgressValue = 100;
+
     document.addEventListener('DOMContentLoaded', () => {
         updateStorageState();
+        startRefreshProgress();
     });
 
     function updateStorageState() {
@@ -183,6 +192,7 @@
         })
         .finally(() => {
             hideStorageOverlay();
+            resetRefreshProgress();
         });
     }
 
@@ -224,6 +234,42 @@
         if (card.dataset.prevPosition !== undefined) {
             card.style.position = card.dataset.prevPosition;
             delete card.dataset.prevPosition;
+        }
+    }
+
+    function startRefreshProgress() {
+        if (refreshProgressInterval) {
+            clearInterval(refreshProgressInterval);
+        }
+        refreshProgressValue = 100;
+        updateRefreshProgressBar();
+        
+        refreshProgressInterval = setInterval(() => {
+            refreshProgressValue -= (100 / 300);
+            if (refreshProgressValue <= 0) {
+                refreshProgressValue = 0;
+                updateRefreshProgressBar();
+                updateStorageState();
+            } else {
+                updateRefreshProgressBar();
+            }
+        }, 100);
+    }
+
+    function resetRefreshProgress() {
+        refreshProgressValue = 100;
+        updateRefreshProgressBar();
+        if (refreshProgressInterval) {
+            clearInterval(refreshProgressInterval);
+        }
+        startRefreshProgress();
+    }
+
+    function updateRefreshProgressBar() {
+        const progressBar = document.getElementById('refresh_progress_bar');
+        if (progressBar) {
+            progressBar.style.width = refreshProgressValue + '%';
+            progressBar.setAttribute('aria-valuenow', refreshProgressValue);
         }
     }
 </script>
