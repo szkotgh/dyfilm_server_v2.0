@@ -3,20 +3,18 @@ import src.utils as utils
 from datetime import datetime
 
 def frame_get_list():
-    db.cursor.execute("SELECT * FROM frame")
+    db.cursor.execute("SELECT * FROM frame ORDER BY order_id DESC, f_id ASC")
     rows = db.cursor.fetchall()
-    rows.reverse()
     return rows
 
 def frame_get_list_paginated(limit: int, offset: int):
     try:
-        db.cursor.execute('SELECT * FROM frame ORDER BY "create" DESC LIMIT ? OFFSET ?', (limit, offset))
+        db.cursor.execute('SELECT * FROM frame ORDER BY order_id DESC, f_id ASC LIMIT ? OFFSET ?', (limit, offset))
         rows = db.cursor.fetchall()
         return rows
     except Exception:
-        db.cursor.execute("SELECT * FROM frame")
+        db.cursor.execute("SELECT * FROM frame ORDER BY order_id DESC, f_id ASC")
         rows = db.cursor.fetchall()
-        rows.reverse()
         return rows[offset:offset+limit]
 
 def frame_count() -> int:
@@ -78,6 +76,17 @@ def frame_config_desc(f_id: int, desc: str) -> bool:
         db.cursor.execute('''
             UPDATE frame SET desc = ? WHERE f_id = ?
         ''', (desc, f_id))
+        if db.cursor.rowcount == 0: return False
+        db.conn.commit()
+        return True
+    except Exception:
+        return False
+    
+def frame_config_order_id(f_id: int, order_id: int) -> bool:
+    try:
+        db.cursor.execute('''
+            UPDATE frame SET order_id = ? WHERE f_id = ?
+        ''', (order_id, f_id))
         if db.cursor.rowcount == 0: return False
         db.conn.commit()
         return True

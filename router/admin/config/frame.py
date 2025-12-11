@@ -28,6 +28,7 @@ def get_list():
     for r in rows:
         items.append({
             'f_id': r['f_id'],
+            'order_id': r['order_id'],
             'status': bool(r['status']),
             'file_name': r['file_name'],
             'meta': r['meta'],
@@ -191,6 +192,30 @@ def config_desc():
         flash('Description updated successfully', 'success')
     else:
         flash('Failed to update description', 'error')
+    
+    return redirect(url_for('router.admin.config.frame.index'))
+
+@bp.route('/config_order_id', methods=['POST'])
+def config_order_id():
+    f_id = request.form.get('f_id')
+    input_order_id = request.form.get('config_order_id')
+    
+    if not f_id or input_order_id is None:
+        flash('Missing parameter', 'error')
+        return redirect(url_for('router.admin.config.frame.index'))
+    
+    try:
+        order_id = int(input_order_id)
+    except ValueError:
+        flash('Invalid order_id format. Must be a number', 'error')
+        return redirect(url_for('router.admin.config.frame.index'))
+    
+    result = db.frame.frame_config_order_id(int(f_id), order_id)
+    
+    if result:
+        flash('Order ID updated successfully', 'success')
+    else:
+        flash('Failed to update order ID', 'error')
     
     return redirect(url_for('router.admin.config.frame.index'))
 

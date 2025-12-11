@@ -103,6 +103,7 @@ except:
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS frame (
         f_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        order_id INTEGER NOT NULL DEFAULT 0,
         status BOOLEAN NOT NULL DEFAULT TRUE,
         file_name TEXT NOT NULL,
         meta TEXT NOT NULL,
