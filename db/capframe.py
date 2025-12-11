@@ -38,9 +38,12 @@ def capframe_count() -> int:
         return 0
 
 def capframe_get(cf_id):
-    db.cursor.execute("SELECT * FROM capframe WHERE cf_id = ?", (cf_id,))
-    row = db.cursor.fetchone()
-    return row
+    try:
+        db.cursor.execute("SELECT * FROM capframe WHERE cf_id = ?", (cf_id,))
+        row = db.cursor.fetchone()
+        return row
+    except Exception:
+        return None
 
 def capframe_create(d_id:int, f_id:int, c_id: list):
     # check parameter vaild

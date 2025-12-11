@@ -5,7 +5,7 @@ import os.path as path
 import src.utils as utils
 
 DB_HOME = './db'
-DB_FILE = path.join(DB_HOME, 'main.db')
+DB_FILE = path.join(DB_HOME, 'database.db')
 conn = sqlite3.connect(DB_FILE, check_same_thread=False)
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
@@ -17,10 +17,11 @@ CAPFRAMES_PATH = path.join(DB_HOME, 'capframes')
 QR_PATH = path.join(DB_HOME, 'qr')
 
 # init
-if not os.path.exists(MAIN_IMAGE_DIR_PATH):
-    os.makedirs(MAIN_IMAGE_DIR_PATH)
-if not os.path.exists(QR_PATH):
-    os.makedirs(QR_PATH)
+if not os.path.exists(MAIN_IMAGE_DIR_PATH): os.makedirs(MAIN_IMAGE_DIR_PATH)
+if not os.path.exists(QR_PATH): os.makedirs(QR_PATH)
+if not path.exists(FRAMES_PATH): os.makedirs(FRAMES_PATH)
+if not path.exists(CAPTURES_PATH): os.makedirs(CAPTURES_PATH)
+if not path.exists(CAPFRAMES_PATH): os.makedirs(CAPFRAMES_PATH)
 
 cursor.execute('PRAGMA foreign_keys = ON;')
 ## DEVICE
@@ -34,9 +35,71 @@ cursor.execute('''
         last_use DATETIME
     )
 ''')
+## MAIN_IMAGE
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS main_image (
+        mi_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        file_name TEXT NOT NULL,
+        desc TEXT,
+        is_default BOOLEAN NOT NULL DEFAULT FALSE,
+        "create" DATETIME NOT NULL
+    )
+''')
+## MAIN_IMAGE_DEVICE (main_image와 device의 다대다 관계)
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS main_image_device (
+        mi_id INTEGER NOT NULL,
+        d_id INTEGER NOT NULL,
+        
+        FOREIGN KEY (mi_id) REFERENCES main_image (mi_id) ON DELETE CASCADE,
+        FOREIGN KEY (d_id) REFERENCES device (d_id) ON DELETE CASCADE,
+        
+        PRIMARY KEY (mi_id, d_id)
+    )
+''')
+# 기존 default_device_id 데이터 마이그레이션 (한 번만 실행)
+try:
+    cursor.execute('''
+        SELECT name FROM sqlite_master 
+        WHERE type='table' AND name='main_image' 
+        AND sql LIKE '%default_device_id%'
+    ''')
+    if cursor.fetchone():
+        # 기존 default_device_id가 있는 경우 마이그레이션
+        cursor.execute('''
+            SELECT mi_id, default_device_id FROM main_image 
+            WHERE default_device_id IS NOT NULL
+        ''')
+        old_data = cursor.fetchall()
+        for row in old_data:
+            try:
+                cursor.execute('''
+                    INSERT OR IGNORE INTO main_image_device (mi_id, d_id) 
+                    VALUES (?, ?)
+                ''', (row['mi_id'], row['default_device_id']))
+            except:
+                pass
+        conn.commit()
+        # default_device_id 컬럼 제거 (SQLite는 ALTER TABLE DROP COLUMN을 지원하지 않으므로 새 테이블 생성)
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS main_image_new (
+                mi_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                file_name TEXT NOT NULL,
+                desc TEXT,
+                is_default BOOLEAN NOT NULL DEFAULT FALSE,
+                "create" DATETIME NOT NULL
+            )
+        ''')
+        cursor.execute('''
+            INSERT INTO main_image_new (mi_id, file_name, desc, is_default, "create")
+            SELECT mi_id, file_name, desc, is_default, "create" FROM main_image
+        ''')
+        cursor.execute('DROP TABLE main_image')
+        cursor.execute('ALTER TABLE main_image_new RENAME TO main_image')
+        conn.commit()
+except:
+    pass
 ## FRAME
-if not path.exists(FRAMES_PATH):
-    os.makedirs(FRAMES_PATH)
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS frame (
         f_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,8 +112,6 @@ cursor.execute('''
     )
 ''')
 ## CAPTURE
-if not path.exists(CAPTURES_PATH):
-    os.makedirs(CAPTURES_PATH)
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS capture (
         c_id TEXT PRIMARY KEY NOT NULL,
@@ -64,8 +125,6 @@ cursor.execute('''
     )
 ''')
 ## CAPFRAME
-if not path.exists(CAPFRAMES_PATH):
-    os.makedirs(CAPFRAMES_PATH)
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS capframe (
         cf_id TEXT PRIMARY KEY NOT NULL,

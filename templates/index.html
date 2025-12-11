@@ -142,19 +142,6 @@
         }
     }
 
-    @keyframes rainbow {
-        0% { color: violet; }
-        16.6% { color: red; }
-        33.3% { color: orange; }
-        50% { color: yellow; }
-        66.6% { color: green; }
-        83.3% { color: blue; }
-        100% { color: indigo; }
-    }
-
-    .rainbow-effect {
-        animation: rainbow 2s infinite linear;
-    }
 </style>
 {% endblock head %}
 
@@ -162,7 +149,7 @@
 <div class="content-wrapper">
     <div class="text-content">
         <br>
-        <h1 class="animate__animated animate__fadeInUp">덕 영 필 름 <span id="flippppppp" style="cursor: pointer;">.</span></h1>
+        <h1 class="animate__animated animate__fadeInUp">덕 영 필 름</h1>
         <p class="subtitle animate__animated animate__fadeIn animate__delay-1s">학교 안에서 만드는 추억 한 페이지</p>
         <hr>
         <p class="qr-instruction animate__animated animate__pulse animate__infinite">사진 속 QR을 찍어 핸드폰으로 확인해보세요!</p>
@@ -177,66 +164,6 @@
 <div class="admin-email">문의: <a href="mailto:{{ admin_email }}">{{ admin_email }}</a></div>
 
 <script>
-    let clickCount = 0;
-    let canClick = false;
-
-    setTimeout(() => {
-        canClick = true;
-    }, 2000);
-
-    const flipElement = document.getElementById('flippppppp');
-    flipElement.addEventListener('click', () => {
-        if (canClick == false) return;
-
-        canClick = false;
-        clickCount++;
-
-        console.log('click: ' + clickCount);
-
-        if (clickCount === 1) {
-            flipElement.innerText = '..';
-            setTimeout(() => {
-                canClick = true;
-            }, 1000);
-            return;
-        }    
-        else if (clickCount === 2) {
-            flipElement.innerText = '...';
-            setTimeout(() => {
-                canClick = true;
-            }, 1000);
-            return;
-        }
-        else if (clickCount === 3)
-            flipElement.innerText = '...A';
-        else if (clickCount === 4)
-            flipElement.innerText = '...AD';
-        else if (clickCount === 5)
-            flipElement.innerText = '...ADM';
-        else if (clickCount === 6)
-            flipElement.innerText = '...ADMI';
-        else if (clickCount === 7) {
-            flipElement.classList.add('rainbow-effect');
-            flipElement.innerText = '...ADMIN';
-        }
-        else if (clickCount === 8) {
-            location.href = '/admin/login';
-            return;
-        }
-        else {
-            flipElement.innerText = '.';
-            flipElement.classList.remove('rainbow-effect');
-            clickCount = 0;
-        }
-
-        const body = document.body;
-        body.classList.add('animate__animated', 'animate__flip');
-        body.addEventListener('animationend', () => {
-            canClick = true;
-            body.classList.remove('animate__animated', 'animate__flip');
-        }, { once: true });
-    });
-
     setInterval(() => {
         const element = document.querySelector('.qr-instruction');
         element.classList.remove('animate__pulse');

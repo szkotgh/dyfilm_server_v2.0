@@ -12,7 +12,7 @@
     <h4><a href="/admin/config/frame">Frame 관리</a> | Frame 추가</h4>
     <p>프레임을 생성하세요.</p>
     <div class="main-content">
-        <h5 class="text-danger">제출 형식 문서를 읽고 작성하세요.</h5>
+        <h5 class="text-danger">프레임 제작 메뉴얼: <a href="{{ url_for('static', filename='docs/frame_design_manual.pdf') }}" target="_blank">링크</a></h5>
         <form method="post" enctype="multipart/form-data" class="p-4 bg-light rounded shadow-sm">
             <div class="mb-3">
                 <label for="frame_file" class="form-label">이미지 <span class="text-danger">*</span></label>

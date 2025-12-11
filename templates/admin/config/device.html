@@ -17,36 +17,6 @@
                                   {% set message = '새로운 장치를 생성하시겠습니까?' %}
                                   {% include 'components/modals/dialog_yesno_modal.html' %}</p>
 
-    <div class="table-content">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>
-                        {% set modal_id = 'main_image' %}
-                        {% set display_text = 'main_image' %}
-                        {% set title = '장치 메인 배경 관리' %}
-                        {% set message = '모든 장치의 첫 화면에 보여질 배경을 관리합니다. 클릭하면 사진 열람과 사진 변경이 가능합니다.' %}
-                        {% include 'components/modals/view_message_modal.html' %}
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                <tr>
-                    <td>
-                        {% set modal_id = 'main_image_config' %}
-                        {% set display_text = '장치 메인 배경 관리' %}
-                        {% set title = '장치 메인 배경 관리' %}
-                        {% set hidden_name = 'none' %}
-                        {% set hidden_value = 'none' %}
-                        {% set image_url = url_for('router.admin.config.device.get_main_image') %}
-                        {% set fallback_image_url = url_for('static', filename='images/loading.gif') %}
-                        {% set form_action = url_for('router.admin.config.device.config_main_image') %}
-                        {% include 'components/modals/config_image_modal_freetype.html' %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
     <div class="table-content" id="device-list-container">
         <table class="table table-hover" id="device-table">
             <thead>
