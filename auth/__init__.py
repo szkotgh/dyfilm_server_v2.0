@@ -1,4 +1,5 @@
 from functools import wraps
+import os
 import src.utils as utils
 from flask import flash, g, redirect, url_for, session, request
 import db.device
@@ -65,7 +66,17 @@ def admin_required(f):
                 session.clear()
                 flash('Admin session expired. Log again.', 'error')
                 return redirect(url_for('router.admin.login'))
-            
+
+            # 절대 세션 수명 강제: 슬라이딩 idle 타임아웃만으로는 탈취된 쿠키를
+            # 무기한 연장할 수 있으므로, 로그인 이후 경과가 상한을 넘으면 만료시킨다.
+            absolute_timeout = int(os.environ.get('ADMIN_SESSION_ABSOLUTE_TIMEOUT', '28800'))
+            login_time = session.get('ADMIN_LOGIN_TIME')
+            login_datetime = utils.convert_string_to_datetime(login_time) if login_time else False
+            if login_datetime is False or (now_datetime - login_datetime).total_seconds() > absolute_timeout:
+                session.clear()
+                flash('Admin session expired. Log again.', 'error')
+                return redirect(url_for('router.admin.login'))
+
             session['ADMIN_LAST_ACTIVE_TIME'] = utils.get_now_datetime_str()
             
         except (KeyError, ValueError, TypeError) as e:

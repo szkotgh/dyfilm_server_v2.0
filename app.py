@@ -1,3 +1,5 @@
+import os
+from datetime import timedelta
 from flask import Flask, render_template, send_file, request
 import src.utils as utils
 import router
@@ -11,8 +13,10 @@ app.config['SESSION_COOKIE_PATH'] = '/'
 app.config['SESSION_COOKIE_DOMAIN'] = None
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
-app.config['SESSION_COOKIE_MAX_AGE'] = 3600
 app.config['SESSION_COOKIE_SECURE'] = True
+# SESSION_COOKIE_MAX_AGE는 Flask 설정 키가 아니어서 무효였음. 실제 쿠키 수명은
+# PERMANENT_SESSION_LIFETIME(절대 세션 상한)으로 지정하고 로그인 시 session.permanent=True로 표시.
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(seconds=int(os.environ.get('ADMIN_SESSION_ABSOLUTE_TIMEOUT', '28800')))
 
 # 업로드/요청 본문 크기 상한(32MB) — 무제한 본문으로 인한 메모리/디스크 고갈 DoS 방지.
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024

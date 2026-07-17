@@ -56,6 +56,7 @@ def login():
         if bcrypt.checkpw(input_pw.encode('utf-8'), os.environ['ADMIN_PASSWORD'].encode('utf-8')):
             login_limiter.reset(client_key)
             session.clear()
+            session.permanent = True  # PERMANENT_SESSION_LIFETIME(절대 만료) 적용
             session['ADMIN'] = True
             session['ADMIN_LAST_ACTIVE_TIME'] = utils.get_now_datetime_str()
             session['ADMIN_LOGIN_TIME'] = utils.get_now_datetime_str()
