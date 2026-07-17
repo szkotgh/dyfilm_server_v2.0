@@ -1,4 +1,5 @@
 import os
+import magic
 from flask import Blueprint, flash, redirect, render_template, request, send_file, session, url_for, jsonify
 import src.utils as utils
 import auth
@@ -6,6 +7,22 @@ import db.main_image
 import db.device
 
 bp = Blueprint('main_image', __name__, url_prefix='/main_image')
+
+_ALLOWED_IMAGE_MIME = {'image/gif', 'image/png', 'image/jpeg'}
+
+def _valid_image_content(file) -> bool:
+    # 확장자만이 아니라 실제 매직바이트로 이미지 형식을 검증한다.
+    try:
+        file.seek(0)
+        mime_type = magic.from_buffer(file.read(2048), mime=True)
+        file.seek(0)
+        return mime_type in _ALLOWED_IMAGE_MIME
+    except Exception:
+        try:
+            file.seek(0)
+        except Exception:
+            pass
+        return False
 
 @bp.before_request
 @auth.admin_required
@@ -57,7 +74,11 @@ def create():
     if extension not in ['gif', 'png', 'jpg', 'jpeg']:
         flash('지원하지 않는 파일 형식입니다. gif, png, jpg, jpeg만 허용됩니다.', 'error')
         return redirect(url_for('router.admin.config.main_image.index'))
-    
+
+    if not _valid_image_content(input_file):
+        flash('이미지 파일이 아닙니다. (내용 검증 실패)', 'error')
+        return redirect(url_for('router.admin.config.main_image.index'))
+
     # 파일 저장
     file_name = f"{utils.gen_hash()}.{extension}"
     file_path = os.path.join(db.MAIN_IMAGE_DIR_PATH, file_name)
@@ -130,7 +151,11 @@ def config_image():
     if extension not in ['gif', 'png', 'jpg', 'jpeg']:
         flash('지원하지 않는 파일 형식입니다. gif, png, jpg, jpeg만 허용됩니다.', 'error')
         return redirect(url_for('router.admin.config.main_image.index'))
-    
+
+    if not _valid_image_content(config_image):
+        flash('이미지 파일이 아닙니다. (내용 검증 실패)', 'error')
+        return redirect(url_for('router.admin.config.main_image.index'))
+
     main_image_result = db.main_image.main_image_get(int(mi_id))
     if not main_image_result:
         flash('Main Image를 찾을 수 없습니다', 'error')
