@@ -12,6 +12,11 @@ import db.frame
 import db.capframe_info
 from PIL import Image, ImageDraw, ImageFont
 
+# 이미지 압축 폭탄(작지만 거대한 해상도) 디코딩으로 인한 메모리 고갈 DoS 방지.
+Image.MAX_IMAGE_PIXELS = 50_000_000       # Pillow 전역 상한(초과 시 DecompressionBombError)
+MAX_CAPTURE_PIXELS = 50_000_000           # 개별 캡처 이미지 허용 픽셀 상한
+MAX_CANVAS_PIXELS = 50_000_000            # 합성 캔버스(프레임 메타 기반) 허용 픽셀 상한
+
 def capframe_get_list():
     db.cursor.execute("SELECT * FROM capframe")
     rows = db.cursor.fetchall()
@@ -75,6 +80,15 @@ def capframe_create(d_id:int, f_id:int, c_id: list):
     SAVE_PATH = os.path.join(db.CAPFRAMES_PATH, SAVE_NAME)
     
     CANVAS_SIZE = frame_meta['canvas']['size']
+    # 프레임 메타의 캔버스 크기는 관리자 입력이며 상한이 없어 거대한 캔버스로
+    # 메모리를 폭증시킬 수 있으므로 픽셀 상한을 검증한다.
+    try:
+        if CANVAS_SIZE[0] * CANVAS_SIZE[1] > MAX_CANVAS_PIXELS or CANVAS_SIZE[0] <= 0 or CANVAS_SIZE[1] <= 0:
+            g.capframe_fall_info = "invalid parameter: canvas size out of bounds"
+            return False
+    except (TypeError, IndexError):
+        g.capframe_fall_info = "invalid parameter: canvas size"
+        return False
     TIME_LOCA = frame_meta['canvas']['time_loca']
     TIME_FONT_SIZE = frame_meta['canvas']['time_font_size']
     TIME_FONT_COLOR = frame_meta['canvas']['time_font_color']
@@ -100,7 +114,16 @@ def capframe_create(d_id:int, f_id:int, c_id: list):
         capture_info = ready_captures[index]
         
         CAPTURE_PATH = os.path.join(db.CAPTURES_PATH, capture_info['file_name'])
-        capture_img = Image.open(CAPTURE_PATH).convert("RGB")
+        # 압축 폭탄/손상 이미지 방어: 디코드 전 해상도 검증 후 예외를 잡아 정상 실패시킨다.
+        try:
+            capture_img = Image.open(CAPTURE_PATH)
+            if capture_img.width * capture_img.height > MAX_CAPTURE_PIXELS:
+                g.capframe_fall_info = "capture image too large"
+                return False
+            capture_img = capture_img.convert("RGB")
+        except Exception:
+            g.capframe_fall_info = "failed to open capture image"
+            return False
         img_width, img_height = capture_img.size
         target_width, target_height = capture['size']
         
@@ -137,7 +160,15 @@ def capframe_create(d_id:int, f_id:int, c_id: list):
     
     # draw frame
     FRAME_PATH = os.path.join(db.FRAMES_PATH, frame_info['file_name'])
-    frame = Image.open(FRAME_PATH).convert("RGBA")
+    try:
+        frame = Image.open(FRAME_PATH)
+        if frame.width * frame.height > MAX_CAPTURE_PIXELS:
+            g.capframe_fall_info = "frame image too large"
+            return False
+        frame = frame.convert("RGBA")
+    except Exception:
+        g.capframe_fall_info = "failed to open frame image"
+        return False
     frame = frame.resize(CANVAS_SIZE)
     capframe.paste(frame, (0, 0), frame)
     

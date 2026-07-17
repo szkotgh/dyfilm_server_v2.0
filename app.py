@@ -14,6 +14,9 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
 app.config['SESSION_COOKIE_MAX_AGE'] = 3600
 app.config['SESSION_COOKIE_SECURE'] = True
 
+# 업로드/요청 본문 크기 상한(32MB) — 무제한 본문으로 인한 메모리/디스크 고갈 DoS 방지.
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
+
 @app.after_request
 def add_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'

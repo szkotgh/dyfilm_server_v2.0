@@ -1,11 +1,14 @@
 import os
 import magic
 from flask import Blueprint, g, request, send_file
+from PIL import Image
 import src.utils as utils
 import auth
 import db.capture
 
 bp = Blueprint('capture', __name__, url_prefix='/capture')
+
+MAX_UPLOAD_PIXELS = 50_000_000  # 업로드 이미지 해상도 상한(압축 폭탄 차단)
 
 def validate_image_file(file):
     if not file or not file.filename:
@@ -22,10 +25,21 @@ def validate_image_file(file):
         file.seek(0)
         mime_type = magic.from_buffer(file.read(1024), mime=True)
         file.seek(0)
-        
+
         if mime_type not in allowed_mime_types:
             return False
-            
+
+        # 해상도 검증(압축 폭탄 차단): 헤더만 읽어 치수 확인 후 스트림 위치 복원
+        try:
+            with Image.open(file) as img:
+                too_large = (img.width * img.height) > MAX_UPLOAD_PIXELS
+        except Exception:
+            file.seek(0)
+            return False
+        file.seek(0)
+        if too_large:
+            return False
+
         return True
     except:
         return False
