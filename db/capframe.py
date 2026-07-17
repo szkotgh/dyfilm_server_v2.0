@@ -244,8 +244,8 @@ def capframe_remove(cf_id: str):
         db.cursor.execute("DELETE FROM capframe WHERE cf_id = ?", (cf_id,))
         db.conn.commit()
 
-        # ✅ use_count 감소
-        db.cursor.execute("UPDATE frame SET use_count = use_count - 1 WHERE f_id = ?", (f_id,))
+        # use_count 감소 (0 미만으로 내려가지 않도록 클램프)
+        db.cursor.execute("UPDATE frame SET use_count = MAX(use_count - 1, 0) WHERE f_id = ?", (f_id,))
         db.conn.commit()
 
         return True
