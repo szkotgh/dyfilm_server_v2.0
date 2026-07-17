@@ -53,10 +53,14 @@ def capture_get():
         return utils.get_code('missing_parameter')
     
     db_result = db.capture.capture_get(c_id)
-    
+
     if not db_result:
         return utils.get_code('invalid_parameter')
-    
+
+    # 비활성화(status=0)된 캡처는 디바이스에도 제공하지 않는다.
+    if not db_result['status']:
+        return utils.get_code('file_not_found')
+
     file_name = db_result['file_name']
     file_path = os.path.join(db.CAPTURES_PATH, file_name)
     

@@ -21,7 +21,11 @@ def capframe_get():
     capframe_info = db.capframe.capframe_get(cf_id)
     if not capframe_info:
         return utils.get_code('invalid_parameter')
-    
+
+    # 신고 승인 등으로 비활성화(status=0)된 캡프레임은 디바이스에도 제공하지 않는다.
+    if not capframe_info['status']:
+        return utils.get_code('file_not_found')
+
     file_path = os.path.join(db.CAPFRAMES_PATH, capframe_info['file_name'])
     
     if not utils.is_safe_path(db.CAPFRAMES_PATH, capframe_info['file_name']) or not os.path.exists(file_path) or not os.path.isfile(file_path):
