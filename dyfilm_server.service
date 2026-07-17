@@ -5,12 +5,24 @@ After=network.target
 
 [Service]
 Type=simple
-User=user
-Group=user
+# sudo 그룹에 속한 user 대신, 파일 소유자이며 sudo 권한이 없는 저권한 dyfilm 계정으로 실행.
+# (배포 시 chown -R dyfilm:dyfilm 필요 — README 참고)
+User=dyfilm
+Group=dyfilm
 WorkingDirectory=/home/user/dyfilm_server_v2.0
 ExecStart=/bin/bash /home/user/dyfilm_server_v2.0/stater.sh
 Restart=always
 RestartSec=10
+
+# 하드닝: 권한 상승 차단 및 시스템 디렉터리 보호(/home은 쓰기 가능하여 앱 동작에 영향 없음)
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=full
+ProtectControlGroups=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
 
 [Install]
 WantedBy=multi-user.target
