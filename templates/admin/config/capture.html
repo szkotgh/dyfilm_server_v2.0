@@ -68,6 +68,7 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
             const tbody = document.getElementById('capture-tbody');
             const table = document.getElementById('capture-table');
             const container = table.closest('.table-content');
@@ -130,7 +131,7 @@
                                 </div></div></div>
                             </td>
                             <td>
-                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#file_name${item.c_id}">${item.file_name}</span>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#file_name${item.c_id}">${esc(item.file_name)}</span>
                                 <div class="modal fade" id="file_name${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">캡쳐 이미지</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                 <div class="modal-body text-center"><img id="modalImagefile_name${item.c_id}" data-src="${item.image_url}" src="" class="img-fluid" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/loading.gif') }}';"></div>
@@ -139,11 +140,11 @@
                                 </div></div></div>
                             </td>
                             <td>
-                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#desc${item.c_id}">${(item.desc ?? '') || 'NULL'}</span>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#desc${item.c_id}">${esc((item.desc ?? '') || 'NULL')}</span>
                                 <div class="modal fade" id="desc${item.c_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">캡쳐 설명 수정</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.capture.config_desc') }}" method="post">
-                                    <div class="modal-body"><p>캡쳐 ${item.c_id}의 설명을 수정하시겠습니까?</p><input type="hidden" name="c_id" value="${item.c_id}"><input type="text" class="form-control" name="config_desc" value="${item.desc ?? ''}"></div>
+                                    <div class="modal-body"><p>캡쳐 ${item.c_id}의 설명을 수정하시겠습니까?</p><input type="hidden" name="c_id" value="${item.c_id}"><input type="text" class="form-control" name="config_desc" value="${esc(item.desc ?? '')}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">저장</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button></div>
                                   </form>
                                 </div></div></div>

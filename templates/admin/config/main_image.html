@@ -99,6 +99,7 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
             const tbody = document.getElementById('main_image-tbody');
             const table = document.getElementById('main_image-table');
             const container = table.closest('.table-content');
@@ -169,7 +170,7 @@
                                 </div></div></div>
                             </td>
                             <td>
-                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#image${item.mi_id}">${item.file_name}</span>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#image${item.mi_id}">${esc(item.file_name)}</span>
                                 <div class="modal fade" id="image${item.mi_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">Main Image 열람·변경</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <div class="modal-body text-center"><img id="modalImageimage${item.mi_id}" data-src="${item.image_url}" src="{{ url_for('static', filename='images/loading.gif') }}" class="img-fluid" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/loading.gif') }}';" style="max-height: 500px;"></div>
@@ -188,11 +189,11 @@
                                 </div></div></div>
                             </td>
                             <td>
-                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#desc${item.mi_id}">${(item.desc ?? '') || 'NULL'}</span>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#desc${item.mi_id}">${esc((item.desc ?? '') || 'NULL')}</span>
                                 <div class="modal fade" id="desc${item.mi_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">설명 수정</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.main_image.config_desc') }}" method="post">
-                                    <div class="modal-body"><input type="hidden" name="mi_id" value="${item.mi_id}"><input type="text" class="form-control" name="config_desc" value="${item.desc ?? ''}"></div>
+                                    <div class="modal-body"><input type="hidden" name="mi_id" value="${item.mi_id}"><input type="text" class="form-control" name="config_desc" value="${esc(item.desc ?? '')}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">저장</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button></div>
                                   </form>
                                 </div></div></div>
@@ -218,7 +219,7 @@
                                 }
                             </td>
                             <td>
-                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#device${item.mi_id}">${deviceNames}</span>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#device${item.mi_id}">${esc(deviceNames)}</span>
                                 <div class="modal fade" id="device${item.mi_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">장치별 기본 이미지 설정</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.main_image.config_devices') }}" method="post">
@@ -230,7 +231,7 @@
                                           <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="device_ids" value="${d.d_id}" id="device_${item.mi_id}_${d.d_id}" ${item.device_ids && item.device_ids.includes(d.d_id) ? 'checked' : ''}>
                                             <label class="form-check-label" for="device_${item.mi_id}_${d.d_id}">
-                                              ${d.desc || `장치 #${d.d_id}`} ${d.status ? '' : '<span class="text-muted">(비활성)</span>'}
+                                              ${esc(d.desc || `장치 #${d.d_id}`)} ${d.status ? '' : '<span class="text-muted">(비활성)</span>'}
                                             </label>
                                           </div>
                                         `).join('')}

@@ -82,6 +82,7 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
             const tbody = document.getElementById('frame-tbody');
             const table = document.getElementById('frame-table');
             const container = table.closest('.table-content');
@@ -150,7 +151,7 @@
                                 </div></div></div>
                             </td>
                             <td>
-                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#image${item.f_id}">${item.file_name}</span>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#image${item.f_id}">${esc(item.file_name)}</span>
                                 <div class="modal fade" id="image${item.f_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">프레임 사진 열람·변경</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <div class="modal-body text-center"><img id="modalImageimage${item.f_id}" data-src="${item.image_url}" src="{{ url_for('static', filename='images/loading.gif') }}" class="img-fluid" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/loading.gif') }}';"></div>
@@ -175,18 +176,18 @@
                                     <div class="modal-body">
                                       <input type="hidden" name="f_id" value="${item.f_id}">
                                       <label class="form-label">설명</label>
-                                      <textarea class="form-control" name="config_meta" rows="8">${item.meta ?? ''}</textarea>
+                                      <textarea class="form-control" name="config_meta" rows="8">${esc(item.meta ?? '')}</textarea>
                                     </div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">저장</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button></div>
                                   </form>
                                 </div></div></div>
                             </td>
                             <td>
-                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#desc${item.f_id}">${(item.desc ?? '') || 'NULL'}</span>
+                                <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#desc${item.f_id}">${esc((item.desc ?? '') || 'NULL')}</span>
                                 <div class="modal fade" id="desc${item.f_id}" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
                                   <div class="modal-header"><h5 class="modal-title">프레임 설명 수정</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                   <form action="{{ url_for('router.admin.config.frame.config_desc') }}" method="post">
-                                    <div class="modal-body"><input type="hidden" name="f_id" value="${item.f_id}"><input type="text" class="form-control" name="config_desc" value="${item.desc ?? ''}"></div>
+                                    <div class="modal-body"><input type="hidden" name="f_id" value="${item.f_id}"><input type="text" class="form-control" name="config_desc" value="${esc(item.desc ?? '')}"></div>
                                     <div class="modal-footer"><button type="submit" class="btn btn-primary">저장</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button></div>
                                   </form>
                                 </div></div></div>
