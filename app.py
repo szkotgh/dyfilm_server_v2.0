@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+from urllib.parse import urlparse
 from flask import Flask, render_template, send_file, request
 from werkzeug.middleware.proxy_fix import ProxyFix
 import src.utils as utils
@@ -46,6 +47,27 @@ def add_security_headers(response):
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     
     return response
+
+@app.before_request
+def csrf_origin_protect():
+    # 관리자 상태변경 요청(쿠키 세션 인증)에 대한 CSRF 방어(SameSite=Strict 보완).
+    # 크로스 사이트에서 자동 제출된 폼은 공격자 출처의 Origin/Referer를 실어 보내므로
+    # 요청 host와 불일치하면 차단한다. 디바이스 API(/device/*, 헤더 토큰 인증)와
+    # 공개 신고 엔드포인트는 대상이 아니므로 부스 클라이언트 동작에 영향이 없다.
+    if request.method in ('POST', 'PUT', 'PATCH', 'DELETE') and request.path.startswith('/admin'):
+        origin = request.headers.get('Origin')
+        source_host = None
+        if origin:
+            source_host = urlparse(origin).netloc
+        else:
+            referer = request.headers.get('Referer')
+            if referer:
+                source_host = urlparse(referer).netloc
+        if source_host is not None and source_host != request.host:
+            utils.logger.warning(
+                f'CSRF origin mismatch on {request.path}: source={source_host} host={request.host}')
+            return utils.get_code('authorize_failed')
+
 
 app.register_blueprint(router.bp)
 
