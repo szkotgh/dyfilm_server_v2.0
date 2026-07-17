@@ -1,6 +1,7 @@
 import os
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, session, url_for
 import src.utils as utils
+from src.ratelimit import login_limiter
 import bcrypt
 import auth
 import router.admin.config as config
@@ -39,20 +40,32 @@ def login():
         return redirect(url_for('router.admin.index'))
     
     if request.method == 'POST':
+        # 무차별 대입 완화: 직접 피어 IP(remote_addr, 위조 불가) 기준으로 실패 횟수 제한.
+        client_key = request.remote_addr or 'unknown'
+        if login_limiter.is_limited(client_key):
+            utils.logger.warning(f'ADMIN LOGIN RATE-LIMITED from {client_key} (hdr ip: {utils.get_ip()})')
+            resp = render_template('admin/login.html', user_ip=utils.get_ip(), getout=True)
+            return resp, 429, {'Retry-After': '300'}
+
         input_pw = request.form.get('password')
-        
+
         if not input_pw or not input_pw.strip():
+            login_limiter.record(client_key)
             return render_template('admin/login.html', user_ip=utils.get_ip(), getout=True)
 
         if bcrypt.checkpw(input_pw.encode('utf-8'), os.environ['ADMIN_PASSWORD'].encode('utf-8')):
+            login_limiter.reset(client_key)
             session.clear()
             session['ADMIN'] = True
             session['ADMIN_LAST_ACTIVE_TIME'] = utils.get_now_datetime_str()
+            session['ADMIN_LOGIN_TIME'] = utils.get_now_datetime_str()
             session['SESSION_FINGERPRINT'] = auth.generate_session_fingerprint()
             utils.logger.info(f'ADMIN LOGIN FROM: {utils.get_ip()}')
             flash('Login successfully', 'success')
             return redirect(url_for('router.admin.index'))
         else:
+            login_limiter.record(client_key)
+            utils.logger.warning(f'ADMIN LOGIN FAILED from {client_key} (hdr ip: {utils.get_ip()})')
             return render_template('admin/login.html', user_ip=utils.get_ip(), getout=True)
         
     return render_template('admin/login.html', user_ip=utils.get_ip())
