@@ -20,11 +20,14 @@ def get_env(key: str):
     return os.environ[key]
 
 def get_code(key: str, info = None):
-    code = code_dir[key]
-    
+    # 전역 code_dir을 in-place로 변경하면 스레드 간 info 값이 교차 유출되고
+    # (예: verify_token 응답의 디바이스 정보) 이전 요청의 info가 다음 응답에 남는다.
+    # 요청마다 사본을 만들어 반환한다.
+    code = dict(code_dir[key])
+
     if info is not None:
         code['info'] = info
-    
+
     return code, code['code']
 
 def get_ip(): 

@@ -1,14 +1,46 @@
 import sqlite3
 import os
+import threading
 from datetime import datetime, timedelta
 import os.path as path
 import src.utils as utils
 
 DB_HOME = './db'
 DB_FILE = path.join(DB_HOME, 'database.db')
-conn = sqlite3.connect(DB_FILE, check_same_thread=False)
-conn.row_factory = sqlite3.Row
-cursor = conn.cursor()
+
+# 스레드별 SQLite 연결/커서.
+# Flask 개발/운영 서버는 요청을 여러 스레드로 동시 처리하므로, 단일 전역 커서를
+# 모든 스레드가 공유하면 execute()/fetch()가 교차 실행되어 결과 집합이 오염되거나
+# (한 사용자의 행이 다른 응답에 노출) "Recursive use of cursors" 예외로 크래시가 난다.
+# db.conn / db.cursor 라는 기존 API를 그대로 유지하기 위해, 실제 객체를 스레드-로컬로
+# 두고 위임하는 프록시를 노출한다.
+_local = threading.local()
+
+def _thread_conn():
+    conn_obj = getattr(_local, 'conn', None)
+    if conn_obj is None:
+        conn_obj = sqlite3.connect(DB_FILE)  # check_same_thread=True(기본): 스레드 간 공유 차단
+        conn_obj.row_factory = sqlite3.Row
+        conn_obj.execute('PRAGMA foreign_keys = ON;')
+        conn_obj.execute('PRAGMA busy_timeout = 5000;')  # 동시 쓰기 시 lock 대기(즉시 실패 방지)
+        _local.conn = conn_obj
+        _local.cursor = conn_obj.cursor()
+    return _local.conn
+
+def _thread_cursor():
+    _thread_conn()
+    return _local.cursor
+
+class _ConnProxy:
+    def __getattr__(self, name):
+        return getattr(_thread_conn(), name)
+
+class _CursorProxy:
+    def __getattr__(self, name):
+        return getattr(_thread_cursor(), name)
+
+conn = _ConnProxy()
+cursor = _CursorProxy()
 
 MAIN_IMAGE_DIR_PATH = path.join(DB_HOME, 'main_image')
 FRAMES_PATH = path.join(DB_HOME, 'frames')
@@ -169,6 +201,9 @@ cursor.execute('''
         FOREIGN KEY (cf_id) REFERENCES capframe (cf_id) ON DELETE CASCADE
     )
 ''')
+
+# 스키마 생성(DDL)을 커밋해 이후 각 스레드가 새로 여는 연결에서도 테이블이 보이도록 한다.
+conn.commit()
 
 def get_statistics():
     stats = {}
