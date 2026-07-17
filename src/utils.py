@@ -30,9 +30,11 @@ def get_code(key: str, info = None):
 
     return code, code['code']
 
-def get_ip(): 
-    user_ip = request.headers.get("Cf-Connecting-Ip", request.remote_addr)
-    return user_ip
+def get_ip():
+    # 이 배포에는 Cloudflare가 없어 Cf-Connecting-Ip 헤더는 클라이언트가 임의로
+    # 위조할 수 있었다(로그/신고 출처 위장, 세션 fingerprint IP 우회). ProxyFix가
+    # 신뢰 프록시의 X-Forwarded-For로 채운 remote_addr(위조 불가)만 사용한다.
+    return request.remote_addr
 
 def gen_hash(key: str = None, len=16):
     if key is None:
