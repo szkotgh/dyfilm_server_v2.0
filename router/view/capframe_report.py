@@ -1,8 +1,16 @@
+import ipaddress
 from flask import Blueprint, request, jsonify
 import db.report
 import src.utils as utils
 
 bp = Blueprint('view_report', __name__, url_prefix='/report')
+
+def _normalize_ip(raw: str) -> str:
+    # 신고 증거로 저장되는 IP를 실제 IP 형식으로만 제한 (위조/주입 값 차단)
+    try:
+        return str(ipaddress.ip_address((raw or '').strip()))
+    except ValueError:
+        return 'unknown'
 
 @bp.route('/<cf_id>', methods=['POST'])
 def create_report(cf_id):
@@ -18,8 +26,8 @@ def create_report(cf_id):
         if db.report.report_pending_exists_for_cf_id(cf_id):
             return jsonify({'success': False, 'message': '요청이 접수되어 확인 대기 중인 사진입니다.'}), 409
         
-        reporter_ip = utils.get_ip()
-        
+        reporter_ip = _normalize_ip(utils.get_ip())
+
         if db.report.report_create(cf_id, reason, reporter_ip):
             return jsonify({'success': True, 'message': '요청이 접수되었습니다.'}), 200
         else:

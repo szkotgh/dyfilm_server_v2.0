@@ -154,6 +154,10 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // XSS 방지: DB에서 온 값(신고 사유/IP 등, 익명 사용자 제어 가능)을 innerHTML에 넣기 전 이스케이프
+        const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
         const tbody = document.getElementById('report-tbody');
         const container = document.querySelector('.table-content');
         const footerDiv = document.createElement('div');
@@ -224,7 +228,7 @@
                             </form>
                         `;
                     } else {
-                        actionButtons = `<span class="report-time">${item.admin_review_time || ''}</span>`;
+                        actionButtons = `<span class="report-time">${esc(item.admin_review_time || '')}</span>`;
                     }
                     
                     // 상태 표시
@@ -240,7 +244,7 @@
                     tr.innerHTML = `
                         <td>#${item.report_id}</td>
                         <td>
-                            <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#capframe${item.report_id}">${item.cf_id}</span>
+                            <span style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#capframe${item.report_id}">${esc(item.cf_id)}</span>
                             <div class="modal fade" id="capframe${item.report_id}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
@@ -260,11 +264,11 @@
                                 </div>
                             </div>
                             <br>
-                            <small class="report-time">촬영시각: ${item.capframe_create_time || 'N/A'}</small>
+                            <small class="report-time">촬영시각: ${esc(item.capframe_create_time || 'N/A')}</small>
                         </td>
-                        <td class="report-reason">${item.reason}</td>
-                        <td class="report-ip">${item.reporter_ip}</td>
-                        <td class="report-time">${item.report_time}</td>
+                        <td class="report-reason">${esc(item.reason)}</td>
+                        <td class="report-ip">${esc(item.reporter_ip)}</td>
+                        <td class="report-time">${esc(item.report_time)}</td>
                         <td>${statusDisplay}</td>
                         <td>${actionButtons}</td>
                     `;
