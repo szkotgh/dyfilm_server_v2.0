@@ -214,7 +214,7 @@ def get_statistics():
     
     # 일주일간 capframe 개수
     week_ago = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')
-    cursor.execute("SELECT COUNT(*) as count FROM capframe WHERE status = 1 AND 'create' >= ?", (week_ago,))
+    cursor.execute('SELECT COUNT(*) as count FROM capframe WHERE status = 1 AND "create" >= ?', (week_ago,))
     stats['weekly_capframes'] = cursor.fetchone()['count']
     
     # 전체 capture 개수 (개별 사진)
@@ -223,11 +223,11 @@ def get_statistics():
     
     # 오늘 capframe 개수
     today = datetime.now().strftime('%Y-%m-%d 00:00:00')
-    cursor.execute("SELECT COUNT(*) as count FROM capframe WHERE status = 1 AND date('create') >= ?", (today,))
+    cursor.execute('SELECT COUNT(*) as count FROM capframe WHERE status = 1 AND date("create") >= ?', (today,))
     stats['today_capframes'] = cursor.fetchone()['count']
     
     # 일주일간 capture 개수
-    cursor.execute("SELECT COUNT(*) as count FROM capture WHERE status = 1 AND 'create' >= ?", (week_ago,))
+    cursor.execute('SELECT COUNT(*) as count FROM capture WHERE status = 1 AND "create" >= ?', (week_ago,))
     stats['weekly_captures'] = cursor.fetchone()['count']
     
     # 활성 디바이스 개수
@@ -270,7 +270,7 @@ def get_statistics():
     daily_stats = []
     for i in range(7):
         date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
-        cursor.execute("SELECT COUNT(*) as count FROM capframe WHERE status = 1 AND date('create') = ?", (date,))
+        cursor.execute('SELECT COUNT(*) as count FROM capframe WHERE status = 1 AND date("create") = ?', (date,))
         count = cursor.fetchone()['count']
         daily_stats.append({'date': date, 'count': count})
     stats['daily_stats'] = list(reversed(daily_stats))
