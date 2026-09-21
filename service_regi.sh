@@ -1,11 +1,12 @@
 #!/bin/bash
 
 SERVICE_NAME="dyfilm_server.service"
-SERVICE_FILE="./$SERVICE_NAME"
+PROJECT_DIR="/opt/dyfilm_server_v2.0"
+SERVICE_FILE="$PROJECT_DIR/$SERVICE_NAME"
 SYSTEMD_PATH="/etc/systemd/system/$SERVICE_NAME"
 
 if [ ! -f "$SERVICE_FILE" ]; then
-    echo "Error: $SERVICE_FILE not found in the current directory."
+    echo "Error: $SERVICE_FILE not found. Clone the project into $PROJECT_DIR first."
     exit 1
 fi
 
