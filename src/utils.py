@@ -31,9 +31,16 @@ def get_code(key: str, info = None):
     return code, code['code']
 
 def get_ip():
-    # 이 배포에는 Cloudflare가 없어 Cf-Connecting-Ip 헤더는 클라이언트가 임의로
-    # 위조할 수 있었다(로그/신고 출처 위장, 세션 fingerprint IP 우회). ProxyFix가
-    # 신뢰 프록시의 X-Forwarded-For로 채운 remote_addr(위조 불가)만 사용한다.
+    # Cloudflare -> 신뢰하는 nginx를 통해 전달된 헤더를 사용하는 배포 기준.
+    # Cloudflare의 클라이언트 IP, nginx 전달 IP, 직접 접속 IP 순으로 조회한다.
+    for header in ('CF-Connecting-IP', 'X-Real-IP', 'X-Forwarded-For'):
+        ip = request.headers.get(header, '')
+        if header == 'X-Forwarded-For':
+            ip = ip.split(',', 1)[0]
+        ip = ip.strip()
+        if ip:
+            return ip
+
     return request.remote_addr
 
 def gen_hash(key: str = None, len=16):

@@ -40,10 +40,10 @@ def login():
         return redirect(url_for('router.admin.index'))
     
     if request.method == 'POST':
-        # 무차별 대입 완화: 직접 피어 IP(remote_addr, 위조 불가) 기준으로 실패 횟수 제한.
-        client_key = request.remote_addr or 'unknown'
+        # Cloudflare/nginx가 전달한 클라이언트 IP별로 로그인 실패 횟수를 제한한다.
+        client_key = utils.get_ip() or 'unknown'
         if login_limiter.is_limited(client_key):
-            utils.logger.warning(f'ADMIN LOGIN RATE-LIMITED from {client_key} (hdr ip: {utils.get_ip()})')
+            utils.logger.warning(f'ADMIN LOGIN RATE-LIMITED from {client_key}')
             resp = render_template('admin/login.html', user_ip=utils.get_ip(), getout=True)
             return resp, 429, {'Retry-After': '300'}
 
@@ -66,7 +66,7 @@ def login():
             return redirect(url_for('router.admin.index'))
         else:
             login_limiter.record(client_key)
-            utils.logger.warning(f'ADMIN LOGIN FAILED from {client_key} (hdr ip: {utils.get_ip()})')
+            utils.logger.warning(f'ADMIN LOGIN FAILED from {client_key}')
             return render_template('admin/login.html', user_ip=utils.get_ip(), getout=True)
         
     return render_template('admin/login.html', user_ip=utils.get_ip())

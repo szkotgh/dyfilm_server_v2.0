@@ -40,6 +40,5 @@ class SlidingWindowLimiter:
 
 
 # 관리자 로그인 실패 제한기: 5분 내 10회 실패 시 이후 요청을 일시 차단.
-# 프록시 뒤에서는 remote_addr가 프록시 IP로 공유될 수 있어 사실상 전역 제한으로
-# 동작하며, 성공 로그인 시 reset으로 카운터를 비운다.
+# utils.get_ip()로 조회한 클라이언트 IP별로 집계하고 성공 로그인 시 초기화한다.
 login_limiter = SlidingWindowLimiter(max_events=10, window_seconds=300)

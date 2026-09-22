@@ -8,10 +8,9 @@ import router
 
 app = Flask(__name__)
 
-# 신뢰하는 역방향 프록시(로컬 nginx) 1홉의 X-Forwarded-* 만 신뢰한다.
-# 이렇게 하면 remote_addr가 프록시가 설정한 값(위조 불가)이 되며, 클라이언트가
-# 임의로 보낼 수 있는 헤더를 IP로 신뢰하지 않게 된다. 프록시 체인이 더 깊고
-# 실제 클라이언트 IP가 필요하면 x_for 값을 체인 깊이에 맞게 늘린다.
+# 신뢰하는 로컬 nginx 1홉의 X-Forwarded-* 헤더를 반영한다.
+# Cloudflare -> nginx 환경에서 remote_addr는 Cloudflare IP일 수 있으므로
+# 클라이언트 IP 조회에는 Cloudflare 헤더를 우선하는 utils.get_ip()를 사용한다.
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
 app.secret_key = utils.get_env('SESSION_SECRET_KEY')
@@ -103,4 +102,3 @@ def handle_exception(e):
 
 if __name__ == '__main__':
     app.run(host=utils.get_env("HOST_IP"), port=int(utils.get_env("HOST_PORT")))
-
